@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Criação - Presente Eterno</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root {
+            --cor-fundo: #0a101f;
+            --cor-card: rgba(17, 24, 39, 0.75);
+            --cor-borda: rgba(139, 92, 246, 0.2);
+            --cor-texto-principal: #e5e7eb;
+            --cor-texto-secundario: #9ca3af;
+            --cor-laco: #cba3ff;
+            --cor-sinfonia: #ff69b4;
+            --cor-universo: #FFD700;
+        }
+        
+        /* --- Base e Animações --- */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto-principal);
+            background-image: radial-gradient(circle at 1% 1%, rgba(203, 163, 255, 0.1) 0%, transparent 30%),
+                              radial-gradient(circle at 99% 99%, rgba(255, 105, 180, 0.1) 0%, transparent 40%);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Estrutura Principal --- */
+        .main-card {
+            background-color: var(--cor-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--cor-borda);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .main-container h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--cor-laco), var(--cor-sinfonia), var(--cor-universo));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* --- Abas de Navegação --- */
+        .tab-link {
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-link:hover:not(.active) {
+            background-color: rgba(255,255,255,0.05);
+            border-bottom-color: var(--cor-texto-secundario);
+        }
+        .tab-link.active.laco { border-bottom-color: var(--cor-laco); color: var(--cor-laco); }
+        .tab-link.active.sinfonia { border-bottom-color: var(--cor-sinfonia); color: var(--cor-sinfonia); }
+        .tab-link.active.universo { border-bottom-color: var(--cor-universo); color: var(--cor-universo); }
+        
+        /* --- Campos de Formulário Customizados --- */
+        .form-group { position: relative; }
+        .form-input, .form-textarea {
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid #4b5563;
+            transition: border-color 0.3s ease;
+        }
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+        }
+        .form-label {
+            position: absolute;
+            top: 0.75rem;
+            left: 0;
+            color: var(--cor-texto-secundario);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus ~ .form-label, .form-input:not(:placeholder-shown) ~ .form-label,
+        .form-textarea:focus ~ .form-label, .form-textarea:not(:placeholder-shown) ~ .form-label {
+            transform: translateY(-1.5rem);
+            font-size: 0.875rem;
+        }
+        .laco .form-input:focus ~ .form-label, .laco .form-textarea:focus ~ .form-label { color: var(--cor-laco); }
+        .sinfonia .form-input:focus ~ .form-label, .sinfonia .form-textarea:focus ~ .form-label { color: var(--cor-sinfonia); }
+        .universo .form-input:focus ~ .form-label, .universo .form-textarea:focus ~ .form-label { color: var(--cor-universo); }
+
+        /* Linha animada */
+        .form-input ~ .focus-border {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            transition: all 0.4s ease;
+        }
+        .laco .form-input:focus ~ .focus-border { width: 100%; left: 0; background-color: var(--cor-laco); }
+        .sinfonia .form-input:focus ~ .focus-border { width: 100%; left: 0; background-color: var(--cor-sinfonia); }
+        .universo .form-input:focus ~ .focus-border { width: 100%; left: 0; background-color: var(--cor-universo); }
+
+        /* --- Upload de Arquivos --- */
+        .file-input-wrapper {
+            background-color: rgba(10, 16, 31, 0.5);
+            border: 2px dashed #4b5563;
+            transition: all 0.3s ease;
+        }
+        .file-input-wrapper:hover, .file-input-wrapper.dragover {
+            background-color: rgba(10, 16, 31, 1);
+        }
+        .laco .file-input-wrapper:hover, .laco .file-input-wrapper.dragover { border-color: var(--cor-laco); }
+        .sinfonia .file-input-wrapper:hover, .sinfonia .file-input-wrapper.dragover { border-color: var(--cor-sinfonia); }
+        .universo .file-input-wrapper:hover, .universo .file-input-wrapper.dragover { border-color: var(--cor-universo); }
+        
+        .file-name-tag {
+            background-color: #374151;
+            transition: all 0.3s ease;
+        }
+        .file-name-tag:hover { background-color: #4b5563; }
+        .remove-file-btn { color: #9ca3af; }
+        .remove-file-btn:hover { color: #ef4444; }
+        
+        /* --- Botão --- */
+        .submit-btn { transition: all 0.3s ease; border-radius: 50px; }
+        .submit-btn:disabled { background: #374151; color: #6b7280; cursor: not-allowed; }
+        .laco .submit-btn { background-color: var(--cor-laco); }
+        .sinfonia .submit-btn { background-color: var(--cor-sinfonia); }
+        .universo .submit-btn { background-color: var(--cor-universo); }
+        .submit-btn:hover:not(:disabled) { transform: translateY(-3px) scale(1.02); }
+        .laco .submit-btn:hover:not(:disabled) { box-shadow: 0 8px 25px -5px var(--cor-laco); }
+        .sinfonia .submit-btn:hover:not(:disabled) { box-shadow: 0 8px 25px -5px var(--cor-sinfonia); }
+        .universo .submit-btn:hover:not(:disabled) { box-shadow: 0 8px 25px -5px var(--cor-universo); }
+
+        /* --- Controle de Seções --- */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.6s ease-in-out; }
+    </style>
+</head>
+<body class="antialiased flex items-center justify-center p-4 min-h-screen">
+    <div class="main-container mx-auto w-full max-w-4xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl">Portal de Criação</h1>
+            <p class="text-lg text-gray-400 max-w-2xl mx-auto mt-4">Obrigado por escolher o Presente Eterno! Preencha os campos com carinho para iniciarmos a criação da sua homenagem.</p>
+        </header>
+
+        <form id="main-form" action="https://formspree.io/f/xwpbovgn" method="POST" enctype="multipart/form-data" class="main-card rounded-2xl">
+            <input type="hidden" id="form-subject" name="_subject" value="⭐ Novo Pedido Recebido: Laço de Amor!">
+            
+            <nav class="tabs-nav flex space-x-4 border-b border-gray-700 mb-8">
+                <button type="button" class="tab-link flex-1 pb-3 active laco" data-tab="laco"><i class="fas fa-ribbon fa-fw mr-2"></i>Laço de Amor</button>
+                <button type="button" class="tab-link flex-1 pb-3 sinfonia" data-tab="sinfonia"><i class="fas fa-music fa-fw mr-2"></i>Nossa Sinfonia</button>
+                <button type="button" class="tab-link flex-1 pb-3 universo" data-tab="universo"><i class="fas fa-meteor fa-fw mr-2"></i>Universo Particular</button>
+            </nav>
+            
+            <div class="forms-wrapper">
+                <!-- Seção Laço de Amor -->
+                <section id="form-laco" class="tab-content active laco">
+                    <div class="space-y-10">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="form-group"><input type="text" id="laco-nome-comprador" name="Nome do Comprador" class="form-input w-full pt-3" placeholder=" "><label for="laco-nome-comprador" class="form-label">Seu Nome</label><div class="focus-border"></div></div>
+                            <div class="form-group"><input type="text" id="laco-nome-presenteado" name="Nome do Presenteado" class="form-input w-full pt-3" placeholder=" "><label for="laco-nome-presenteado" class="form-label">Nome da Pessoa Presenteada</label><div class="focus-border"></div></div>
+                        </div>
+                        <div class="form-group"><textarea id="laco-historia" name="História do Casal" class="form-textarea w-full h-24 pt-3" placeholder=" "></textarea><label for="laco-historia" class="form-label">História do Casal</label></div>
+                        <div class="form-group"><textarea id="laco-carta" name="Texto da Carta" class="form-textarea w-full h-24 pt-3" placeholder=" "></textarea><label for="laco-carta" class="form-label">Texto da Carta</label></div>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="form-group"><input type="date" id="laco-data-relacionamento" name="Data de Início do Relacionamento" class="form-input w-full pt-3" placeholder=" "><label for="laco-data-relacionamento" class="form-label">Data de Início do Relacionamento</label></div>
+                            <div class="form-group"><input type="text" id="laco-musica" name="Link da Música (Spotify)" class="form-input w-full pt-3" placeholder=" "><label for="laco-musica" class="form-label">Link da Música no Spotify</label><div class="focus-border"></div></div>
+                        </div>
+                        <div class="form-group"><input type="text" id="laco-cores" name="Paleta de Cores" class="form-input w-full pt-3" placeholder=" "><label for="laco-cores" class="form-label">Paleta de Cores (Ex: Tons de azul e dourado)</label><div class="focus-border"></div></div>
+                        <div class="form-group"><label class="block mb-2 font-semibold">Envio de Fotos (até 5)</label><div class="file-input-wrapper p-6 rounded-lg"><i class="fas fa-cloud-upload-alt icon text-4xl text-purple-400 mb-4"></i><p class="text-gray-400">Clique para selecionar ou arraste os arquivos</p><input type="file" class="file-input" name="fotos_laco" multiple accept="image/*" data-max-files="5"></div><div class="file-list mt-4 space-y-2"></div></div>
+                    </div>
+                </section>
+
+                <!-- Seção Nossa Sinfonia -->
+                <section id="form-sinfonia" class="tab-content sinfonia">
+                     <div class="space-y-10">
+                        <div class="grid md:grid-cols-2 gap-8"><div class="form-group"><input type="text" id="sinfonia-nome-comprador" name="Nome do Comprador" class="form-input w-full pt-3" placeholder=" "><label for="sinfonia-nome-comprador" class="form-label">Seu Nome</label><div class="focus-border"></div></div><div class="form-group"><input type="text" id="sinfonia-nome-presenteado" name="Nome do Presenteado" class="form-input w-full pt-3" placeholder=" "><label for="sinfonia-nome-presenteado" class="form-label">Nome da Pessoa Presenteada</label><div class="focus-border"></div></div></div>
+                        <div class="form-group"><textarea id="sinfonia-historia" name="História do Casal" class="form-textarea w-full h-24 pt-3" placeholder=" "></textarea><label for="sinfonia-historia" class="form-label">História do Casal</label></div>
+                        <div class="form-group"><textarea id="sinfonia-carta" name="Texto da Carta" class="form-textarea w-full h-24 pt-3" placeholder=" "></textarea><label for="sinfonia-carta" class="form-label">Texto da Carta</label></div>
+                        <div class="form-group"><textarea id="sinfonia-mensagens-secretas" name="Mensagens Secretas" class="form-textarea w-full h-24 pt-3" placeholder=" "></textarea><label for="sinfonia-mensagens-secretas" class="form-label">10 Mensagens p/ Corações (uma por linha)</label></div>
+                        <div class="grid md:grid-cols-2 gap-8"><div class="form-group"><input type="date" id="sinfonia-data-relacionamento" name="Data de Início do Relacionamento" class="form-input w-full pt-3" placeholder=" "><label for="sinfonia-data-relacionamento" class="form-label">Data de Início do Relacionamento</label></div><div class="form-group"><input type="text" id="sinfonia-musica" name="Link da Música (Spotify)" class="form-input w-full pt-3" placeholder=" "><label for="sinfonia-musica" class="form-label">Link da Música no Spotify</label><div class="focus-border"></div></div></div>
+                        <div class="form-group"><input type="text" id="sinfonia-cores" name="Paleta de Cores" class="form-input w-full pt-3" placeholder=" "><label for="sinfonia-cores" class="form-label">Paleta de Cores (Ex: Tons de rosa e branco)</label><div class="focus-border"></div></div>
+                        <div class="grid md:grid-cols-2 gap-8"><div class="form-group"><label class="block mb-2 font-semibold">Envio de Fotos (até 10)</label><div class="file-input-wrapper p-6 rounded-lg"><i class="fas fa-images icon text-4xl text-pink-400 mb-4"></i><p class="text-gray-400">Clique ou arraste as fotos</p><input type="file" class="file-input" name="fotos_sinfonia" multiple accept="image/*" data-max-files="10"></div><div class="file-list mt-4 space-y-2"></div></div><div class="form-group"><label class="block mb-2 font-semibold">Mensagem de Áudio</label><div class="file-input-wrapper p-6 rounded-lg"><i class="fas fa-microphone-alt icon text-4xl text-pink-400 mb-4"></i><p class="text-gray-400">Grave e envie o áudio</p><input type="file" class="file-input" name="Mensagem de Áudio" accept="audio/*" data-max-files="1"></div><div class="file-list mt-4 space-y-2"></div></div></div>
+                    </div>
+                </section>
+
+                <!-- Seção Universo Particular -->
+                <section id="form-universo" class="tab-content universo">
+                    <div class="space-y-10">
+                        <div class="grid md:grid-cols-2 gap-8"><div class="form-group"><input type="text" id="universo-nome-comprador" name="Nome do Comprador" class="form-input w-full pt-3" placeholder=" "><label for="universo-nome-comprador" class="form-label">Seu Nome</label><div class="focus-border"></div></div><div class="form-group"><input type="text" id="universo-nome-presenteado" name="Nome do Presenteado" class="form-input w-full pt-3" placeholder=" "><label for="universo-nome-presenteado" class="form-label">Nome da Pessoa Presenteada</label><div class="focus-border"></div></div></div>
+                        <div class="form-group"><textarea id="universo-historia" name="História do Casal" class="form-textarea w-full h-24 pt-3" placeholder=" "></textarea><label for="universo-historia" class="form-label">História do Casal</label></div>
+                        <div class="form-group"><textarea id="universo-carta" name="Texto da Carta" class="form-textarea w-full h-24 pt-3" placeholder=" "></textarea><label for="universo-carta" class="form-label">Texto da Carta</label></div>
+                        <div class="form-group"><textarea id="universo-playlist" name="Links da Playlist (Spotify)" class="form-textarea w-full h-32 pt-3" placeholder=" "></textarea><label for="universo-playlist" class="form-label">Links da Playlist no Spotify (até 5, um por linha)</label></div>
+                        <div class="grid md:grid-cols-2 gap-8"><div class="form-group"><input type="text" id="universo-senha" name="Senha Secreta" class="form-input w-full pt-3" placeholder=" "><label for="universo-senha" class="form-label">Senha Secreta</label><div class="focus-border"></div></div><div class="form-group"><input type="text" id="universo-conteudo-secreto" name="Conteúdo da Mensagem Secreta" class="form-input w-full pt-3" placeholder=" "><label for="universo-conteudo-secreto" class="form-label">O que aparece após a senha?</label><div class="focus-border"></div></div></div>
+                        <div class="grid md:grid-cols-2 gap-8"><div class="form-group"><input type="text" id="universo-pedido" name="Texto do Pedido Interativo" class="form-input w-full pt-3" placeholder=" "><label for="universo-pedido" class="form-label">Texto do Pedido Interativo</label><div class="focus-border"></div></div><div class="form-group"><input type="text" id="universo-celebracao-pedido" name="Texto de Celebração do Pedido" class="form-input w-full pt-3" placeholder=" "><label for="universo-celebracao-pedido" class="form-label">O que aparece após o 'Sim'?</label><div class="focus-border"></div></div></div>
+                        <div class="grid md:grid-cols-2 gap-8"><div class="form-group"><input type="text" id="universo-signo1" name="Signo da Pessoa 1" class="form-input w-full pt-3" placeholder=" "><label for="universo-signo1" class="form-label">Seu Signo ou Data de Nasc.</label><div class="focus-border"></div></div><div class="form-group"><input type="text" id="universo-signo2" name="Signo da Pessoa 2" class="form-input w-full pt-3" placeholder=" "><label for="universo-signo2" class="form-label">Signo/Data de Nasc. da outra pessoa</label><div class="focus-border"></div></div></div>
+                        <div class="form-group"><input type="text" id="universo-cores" name="Paleta de Cores" class="form-input w-full pt-3" placeholder=" "><label for="universo-cores" class="form-label">Paleta de Cores (Ex: Galáxia, roxo e preto)</label><div class="focus-border"></div></div>
+                        <div class="grid md:grid-cols-2 gap-8"><div class="form-group"><label class="block mb-2 font-semibold">Envio de Fotos (até 10)</label><div class="file-input-wrapper p-6 rounded-lg"><i class="fas fa-images icon text-4xl text-yellow-400 mb-4"></i><p class="text-gray-400">Clique ou arraste as fotos</p><input type="file" class="file-input" name="fotos_universo" multiple accept="image/*" data-max-files="10"></div><div class="file-list mt-4 space-y-2"></div></div><div class="form-group"><label class="block mb-2 font-semibold">Mensagem de Áudio</label><div class="file-input-wrapper p-6 rounded-lg"><i class="fas fa-microphone-alt icon text-4xl text-yellow-400 mb-4"></i><p class="text-gray-400">Grave e envie o áudio</p><input type="file" class="file-input" name="Mensagem de Áudio" accept="audio/*" data-max-files="1"></div><div class="file-list mt-4 space-y-2"></div></div></div>
+                    </div>
+                </section>
+            </div>
+
+            <button type="submit" id="submit-btn" class="submit-btn w-full mt-10 p-4 text-lg font-bold text-gray-900">Criar a Magia do Laço</button>
+        </form>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mainForm = document.getElementById('main-form');
+        const tabs = document.querySelectorAll('.tab-link');
+        const contents = document.querySelectorAll('.tab-content');
+        const submitBtn = document.getElementById('submit-btn');
+
+        const tabConfig = {
+            laco: { subject: '⭐ Novo Pedido Recebido: Laço de Amor!', buttonText: 'Criar a Magia do Laço' },
+            sinfonia: { subject: '🎶 Novo Pedido Recebido: Nossa Sinfonia!', buttonText: 'Compor a Sinfonia' },
+            universo: { subject: '🚀 Novo Pedido Recebido: Universo Particular!', buttonText: 'Construir o Universo' }
+        };
+
+        // --- Core Functions ---
+        function updateActiveForm(activeTab) {
+            const activePackage = activeTab.dataset.tab;
+            tabs.forEach(t => t.classList.toggle('active', t === activeTab));
+            contents.forEach(c => c.classList.toggle('active', c.id === `form-${activePackage}`));
+            mainForm.className = `main-card rounded-2xl ${activePackage}`;
+            document.getElementById('form-subject').value = tabConfig[activePackage].subject;
+            submitBtn.textContent = tabConfig[activePackage].buttonText;
+            updateRequiredFields();
+            checkFormValidity();
+        }
+        
+        function updateRequiredFields() {
+            contents.forEach(content => {
+                const isActive = content.classList.contains('active');
+                content.querySelectorAll('input, textarea').forEach(input => {
+                    input.disabled = !isActive;
+                    if (isActive && !input.closest('.optional-group')) {
+                        input.setAttribute('required', '');
+                    } else {
+                        input.removeAttribute('required');
+                    }
+                });
+            });
+        }
+
+        function checkFormValidity() {
+            const activeForm = document.querySelector('.tab-content.active');
+            if (!activeForm) {
+                submitBtn.disabled = true;
+                return;
+            }
+            const requiredInputs = activeForm.querySelectorAll('[required]');
+            let allValid = true;
+            for (const input of requiredInputs) {
+                if (input.type === 'file') {
+                    if (input.files.length === 0) { allValid = false; break; }
+                } else if (!input.value.trim()) {
+                    allValid = false; break;
+                }
+            }
+            submitBtn.disabled = !allValid;
+        }
+
+        function handleFileInputChange(input) {
+            const wrapper = input.closest('.form-group');
+            const listElement = wrapper.querySelector('.file-list');
+            const maxFiles = parseInt(input.dataset.maxFiles, 10);
+            listElement.innerHTML = ''; // Clear previous list
+
+            if (input.files.length > maxFiles) {
+                const errorTag = document.createElement('div');
+                errorTag.className = 'file-name-tag text-red-400';
+                errorTag.textContent = `Erro: Máximo de ${maxFiles} arquivos.`;
+                listElement.appendChild(errorTag);
+                input.value = ''; // Clear invalid selection
+            } else if (input.files.length > 0) {
+                Array.from(input.files).forEach((file, index) => {
+                    const fileTag = document.createElement('div');
+                    fileTag.className = 'file-name-tag flex items-center justify-between text-sm py-1 px-3 rounded-full';
+                    fileTag.innerHTML = `
+                        <span>${file.name}</span>
+                        <button type="button" class="remove-file-btn ml-2 text-lg" data-index="${index}">&times;</button>
+                    `;
+                    listElement.appendChild(fileTag);
+                });
+            }
+            checkFormValidity();
+        }
+
+        // --- Event Listeners ---
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => updateActiveForm(tab));
+        });
+
+        mainForm.addEventListener('input', checkFormValidity);
+
+        mainForm.querySelectorAll('.file-input').forEach(input => {
+            const wrapper = input.closest('.file-input-wrapper');
+            input.addEventListener('change', () => handleFileInputChange(input));
+            
+            // Drag and drop listeners
+            wrapper.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                wrapper.classList.add('dragover');
+            });
+            wrapper.addEventListener('dragleave', () => {
+                wrapper.classList.remove('dragover');
+            });
+            wrapper.addEventListener('drop', (e) => {
+                e.preventDefault();
+                wrapper.classList.remove('dragover');
+                input.files = e.dataTransfer.files;
+                // Manually trigger the change event
+                const changeEvent = new Event('change', { bubbles: true });
+                input.dispatchEvent(changeEvent);
+            });
+        });
+
+        // Listener for removing individual files
+        mainForm.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-file-btn')) {
+                const button = e.target;
+                const indexToRemove = parseInt(button.dataset.index, 10);
+                const fileInput = button.closest('.form-group').querySelector('.file-input');
+                
+                const dataTransfer = new DataTransfer();
+                const originalFiles = Array.from(fileInput.files);
+                
+                originalFiles.forEach((file, index) => {
+                    if (index !== indexToRemove) {
+                        dataTransfer.items.add(file);
+                    }
+                });
+                
+                fileInput.files = dataTransfer.files;
+                // Manually trigger the change event to update UI
+                const changeEvent = new Event('change', { bubbles: true });
+                fileInput.dispatchEvent(changeEvent);
+            }
+        });
+
+        // Initial state setup
+        updateActiveForm(document.querySelector('.tab-link.active'));
+    });
+    </script>
+</body>
+</html>
