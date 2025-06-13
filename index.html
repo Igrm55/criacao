@@ -131,10 +131,68 @@
         #record-status { font-weight: 500; color: var(--cor-dourado-premium); margin-bottom: 1rem; }
         #record-status .recording-dot { display: inline-block; width: 10px; height: 10px; background-color: #ff4d4d; border-radius: 50%; animation: blink 1.5s infinite; margin-right: 8px; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        #audio-playback { width: 100%; margin-top: 1rem; }
-        #audio-playback:not([src]) { display: none; }
+        
+        /* --- ESTILOS DO NOVO PLAYER DE ÁUDIO --- */
+        #custom-audio-player {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            background-color: rgba(0,0,0,0.2);
+            padding: 0.75rem;
+            border-radius: 50px;
+        }
+        #player-play-btn {
+            background: var(--gradiente-principal);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        #player-seek-bar {
+            flex-grow: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 5px;
+            background: var(--cor-cinza-claro);
+            outline: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #player-seek-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            background: var(--cor-primaria);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        #player-seek-bar::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            background: var(--cor-primaria);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .player-time {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--cor-branco-suave);
+            min-width: 40px;
+        }
+        audio#audio-playback-element { display: none; } /* Esconde o player original */
 
-        /* --- NOVOS ESTILOS PARA GALERIA DE IMAGENS --- */
+
+        /* --- ESTILOS DA GALERIA DE IMAGENS --- */
         #image-preview-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -280,9 +338,9 @@
                         
                         <div id="image-preview-container"></div>
                 
-                        <button type="button" id="add-photo-btn" class="btn btn-secondary" style="margin-top: 1rem;"><i class="fas fa-plus"></i> Adicionar Foto</button>
+                        <button type="button" id="add-photo-btn" class="btn btn-secondary" style="margin-top: 1rem;"><i class="fas fa-plus"></i> Adicionar Fotos</button>
                         
-                        <input type="file" id="fotos-input" accept="image/*" class="hidden">
+                        <input type="file" id="fotos-input" accept="image/*" class="hidden" multiple>
                 
                         <input type="text" id="photo-validation-input" required style="display: none;">
                     </div>
@@ -300,7 +358,17 @@
                                 <button type="button" class="btn btn-secondary" id="record-btn"><i class="fas fa-microphone-alt"></i> Gravar</button>
                                 <button type="button" class="btn btn-primary hidden" id="stop-record-btn"><i class="fas fa-stop-circle"></i> Parar</button>
                             </div>
-                            <audio id="audio-playback" controls></audio>
+                            <!-- Player de Áudio Original (escondido) -->
+                            <audio id="audio-playback-element"></audio>
+
+                            <!-- Novo Player de Áudio Customizado -->
+                            <div id="custom-audio-player" class="hidden">
+                                <button type="button" id="player-play-btn" class="btn"><i class="fas fa-play"></i></button>
+                                <span id="player-current-time" class="player-time">0:00</span>
+                                <input type="range" id="player-seek-bar" value="0" step="1">
+                                <span id="player-duration" class="player-time">0:00</span>
+                            </div>
+
                             <div class="file-upload-status" id="audio-upload-status"></div>
                         </div>
 
@@ -401,16 +469,21 @@
         const photoValidationInput = document.getElementById('photo-validation-input');
         let selectedImageFiles = [];
 
-        // --- Variáveis do Gravador de Áudio ---
+        // --- Variáveis de Áudio ---
         const recordBtn = document.getElementById('record-btn');
         const stopRecordBtn = document.getElementById('stop-record-btn');
-        const audioPlayback = document.getElementById('audio-playback');
         const recordStatus = document.getElementById('record-status');
         const audioInput = document.getElementById('audio-input');
         const audioUploadStatus = document.getElementById('audio-upload-status');
+        const audioPlaybackElement = document.getElementById('audio-playback-element');
+        const customAudioPlayer = document.getElementById('custom-audio-player');
+        const playerPlayBtn = document.getElementById('player-play-btn');
+        const playerSeekBar = document.getElementById('player-seek-bar');
+        const playerCurrentTime = document.getElementById('player-current-time');
+        const playerDuration = document.getElementById('player-duration');
         let mediaRecorder;
         let audioChunks = [];
-        let audioFileToSubmit = null; // ÚNICA FONTE DE VERDADE PARA O ÁUDIO
+        let audioFileToSubmit = null;
         
         let currentStepIndex = 0;
         let visibleSteps = [];
@@ -539,12 +612,12 @@
             showStep(currentStepIndex);
         });
 
-        // --- LÓGICA DA GALERIA DE IMAGENS ---
+        // --- LÓGICA DA GALERIA DE IMAGENS (COM SELEÇÃO MÚLTIPLA) ---
         addPhotoBtn.addEventListener('click', () => fotosInput.click());
 
         fotosInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
+            const files = event.target.files;
+            if (files.length === 0) return;
 
             const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.value;
             if (!selectedPackage) {
@@ -552,13 +625,18 @@
                 return;
             }
             const maxFiles = selectedPackage === 'Laço de Amor' ? 5 : 10;
+            const currentCount = selectedImageFiles.length;
+            const availableSlots = maxFiles - currentCount;
 
-            if (selectedImageFiles.length >= maxFiles) {
-                showAlert('Limite Atingido', `Você só pode adicionar até ${maxFiles} fotos para este pacote.`);
-                return;
+            if (files.length > availableSlots) {
+                showAlert('Limite Excedido', `Você pode adicionar mais ${availableSlots} foto(s). Você tentou adicionar ${files.length}.`);
             }
             
-            selectedImageFiles.push(file);
+            // Adiciona apenas os arquivos que cabem no limite
+            Array.from(files).slice(0, availableSlots).forEach(file => {
+                selectedImageFiles.push(file);
+            });
+            
             renderImagePreviews();
             fotosInput.value = '';
         });
@@ -590,18 +668,20 @@
             photoValidationInput.value = selectedImageFiles.length > 0 ? 'valid' : '';
         }
         
-        // --- LÓGICA DE ÁUDIO CORRIGIDA ---
+        // --- LÓGICA DO PLAYER E GRAVADOR DE ÁUDIO ---
         function setAudioSource(file, sourceName) {
             if (!file) {
                 audioFileToSubmit = null;
-                audioPlayback.removeAttribute('src');
+                audioPlaybackElement.removeAttribute('src');
+                customAudioPlayer.classList.add('hidden');
                 audioUploadStatus.textContent = '';
                 return;
             }
             audioFileToSubmit = file;
             const audioUrl = URL.createObjectURL(file);
-            audioPlayback.src = audioUrl;
+            audioPlaybackElement.src = audioUrl;
             audioUploadStatus.textContent = `Áudio selecionado: ${sourceName}`;
+            customAudioPlayer.classList.remove('hidden');
         }
 
         recordBtn.addEventListener('click', async () => {
@@ -625,7 +705,7 @@
                     const file = new File([audioBlob], `gravacao_${Date.now()}.webm`, { type: 'audio/webm' });
                     setAudioSource(file, 'Áudio gravado');
                     
-                    recordStatus.textContent = 'Gravação concluída. Ouça acima.';
+                    recordStatus.textContent = 'Gravação concluída. Ouça abaixo.';
                     stopRecordBtn.classList.add('hidden');
                     recordBtn.classList.remove('hidden');
                 };
@@ -648,8 +728,44 @@
                 recordStatus.classList.add('hidden');
             }
         });
+        
+        // Funções do player customizado
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
 
-        // LÓGICA DE SUBMISSÃO FINAL
+        playerPlayBtn.addEventListener('click', () => {
+            if (audioPlaybackElement.paused) {
+                audioPlaybackElement.play();
+                playerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                audioPlaybackElement.pause();
+                playerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        });
+
+        audioPlaybackElement.addEventListener('timeupdate', () => {
+            playerSeekBar.value = audioPlaybackElement.currentTime;
+            playerCurrentTime.textContent = formatTime(audioPlaybackElement.currentTime);
+        });
+
+        audioPlaybackElement.addEventListener('loadedmetadata', () => {
+            playerSeekBar.max = audioPlaybackElement.duration;
+            playerDuration.textContent = formatTime(audioPlaybackElement.duration);
+        });
+        
+        audioPlaybackElement.addEventListener('ended', () => {
+             playerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+             playerSeekBar.value = 0;
+        });
+
+        playerSeekBar.addEventListener('input', () => {
+            audioPlaybackElement.currentTime = playerSeekBar.value;
+        });
+
+        // --- LÓGICA DE SUBMISSÃO ROBUSTA ---
         async function handleFormSubmit(event) {
             event.preventDefault();
             
@@ -663,7 +779,10 @@
             }
             
             if (filesToUpload.length === 0) {
-                showFinalMessage(false, "Nenhum arquivo para enviar.");
+                showAlert("Nenhum Arquivo", "Por favor, adicione fotos ou áudio para enviar.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Enviar Pedido';
+                uploadProgressInfo.classList.add('hidden');
                 return;
             }
 
@@ -680,7 +799,7 @@
             
             const uploadPromises = filesToUpload.map(file => {
                 const formData = new FormData();
-                let url, method = 'POST';
+                let url;
                 if (file.type.startsWith('image/')) {
                     url = "https://api.imgbb.com/1/upload";
                     formData.append("key", IMGBB_API_KEY);
@@ -690,31 +809,49 @@
                     formData.append('file', file);
                 }
                 
-                return fetch(url, { method, body: formData })
+                return fetch(url, { method: 'POST', body: formData })
                     .then(res => res.json())
                     .then(result => {
                         updateProgress();
                         if(result.success) {
                             return { 
-                                type: file.type.startsWith('image/') ? 'image' : 'audio', 
-                                url: result.data ? result.data.url : result.link 
+                                status: 'fulfilled',
+                                value: {
+                                    type: file.type.startsWith('image/') ? 'image' : 'audio', 
+                                    url: result.data?.url || result.link 
+                                }
                             };
                         }
-                        console.error('Falha no upload:', result);
-                        throw new Error(result.error?.message || result.message || 'Falha no upload.');
+                        return { status: 'rejected', reason: `Falha no upload de ${file.name}` };
+                    })
+                    .catch(error => {
+                        updateProgress();
+                        console.error("Erro de rede no upload:", error);
+                        return { status: 'rejected', reason: `Erro de rede no upload de ${file.name}` };
                     });
             });
 
             try {
+                // Usamos Promise.all para esperar todas as promessas, mesmo as rejeitadas.
                 const uploadResults = await Promise.all(uploadPromises);
 
+                const successfulUploads = uploadResults.filter(r => r.status === 'fulfilled').map(r => r.value);
+                const failedUploads = uploadResults.filter(r => r.status === 'rejected');
+
+                if (successfulUploads.length === 0) {
+                    throw new Error("Nenhum arquivo pôde ser enviado. Verifique sua conexão com a internet.");
+                }
+
                 const finalFormData = new FormData(form);
-                const photoURLs = uploadResults.filter(r => r?.type === 'image').map(r => r.url).join('\n');
-                const audioURL = uploadResults.find(r => r?.type === 'audio')?.url || 'Nenhum áudio enviado';
+                const photoURLs = successfulUploads.filter(r => r?.type === 'image').map(r => r.url).join('\n');
+                const audioURL = successfulUploads.find(r => r?.type === 'audio')?.url || 'Nenhum áudio enviado';
                 
                 finalFormData.append('links_fotos', photoURLs);
                 finalFormData.append('link_audio', audioURL);
-                finalFormData.append('_vem_de', 'ImgBB + File.io com Galeria Interativa v2');
+
+                if(failedUploads.length > 0) {
+                    finalFormData.append('erros_de_upload', `${failedUploads.length} arquivo(s) não puderam ser enviados.`);
+                }
                 
                 const response = await fetch(form.dataset.action, {
                     method: form.method,
@@ -724,12 +861,11 @@
                 
                 if (!response.ok) throw new Error(`O servidor respondeu com o status: ${response.status}`);
                 const result = await response.json();
-                if (result.code === 200) showFinalMessage(true);
-                else showFinalMessage(false, result.message);
+                if (result.code === 200) showFinalMessage(true, failedUploads.length);
+                else showFinalMessage(false, 0, result.message);
 
             } catch (error) {
-                console.error('Erro no processo de upload ou envio:', error);
-                showFinalMessage(false, 'Ocorreu um erro ao enviar os arquivos. Por favor, tente novamente ou verifique sua conexão.');
+                showFinalMessage(false, 0, error.message);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Enviar Pedido';
@@ -739,11 +875,15 @@
 
         form.addEventListener("submit", handleFormSubmit);
 
-        function showFinalMessage(success, errorMsg = '') {
+        function showFinalMessage(success, failedCount = 0, errorMsg = '') {
             formContent.classList.add('hidden');
             finalMessageContainer.classList.remove('hidden');
             if(success) {
-                finalMessageContainer.innerHTML = `<i class="fas fa-check-circle success"></i><h2>Enviado com Sucesso!</h2><p>Suas informações foram recebidas. Em breve, entrarei em contato. Obrigado!</p>`;
+                let message = `<i class="fas fa-check-circle success"></i><h2>Enviado com Sucesso!</h2><p>Suas informações foram recebidas. Em breve, entrarei em contato. Obrigado!</p>`;
+                if (failedCount > 0) {
+                    message += `<p style="color: var(--cor-dourado-premium); margin-top: 1rem;"><strong>Atenção:</strong> ${failedCount} arquivo(s) não puderam ser enviados por uma falha de conexão. Verifique-os e, se necessário, envie-os separadamente.</p>`;
+                }
+                finalMessageContainer.innerHTML = message;
             } else {
                 finalMessageContainer.innerHTML = `<i class="fas fa-times-circle error"></i><h2>Ocorreu um Erro</h2><p>Não foi possível enviar suas informações. Detalhe: ${errorMsg}</p>`;
             }
