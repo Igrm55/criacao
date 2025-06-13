@@ -10,10 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <!-- SCRIPT DO UPLOADCARE - Essencial para o upload de arquivos -->
-    <script src="https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js" charset="utf-8"></script>
-    
     <style>
         :root {
             --cor-fundo: #0a101f;
@@ -27,9 +23,10 @@
             --cor-fundo-card: rgba(30, 41, 59, 0.8);
             --borda-raio: 16px;
             --gradiente-principal: linear-gradient(90deg, var(--cor-primaria), var(--cor-secundaria));
-            --cor-erro: #FF4D4D;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--cor-fundo);
@@ -42,38 +39,51 @@
             padding: 2rem;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 52.5 L12.5 35 Q12.5 17.5 30 25 Q47.5 17.5 47.5 35 Z' fill='rgba(160,0,255,0.03)'/%3E%3C/svg%3E");
         }
-        #form-container { width: 100%; max-width: 700px; background: var(--cor-fundo-card); backdrop-filter: blur(10px); border-radius: var(--borda-raio); padding: clamp(1.5rem, 5vw, 2.5rem); border: 1px solid var(--cor-secundaria); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
+
+        #form-container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--cor-fundo-card);
+            backdrop-filter: blur(10px);
+            border-radius: var(--borda-raio);
+            padding: clamp(1.5rem, 5vw, 2.5rem);
+            border: 1px solid var(--cor-secundaria);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
         .form-header { text-align: center; margin-bottom: 2rem; }
         .form-header h1 { font-family: 'Montserrat', sans-serif; font-size: clamp(1.8rem, 5vw, 2.2rem); color: var(--cor-branco-puro); margin-bottom: 0.5rem; }
         .form-header p { color: var(--cor-cinza-claro); font-size: 1rem; max-width: 500px; margin: auto; }
         .congrats-message { background: rgba(255, 215, 0, 0.1); border-left: 4px solid var(--cor-dourado-premium); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: left; }
         .congrats-message strong { color: var(--cor-dourado-premium); }
-        #progress-bar { display: flex; list-style: none; margin-bottom: 2rem; position: relative; justify-content: space-between; padding: 0; }
+
+        #progress-bar { display: flex; list-style: none; margin-bottom: 2rem; position: relative; justify-content: space-between; }
         #progress-bar .step { text-align: center; position: relative; width: 100%; color: var(--cor-cinza-claro); font-weight: 500; font-size: 0.8rem; }
         #progress-bar .step .dot { height: 25px; width: 25px; border: 2px solid var(--cor-cinza-claro); border-radius: 50%; display: inline-block; margin-bottom: 5px; transition: all 0.4s ease; }
         #progress-bar .step.active .dot, #progress-bar .step.completed .dot { background: var(--gradiente-principal); border-color: var(--cor-primaria); transform: scale(1.2); }
         #progress-bar .step.active, #progress-bar .step.completed { color: var(--cor-branco-puro); }
         #progress-bar::before, #progress-line { content: ''; position: absolute; top: 12px; left: 0; height: 3px; width: 100%; background: var(--cor-cinza-claro); z-index: -1; }
         #progress-line { background: var(--gradiente-principal); width: 0%; transition: width 0.4s ease; }
+
         .form-step { display: none; animation: fadeIn 0.5s ease-in-out; }
         .form-step.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .form-group { margin-bottom: 1.5rem; position: relative; }
+
+        .form-group { margin-bottom: 1.5rem; }
         .form-group label { display: block; margin-bottom: 0.75rem; font-weight: 600; font-size: 1.1rem; color: var(--cor-branco-suave); }
-        .form-group small { display: block; color: var(--cor-cinza-claro); font-size: 0.85rem; margin-top: -0.5rem; margin-bottom: 0.75rem; line-height: 1.5; }
-        input[type="text"], input[type="url"], textarea, select { width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid var(--cor-cinza-claro); background-color: var(--cor-fundo); color: var(--cor-branco-puro); font-size: 1rem; font-family: 'Poppins', sans-serif; transition: all 0.3s ease; }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--cor-primaria); box-shadow: 0 0 10px var(--cor-primaria); }
-        input.invalid, textarea.invalid, .uploadcare--widget.invalid .uploadcare--widget__button {
-            border-color: var(--cor-erro) !important;
-            box-shadow: 0 0 8px var(--cor-erro) !important;
+        .form-group small { display: block; color: var(--cor-cinza-claro); font-size: 0.85rem; margin-top: -0.5rem; margin-bottom: 0.75rem; }
+
+        input[type="text"], textarea, select {
+            width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid var(--cor-cinza-claro); background-color: var(--cor-fundo); color: var(--cor-branco-puro); font-size: 1rem; font-family: 'Poppins', sans-serif; transition: all 0.3s ease;
         }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--cor-primaria); box-shadow: 0 0 10px var(--cor-primaria); }
         textarea { resize: vertical; min-height: 120px; }
+
         .package-selection { display: grid; grid-template-columns: 1fr; gap: 1rem; }
         @media (min-width: 600px) { .package-selection { grid-template-columns: repeat(3, 1fr); } }
         .package-option { position: relative; }
         .package-option input[type="radio"] { opacity: 0; position: absolute; width: 100%; height: 100%; cursor: pointer; }
         .package-label { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--cor-fundo); border: 2px solid var(--cor-cinza-claro); border-radius: var(--borda-raio); padding: 1.5rem 1rem; text-align: center; transition: all 0.3s ease; height: 100%; }
-        .package-label.invalid { border-color: var(--cor-erro) !important; box-shadow: 0 0 10px var(--cor-erro) !important; }
         .package-label i { font-size: 2.5rem; margin-bottom: 0.75rem; transition: all 0.3s ease; }
         .package-label .package-name { font-weight: 700; color: var(--cor-branco-puro); }
         .package-option input:checked + .package-label { border-color: var(--cor-primaria); box-shadow: 0 0 15px var(--cor-primaria); transform: translateY(-5px); }
@@ -82,62 +92,52 @@
         #sinfonia-label i { color: var(--cor-primaria); }
         #universo-label i { color: var(--cor-dourado-premium); }
         .package-option input:checked + #sinfonia-label i { background: var(--gradiente-principal); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+        .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
+        .file-upload-btn { border: 2px dashed var(--cor-cinza-claro); background-color: var(--cor-fundo); color: var(--cor-cinza-claro); padding: 2rem; border-radius: var(--borda-raio); cursor: pointer; transition: all 0.3s ease; text-align: center; }
+        .file-upload-btn i { font-size: 2rem; margin-bottom: 0.5rem; }
+        input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; width: 100%; }
+        .file-upload-wrapper:hover .file-upload-btn { border-color: var(--cor-primaria); color: var(--cor-branco-puro); }
+        .file-upload-status { margin-top: 1rem; text-align: left; color: var(--cor-dourado-premium); font-weight: 500; }
+
         .btn-group { display: flex; justify-content: space-between; margin-top: 2rem; gap: 1rem; }
         .btn { padding: 0.9rem 2rem; border: none; border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; }
         .btn-primary { background: var(--gradiente-principal); background-size: 200% auto; color: var(--cor-branco-puro); }
-        .btn-primary:hover:not(:disabled) { transform: scale(1.05); background-position: right center; box-shadow: 0 5px 15px var(--cor-primaria); }
+        .btn-primary:hover { transform: scale(1.05); background-position: right center; box-shadow: 0 5px 15px var(--cor-primaria); }
         .btn-secondary { background-color: transparent; border: 2px solid var(--cor-cinza-claro); color: var(--cor-cinza-claro); }
         .btn-secondary:hover { border-color: var(--cor-branco-suave); color: var(--cor-branco-suave); }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; background: var(--cor-cinza-claro); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        
         .hidden { display: none; }
+        
         #final-message { text-align: center; }
-        #final-message .success i { font-size: 3rem; margin-bottom: 1rem; color: var(--cor-dourado-premium); }
-        #final-message .error i { font-size: 3rem; margin-bottom: 1rem; color: var(--cor-erro); }
+        #final-message i { font-size: 4rem; margin-bottom: 1rem; }
+        #final-message.success i { color: var(--cor-dourado-premium); }
+        #final-message.error i { color: #FF4D4D; }
         #final-message h2 { margin-bottom: 1rem; }
+
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease-in-out; }
         .modal-overlay.visible { opacity: 1; visibility: visible; }
-        .modal-content { background: var(--cor-fundo-card); padding: 2rem; border-radius: var(--borda-raio); border: 1px solid var(--cor-primaria); box-shadow: 0 0 30px rgba(255, 0, 128, 0.4); text-align: center; max-width: 90%; width: 500px; transform: scale(0.9); transition: transform 0.3s ease-in-out; }
+        .modal-content { background: var(--cor-fundo-card); padding: 2rem; border-radius: var(--borda-raio); border: 1px solid var(--cor-primaria); box-shadow: 0 0 30px rgba(255, 0, 128, 0.4); text-align: center; max-width: 400px; width: 90%; transform: scale(0.9); transition: transform 0.3s ease-in-out; }
         .modal-overlay.visible .modal-content { transform: scale(1); }
         .modal-content h2 { margin-bottom: 1rem; color: var(--cor-branco-puro); }
-        .modal-content p { color: var(--cor-cinza-claro); margin-bottom: 1.5rem; white-space: pre-wrap; text-align: left; }
+        .modal-content p { color: var(--cor-cinza-claro); margin-bottom: 1.5rem; }
         .modal-close-btn { background: var(--gradiente-principal); color: var(--cor-branco-puro); border: none; padding: 0.8rem 2rem; border-radius: 50px; cursor: pointer; font-weight: 700; transition: transform 0.2s; }
         .modal-close-btn:hover { transform: scale(1.05); }
-
-        /* Estilos do Widget do Uploadcare */
-        .uploadcare--widget__button_type_open {
-            background: var(--cor-secundaria) !important;
-            color: var(--cor-branco-puro) !important;
-            border-radius: 8px !important;
-            padding: 0.8rem 1.5rem !important;
-            transition: all 0.3s ease !important;
-            border: none !important;
-        }
-        .uploadcare--widget__button_type_open:hover { transform: scale(1.05) !important; background: var(--cor-primaria) !important; }
-        .uploadcare--widget__button { font-family: 'Poppins', sans-serif !important; }
-        .uploadcare--panel, .uploadcare--dialog__content { border-radius: var(--borda-raio) !important; }
     </style>
 </head>
 <body>
 
     <div id="form-container">
         <div class="form-header">
-            <h1><i class="fas fa-magic"></i> Portal de Criação</h1>
+            <h1>Portal de Criação</h1>
             <p>Vamos dar vida à sua história! Siga os passos abaixo com carinho para construirmos uma memória inesquecível.</p>
         </div>
 
         <div id="form-content">
             <ul id="progress-bar"></ul>
             
-            <form id="creation-form" novalidate>
-                
-                <!-- Campos para o serviço Web3Forms -->
-                <input type="hidden" name="access_key" value="e3fb0591-8ebf-47f5-8b3a-bf0203dafe91">
-                <input type="hidden" name="subject" value="Novo Pedido de Presente Eterno Recebido!">
-                <input type="hidden" name="from_name" value="Portal de Criação">
-                
-                <!-- Campos para os nossos dados -->
-                <input type="hidden" id="photo-links-storage" name="links_das_fotos">
-                <input type="hidden" id="audio-link-storage" name="link_do_audio">
+            <form id="creation-form" action="https://formcarry.com/s/FHmpsyDiA6I" method="POST" enctype="multipart/form-data">
 
                 <!-- Etapa 1: Boas-vindas e Pacote -->
                 <div class="form-step active" data-step-name="Início">
@@ -180,7 +180,7 @@
                 <div class="form-step" data-step-name="História" data-packages="laco,sinfonia,universo">
                     <div class="form-group">
                         <label for="historia">A História de Vocês</label>
-                        <small>Conte-me um pouco sobre vocês. Como se conheceram? Qual a memória mais engraçada ou emocionante?</small>
+                        <small>Conte-me um pouco sobre vocês. Como se conheceram? Qual a memória mais engraçada ou emocionante? Detalhes, apelidos, piadas internas... tudo isso me ajuda a criar algo verdadeiramente único.</small>
                         <textarea id="historia" name="historia_do_casal" required></textarea>
                     </div>
                 </div>
@@ -198,39 +198,50 @@
                 <div class="form-step" data-step-name="Essência" data-packages="laco,sinfonia,universo">
                     <div class="form-group">
                         <label for="carta">Sua Declaração (A Carta)</label>
-                        <small>Escreva ou cole aqui o texto que será o coração do presente. (Opcional)</small>
+                        <small>Escreva ou cole aqui o texto que será o coração do presente.</small>
                         <textarea id="carta" name="carta_de_declaracao"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="data-inicio">Data de Início do Relacionamento</label>
-                        <small>Para o contador de tempo. Pode escrever como preferir (ex: 25/12/2020). (Opcional)</small>
+                        <small>Para o contador de tempo. Pode escrever como preferir (ex: 25/12/2020).</small>
                         <input type="text" id="data-inicio" name="data_de_inicio" placeholder="DD/MM/AAAA">
                     </div>
                 </div>
 
-                <!-- Etapa 5: Memórias (Upload de Fotos) -->
+                <!-- Etapa 5: Memórias (Uploads) -->
                 <div class="form-step" data-step-name="Memórias" data-packages="laco,sinfonia,universo">
                     <div class="form-group">
-                        <label for="photo-uploader-input">Galeria de Momentos</label>
-                        <small id="photo-upload-limit">Envie suas fotos favoritas. O widget de upload cuidará de tudo. Pelo menos uma foto é obrigatória.</small>
-                        <div id="photo-uploader-container">
-                             <!-- Este input serve apenas para o Uploadcare se ligar a ele -->
-                            <input type="text" role="uploadcare-uploader" id="photo-uploader-input" data-required="true" />
+                        <label>Galeria de Momentos</label>
+                        <small>Selecione as fotos que marcaram a história de vocês. Máximo de 5 para 'Laço de Amor' e 10 para os demais.</small>
+                        <div class="file-upload-wrapper">
+                            <div class="file-upload-btn">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <div>Clique para escolher as fotos</div>
+                            </div>
+                            <input type="file" id="fotos" name="upload_fotos" multiple accept="image/*" required>
                         </div>
+                        <div class="file-upload-status" id="fotos-upload-status"></div>
                     </div>
                 </div>
                 
-                <!-- Etapa 6: Itens da Sinfonia (Upload/Gravação de Áudio) -->
+                <!-- Etapa 6: Itens da Sinfonia -->
                 <div class="form-step" data-step-name="Sinfonia" data-packages="sinfonia,universo">
-                     <div class="form-group">
-                        <label>Sua Declaração em Áudio</label>
-                        <small>Você pode enviar um arquivo de áudio ou gravar sua voz na hora usando o botão abaixo. (Opcional)</small>
-                        <input type="text" role="uploadcare-uploader" id="audio-uploader-input"/>
+                    <div class="form-group">
+                        <label>Sua Voz Declarando Seu Amor</label>
+                        <small>Grave um áudio e selecione aqui.</small>
+                        <div class="file-upload-wrapper">
+                            <div class="file-upload-btn">
+                                <i class="fas fa-microphone-alt"></i>
+                                <div>Clique para escolher o áudio</div>
+                            </div>
+                            <input type="file" id="audio" name="upload_audio" accept="audio/*">
+                        </div>
+                        <div class="file-upload-status" id="audio-upload-status"></div>
                     </div>
                     <div class="form-group">
                         <label>10 Mensagens Secretas para os Corações</label>
-                        <small>Escreva frases curtas e carinhosas. (Opcional)</small>
-                        <textarea id="mensagens_secretas" name="mensagens_secretas_para_coracoes" rows="5" placeholder="Escreva uma mensagem por linha..."></textarea>
+                        <small>Escreva frases curtas e carinhosas.</small>
+                        <textarea name="mensagens_secretas_para_coracoes" rows="5" placeholder="Escreva uma mensagem por linha..."></textarea>
                     </div>
                 </div>
                 
@@ -238,15 +249,15 @@
                 <div class="form-step" data-step-name="Universo" data-packages="universo">
                     <div class="form-group">
                         <label>Playlist (Até 5 músicas)</label>
-                        <small>Cole o link do Spotify ou YouTube de cada música, um por linha. (Opcional)</small>
+                        <small>Cole o link do Spotify ou YouTube de cada música, um por linha.</small>
                          <textarea name="playlist_links" rows="5" placeholder="Link da Música 1&#10;Link da Música 2..."></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Mensagem Secreta com Senha (Opcional)</label>
+                        <label>Mensagem Secreta com Senha</label>
                         <input type="text" name="senha_da_mensagem_secreta" placeholder="Crie uma senha (Ex: apelido, data especial)"><textarea name="texto_da_mensagem_secreta" placeholder="Escreva aqui a mensagem super secreta" style="margin-top: 0.5rem;"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Mapa Astral do Casal (Opcional)</label>
+                        <label>Mapa Astral do Casal</label>
                         <small>Precisamos dos signos para criar a mágica.</small>
                         <input type="text" name="signo_1" placeholder="Signo da Pessoa 1 (Ex: Áries)" style="margin-bottom: 0.5rem;"><input type="text" name="signo_2" placeholder="Signo da Pessoa 2 (Ex: Touro)" style="margin-bottom: 0.5rem;">
                     </div>
@@ -259,24 +270,23 @@
                 <!-- Etapa Final: Confirmação -->
                 <div class="form-step" data-step-name="Enviar">
                     <div id="confirmation-step" style="text-align: center;">
-                        <i class="fas fa-check-circle" style="font-size: 3rem; margin-bottom: 1rem; color: var(--cor-dourado-premium);"></i>
-                        <h2>Enviado com Sucesso!</h2>
-                        <p>O seu pedido foi recebido e a magia já começou. Entraremos em contacto em breve. Obrigado!</p>
+                        <i class="fas fa-paper-plane" style="font-size: 3rem; margin-bottom: 1rem; color: var(--cor-primaria);"></i>
+                        <h2>Tudo Pronto para Enviar!</h2>
+                        <p>Suas informações e arquivos estão prontos. Clique no botão abaixo para finalizar e enviar seu pedido para mim.</p>
                     </div>
                 </div>
 
                 <div class="btn-group">
                     <button type="button" class="btn btn-secondary" id="prev-btn">Voltar</button>
                     <button type="button" class="btn btn-primary" id="next-btn">Avançar</button>
-                    <button type="submit" class="btn btn-primary hidden" id="submit-btn">
-                        <i class="fas fa-rocket"></i> Enviar Pedido
-                    </button>
+                    <button type="submit" class="btn btn-primary hidden" id="submit-btn">Enviar Pedido</button>
                 </div>
             </form>
         </div>
+        <div id="final-message" class="hidden"></div>
     </div>
     
-    <!-- Modal de Alerta Genérico -->
+    <!-- Modal de Alerta -->
     <div id="alert-modal" class="modal-overlay">
         <div class="modal-content">
             <h2 id="modal-title">Atenção</h2>
@@ -286,14 +296,10 @@
     </div>
     
     <script>
-    // --- CONFIGURAÇÕES GLOBAIS ---
-    const UPLOADCARE_PUBLIC_KEY = '3a3c239ad5001cd0441f'; 
-    UPLOADCARE_LOCALE = 'pt';
-    UPLOADCARE_TABS = 'file camera url gdrive dropbox';
-
     document.addEventListener('DOMContentLoaded', () => {
-        // --- ELEMENTOS DO DOM ---
+        
         const form = document.getElementById('creation-form');
+        const formContent = document.getElementById('form-content');
         const finalMessageContainer = document.getElementById('final-message');
         const formSteps = Array.from(document.querySelectorAll('.form-step'));
         const nextBtn = document.getElementById('next-btn');
@@ -301,99 +307,37 @@
         const submitBtn = document.getElementById('submit-btn');
         const progressBar = document.getElementById('progress-bar');
         const packageOptions = document.querySelectorAll('input[name="pacote_escolhido"]');
-        const photoLinksStorage = document.getElementById('photo-links-storage');
-        const audioLinkStorage = document.getElementById('audio-link-storage');
-        const photoUploadLimitSmall = document.getElementById('photo-upload-limit');
         
-        let photoWidget;
         let currentStepIndex = 0;
         let visibleSteps = [];
 
-        // --- LÓGICA DE UPLOAD (UPLOADCARE) ---
-        const audioWidget = uploadcare.Widget('#audio-uploader-input', { 
-            publicKey: UPLOADCARE_PUBLIC_KEY, 
-            multiple: false,
-            audioOnly: true,
-        });
-        audioWidget.onUploadComplete(fileInfo => { 
-            audioLinkStorage.value = fileInfo.cdnUrl || ''; 
-        });
-        
-        function setupPhotoWidget(limit) {
-            const container = document.getElementById('photo-uploader-container');
-            container.innerHTML = `<input type="text" role="uploadcare-uploader" id="photo-uploader-input" data-required="true" />`;
-            
-            photoWidget = uploadcare.Widget('#photo-uploader-input', { 
-                publicKey: UPLOADCARE_PUBLIC_KEY, 
-                multiple: true, 
-                imagesOnly: true,
-                multipleMax: limit
-            });
-
-            // VALIDAÇÃO EM TEMPO REAL PARA O WIDGET DE UPLOAD
-            photoWidget.onChange(group => {
-                if (!group) {
-                    photoLinksStorage.value = '';
-                } else {
-                    // Atualiza o valor assim que os ficheiros são selecionados
-                    const filePromises = group.files().map(file => file.promise());
-                    Promise.all(filePromises).then(fileInfos => {
-                        const urls = fileInfos.map(info => info.cdnUrl);
-                        photoLinksStorage.value = urls.join('\n');
-                        validateCurrentStep();
-                    });
-                }
-                validateCurrentStep();
-            });
-        }
-        
-        function updatePhotoLimit() {
-            const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked');
-            let limit = 10;
-            let packageText = "este pacote";
-            if (selectedPackage) {
-                if (selectedPackage.id === 'laco') { limit = 5; packageText = "o pacote Laço de Amor";}
-                else { limit = 10; packageText = "os pacotes Sinfonia ou Universo";}
-            }
-            photoUploadLimitSmall.textContent = `Envie as suas fotos favoritas (limite de ${limit} para ${packageText}). Pelo menos uma foto é obrigatória.`;
-            setupPhotoWidget(limit);
-        };
-        
-        // --- LÓGICA DO FORMULÁRIO MULTI-ETAPAS ---
         function filterVisibleSteps() {
             const selectedPackageRadio = document.querySelector('input[name="pacote_escolhido"]:checked');
+            if (!selectedPackageRadio) {
+                visibleSteps = [formSteps[0]];
+                return;
+            }
+            const selectedPackageValue = selectedPackageRadio.id; 
+            
             visibleSteps = [formSteps[0]];
-            if (selectedPackageRadio) {
-                const selectedPackageValue = selectedPackageRadio.id;
-                formSteps.forEach(step => {
-                    const packages = step.dataset.packages;
-                    const isFinalStep = step.dataset.stepName === 'Enviar';
-                    if (packages && packages.split(',').includes(selectedPackageValue) && !isFinalStep) {
-                        visibleSteps.push(step);
-                    }
-                });
-                visibleSteps.push(formSteps.find(step => step.dataset.stepName === 'Enviar'));
-            }
+            formSteps.forEach(step => {
+                const packages = step.dataset.packages;
+                const isFinalStep = step.dataset.stepName === 'Enviar';
+                if (packages && packages.split(',').includes(selectedPackageValue) && !isFinalStep) {
+                    visibleSteps.push(step);
+                }
+            });
+            visibleSteps.push(formSteps.find(step => step.dataset.stepName === 'Enviar'));
             updateProgressBar();
-            if (visibleSteps.some(step => step.dataset.stepName === 'Memórias')) {
-                updatePhotoLimit();
-            }
         }
 
         function updateProgressBar() {
             progressBar.innerHTML = '';
-            visibleSteps.forEach((step, index) => {
+            visibleSteps.forEach(step => {
                 const stepName = step.dataset.stepName;
                 const li = document.createElement('li');
                 li.className = 'step';
-                li.dataset.stepIndex = index;
                 li.innerHTML = `<span class="dot"></span> ${stepName}`;
-                li.addEventListener('click', () => {
-                    if (index < currentStepIndex && !step.classList.contains('active')) {
-                        currentStepIndex = index;
-                        showStep(currentStepIndex);
-                    }
-                });
                 progressBar.appendChild(li);
             });
             const progressLine = document.createElement('div');
@@ -405,169 +349,175 @@
         function updateProgressClasses() {
             const progressSteps = progressBar.querySelectorAll('.step');
             const progressLine = document.getElementById('progress-line');
-            if (!progressLine) return;
             progressSteps.forEach((step, index) => {
                 step.classList.remove('active', 'completed');
-                if (index < currentStepIndex) {
-                    step.classList.add('completed');
-                    step.style.cursor = 'pointer';
-                } else if (index === currentStepIndex) {
-                    step.classList.add('active');
-                    step.style.cursor = 'default';
-                } else {
-                     step.style.cursor = 'default';
-                }
+                if (index < currentStepIndex) step.classList.add('completed');
+                else if (index === currentStepIndex) step.classList.add('active');
             });
             const completedDots = progressBar.querySelectorAll('.completed');
             const widthPercentage = progressSteps.length > 1 ? (completedDots.length / (progressSteps.length - 1)) * 100 : 0;
-            progressLine.style.width = `${widthPercentage}%`;
+            if(progressLine) progressLine.style.width = `${widthPercentage}%`;
         }
-        
+
         function showStep(stepIndex) {
             formSteps.forEach(step => step.classList.remove('active'));
-            if (visibleSteps[stepIndex]) { visibleSteps[stepIndex].classList.add('active'); }
+            if(visibleSteps[stepIndex]) {
+                 visibleSteps[stepIndex].classList.add('active');
+            }
             updateButtonVisibility();
             updateProgressClasses();
-            validateCurrentStep(); 
         }
 
         function updateButtonVisibility() {
-            const lastInputStepIndex = visibleSteps.length - 2;
             prevBtn.classList.toggle('hidden', currentStepIndex === 0);
-            nextBtn.classList.toggle('hidden', currentStepIndex >= lastInputStepIndex);
-            submitBtn.classList.toggle('hidden', currentStepIndex !== lastInputStepIndex);
+            nextBtn.classList.toggle('hidden', currentStepIndex === visibleSteps.length - 1);
+            submitBtn.classList.toggle('hidden', currentStepIndex !== visibleSteps.length - 1);
         }
 
         function validateCurrentStep() {
             const currentStep = visibleSteps[currentStepIndex];
-            if (!currentStep || currentStep.dataset.stepName === 'Enviar') {
-                 if(nextBtn) nextBtn.disabled = true;
-                 if(submitBtn) submitBtn.disabled = true;
-                 return;
-            };
+            if (!currentStep) return false;
+
+            const inputs = currentStep.querySelectorAll('[required]');
+            let isValid = true;
             
-            let isStepValid = true;
-
-            currentStep.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
-
-            // Validação para campos de texto e radio
-            currentStep.querySelectorAll('input[required], textarea[required]').forEach(input => {
-                let isInputInvalid = false;
-                if (input.type === 'radio' && !document.querySelector(`input[name="${input.name}"]:checked`)) {
-                    isInputInvalid = true;
-                    input.closest('.package-selection').querySelectorAll('.package-label').forEach(l => l.classList.add('invalid'));
-                } else if (input.type !== 'radio' && !input.value.trim()) {
-                    isInputInvalid = true;
-                    input.classList.add('invalid');
+            for(const input of inputs) {
+                let inputValid = true;
+                const group = input.closest('.form-group');
+                const label = group ? group.querySelector('label') : null;
+                
+                if (input.type === 'radio') {
+                    if (!document.querySelector(`input[name="${input.name}"]:checked`)) {
+                        inputValid = false;
+                    }
+                } else if (input.type === 'file') {
+                    if (input.files.length === 0) {
+                        inputValid = false;
+                    }
+                } else if (!input.value.trim()) {
+                    inputValid = false;
                 }
-
-                if (isInputInvalid) {
-                    isStepValid = false;
-                } else if (input.type === 'radio') {
-                    input.closest('.package-selection').querySelectorAll('.package-label').forEach(l => l.classList.remove('invalid'));
+                
+                if (!inputValid) {
+                    isValid = false;
+                    if(label) label.style.color = '#FF4D4D';
                 } else {
-                    input.classList.remove('invalid');
-                }
-            });
-            
-            // Validação específica para o upload de fotos
-            if (currentStep.dataset.stepName === 'Memórias') {
-                const photoWidgetElement = document.querySelector('#photo-uploader-container .uploadcare--widget');
-                if (!photoLinksStorage.value) {
-                    isStepValid = false;
-                    if(photoWidgetElement) photoWidgetElement.classList.add('invalid');
-                } else {
-                    if(photoWidgetElement) photoWidgetElement.classList.remove('invalid');
+                    if(label) label.style.color = '';
                 }
             }
-            
-            const isLastInputStep = currentStepIndex === visibleSteps.length - 2;
-            if (isLastInputStep) {
-                submitBtn.disabled = !isStepValid;
-            } else {
-                nextBtn.disabled = !isStepValid;
-            }
+            return isValid;
         }
 
-        // --- SUBMISSÃO E MODAIS ---
-        async function handleFormSubmit(event) {
-            event.preventDefault();
-            
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Enviando...';
-
-            const formData = new FormData(form);
-            const object = {};
-            formData.forEach((value, key) => object[key] = value);
-            const json = JSON.stringify(object);
-
-            try {
-                const response = await fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-                    body: json
-                });
-                const result = await response.json();
-                if (result.success) {
-                    currentStepIndex++;
-                    showStep(currentStepIndex); // Avança para a tela final de agradecimento
-                } else {
-                    throw new Error(result.message || "Ocorreu um erro desconhecido ao contactar o servidor de e-mails.");
-                }
-            } catch (error) {
-                showAlert("Erro no Envio", `Falha no envio: ${error.message}. Por favor, tente novamente mais tarde.`);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-rocket"></i> Enviar Pedido';
-            }
-        }
-        
-        function showAlert(title, message) {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerText = message;
-            document.getElementById('alert-modal').classList.add('visible');
-        }
-
-        // --- EVENT LISTENERS ---
-        packageOptions.forEach(option => { 
-            option.addEventListener('change', () => { 
-                if (currentStepIndex > 0) { currentStepIndex = 0; }
+        packageOptions.forEach(option => {
+            option.addEventListener('change', () => {
+                currentStepIndex = 0;
                 filterVisibleSteps();
-                showStep(currentStepIndex);
-            }); 
+                showStep(currentStepIndex); 
+            });
         });
 
         nextBtn.addEventListener('click', () => {
-            if (!nextBtn.disabled) {
+            if (validateCurrentStep()) {
                 currentStepIndex++;
                 showStep(currentStepIndex);
+            } else {
+                showAlert('Campos Obrigatórios', 'Por favor, preencha todos os campos destacados em vermelho.');
             }
         });
-        
+
         prevBtn.addEventListener('click', () => {
             currentStepIndex--;
             showStep(currentStepIndex);
         });
         
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const data = new FormData(form);
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Enviando... <i class="fas fa-spinner fa-spin"></i>';
+
+            try {
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: data,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+
+                if (result.code === 200) {
+                    showFinalMessage(true);
+                } else {
+                    console.error("Erro no envio:", result);
+                    showFinalMessage(false, result.message);
+                }
+
+            } catch (error) {
+                console.error('Erro de rede ou JS:', error);
+                showFinalMessage(false, 'Ocorreu um erro de conexão. Tente novamente.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Enviar Pedido';
+            }
+        }
+
         form.addEventListener("submit", handleFormSubmit);
 
-        // Adiciona listeners para validar em tempo real
-        form.addEventListener('input', () => {
-            // A validação em tempo real para todos os campos de texto/textarea
-            validateCurrentStep();
-        });
-        form.querySelectorAll('input[type="radio"], select').forEach(input => {
-            input.addEventListener('change', validateCurrentStep);
-        });
+        function showFinalMessage(success, errorMsg = '') {
+            formContent.classList.add('hidden');
+            finalMessageContainer.classList.remove('hidden');
+            if(success) {
+                finalMessageContainer.classList.add('success');
+                finalMessageContainer.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    <h2>Enviado com Sucesso!</h2>
+                    <p>Suas informações foram recebidas. Em breve, entrarei em contato para confirmar e iniciar a criação do seu Presente Eterno. Obrigado!</p>
+                `;
+            } else {
+                finalMessageContainer.classList.add('error');
+                finalMessageContainer.innerHTML = `
+                    <i class="fas fa-times-circle"></i>
+                    <h2>Ocorreu um Erro</h2>
+                    <p>Não foi possível enviar suas informações. Por favor, tente novamente ou entre em contato diretamente. Detalhe: ${errorMsg}</p>
+                `;
+            }
+        }
+        
+        function showAlert(title, message) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').textContent = message;
+            document.getElementById('alert-modal').classList.add('visible');
+        }
 
-        const alertModal = document.getElementById('alert-modal');
-        alertModal.addEventListener('click', e => { 
-            if (e.target === alertModal || e.target.id === 'modal-close') {
-                alertModal.classList.remove('visible');
+        const modalOverlay = document.getElementById('alert-modal');
+        const modalCloseBtn = document.getElementById('modal-close');
+        
+        modalCloseBtn.addEventListener('click', () => modalOverlay.classList.remove('visible'));
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('visible');
             }
         });
+
+        const setupFileInput = (inputId, statusId) => {
+             document.getElementById(inputId).addEventListener('change', (e) => {
+                 const statusDiv = document.getElementById(statusId);
+                 const files = e.target.files;
+                 if (files.length > 0) {
+                     statusDiv.textContent = `${files.length} arquivo(s) selecionado(s): ${Array.from(files).map(f => f.name).join(', ')}`;
+                 } else {
+                     statusDiv.textContent = '';
+                 }
+             });
+        };
         
-        // --- INICIALIZAÇÃO ---
+        setupFileInput('fotos', 'fotos-upload-status');
+        setupFileInput('audio', 'audio-upload-status');
+        
         filterVisibleSteps();
         showStep(currentStepIndex);
     });
