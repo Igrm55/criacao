@@ -275,7 +275,13 @@
         <div id="form-content">
             <ul id="progress-bar"></ul>
             
-            <form id="creation-form" data-action="https://formcarry.com/s/FHmpsyDiA6I" method="POST">
+            <!-- [ALTERAÇÃO] Troca do endpoint do formulário para um mais robusto -->
+            <form id="creation-form" data-action="https://formspree.io/f/mknllvvy" method="POST">
+
+                <!-- [NOVO] Campos ocultos para armazenar os links dos arquivos -->
+                <input type="hidden" id="links_fotos_hidden" name="links_das_fotos">
+                <input type="hidden" id="link_audio_hidden" name="link_do_audio">
+                <input type="hidden" id="erros_upload_hidden" name="erros_de_upload">
 
                 <!-- Etapa 1: Boas-vindas e Pacote -->
                 <div class="form-step active" data-step-name="Início">
@@ -779,40 +785,6 @@
             playerSeekBar.style.setProperty('--seek-before-width', `${progressPercent}%`);
         });
 
-        /**
-         * [NOVO] Faz upload de um arquivo de áudio para o serviço 0x0.st.
-         * @param {File} file O arquivo de áudio para fazer upload.
-         * @returns {Promise<object>} Uma promessa que resolve com o resultado do upload.
-         */
-        function uploadAudio(file) {
-            const formData = new FormData();
-            formData.append('file', file);
-            console.log(`Iniciando upload do áudio: ${file.name}`);
-
-            return fetch('https://0x0.st', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`O servidor respondeu com o status ${response.status}`);
-                }
-                return response.text();
-            })
-            .then(url => {
-                const trimmedUrl = url.trim();
-                if (trimmedUrl.startsWith('http')) {
-                    console.log(`Áudio enviado com sucesso: ${trimmedUrl}`);
-                    return { status: 'fulfilled', value: { type: 'audio', url: trimmedUrl } };
-                }
-                throw new Error(`Serviço de upload retornou uma resposta inválida: ${trimmedUrl}`);
-            })
-            .catch(error => {
-                console.error('Falha no upload do áudio para 0x0.st:', error);
-                return { status: 'rejected', reason: `Falha no upload do áudio: ${error.message}` };
-            });
-        }
-
         async function handleFormSubmit(event) {
             event.preventDefault();
             
@@ -824,7 +796,6 @@
             const totalTasks = imageFilesToUpload.length + (audioFileToSubmit ? 1 : 0);
             
             if (totalTasks === 0) {
-                 // Embora a validação de etapa já verifique isso, é uma boa segurança.
                 showAlert("Nenhum Arquivo", "Por favor, adicione pelo menos uma foto para enviar.");
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Enviar Pedido';
@@ -835,15 +806,15 @@
             let tasksCompleted = 0;
             const updateProgress = () => {
                 tasksCompleted++;
-                const progress = (tasksCompleted / totalTasks) * 100;
-                uploadProgressText.textContent = `Processando arquivos... (${tasksCompleted}/${totalTasks})`;
+                const progress = Math.round((tasksCompleted / totalTasks) * 100);
+                uploadProgressText.textContent = `Processando arquivos... ${progress}%`;
                 uploadProgressBar.style.width = `${progress}%`;
             };
 
-            uploadProgressText.textContent = `Processando arquivos... (0/${totalTasks})`;
+            uploadProgressText.textContent = `Processando arquivos... 0%`;
             uploadProgressBar.style.width = '0%';
             
-            const allPromises = [];
+            const allFileUploadPromises = [];
 
             // Adiciona as promessas de upload de imagem
             imageFilesToUpload.forEach(file => {
@@ -855,7 +826,7 @@
                     .then(res => {
                         updateProgress();
                         if(res.ok) return res.json();
-                        throw new Error(`Falha no upload da imagem ${file.name}`);
+                        return res.text().then(text => { throw new Error(`[imgbb] ${res.status}: ${text}`) });
                     })
                     .then(result => {
                         if (result.success) {
@@ -867,62 +838,76 @@
                         console.error("Erro de upload de imagem:", error);
                         return { status: 'rejected', reason: `Erro de rede no upload de ${file.name}` };
                     });
-                allPromises.push(promise);
+                allFileUploadPromises.push(promise);
             });
 
             // Adiciona a promessa de upload de áudio, se existir
             if (audioFileToSubmit) {
-                const audioPromise = uploadAudio(audioFileToSubmit)
-                    .then(result => {
+                const audioFormData = new FormData();
+                audioFormData.append('file', audioFileToSubmit);
+
+                const audioPromise = fetch('https://0x0.st', { method: 'POST', body: audioFormData })
+                    .then(response => {
                         updateProgress();
-                        return result;
+                        if (!response.ok) {
+                             return response.text().then(text => { throw new Error(`[0x0.st] ${response.status}: ${text}`) });
+                        }
+                        return response.text();
+                    })
+                    .then(url => {
+                        const trimmedUrl = url.trim();
+                        if (trimmedUrl.startsWith('http')) {
+                            return { status: 'fulfilled', value: { type: 'audio', url: trimmedUrl } };
+                        }
+                        throw new Error(`Resposta inválida do serviço de upload de áudio.`);
+                    })
+                    .catch(error => {
+                        console.error('Falha no upload do áudio:', error);
+                        return { status: 'rejected', reason: `Falha no upload do áudio: ${error.message}` };
                     });
-                allPromises.push(audioPromise);
+                allFileUploadPromises.push(audioPromise);
             }
 
             try {
-                const uploadResults = await Promise.all(allPromises);
-
+                // [LÓGICA CENTRAL] Aguarda TODOS os uploads de arquivos terminarem
+                const uploadResults = await Promise.all(allFileUploadPromises);
+                
                 const successfulUploads = uploadResults.filter(r => r && r.status === 'fulfilled').map(r => r.value);
                 const failedUploads = uploadResults.filter(r => r && r.status === 'rejected');
 
-                if (successfulUploads.length === 0) {
-                    throw new Error("Todos os uploads de arquivo falharam. Verifique sua conexão com a internet.");
-                }
-
-                const finalFormData = new FormData(form);
-                const photoURLs = successfulUploads.filter(r => r?.type === 'image').map(r => r.url).join('\n');
-                const audioURL = successfulUploads.find(r => r?.type === 'audio')?.url || 'Nenhum áudio enviado ou falha no upload.';
-                
-                finalFormData.append('links_fotos', photoURLs);
-                finalFormData.append('link_audio', audioURL);
-
                 if (failedUploads.length > 0) {
-                    const errorReasons = failedUploads.map(f => f.reason).join('; ');
-                    finalFormData.append('erros_de_upload', `${failedUploads.length} arquivo(s) falharam: ${errorReasons}`);
+                     const errorReasons = failedUploads.map(f => f.reason).join('; ');
+                     throw new Error(`Não foi possível fazer o upload de ${failedUploads.length} arquivo(s). Detalhes: ${errorReasons}`);
                 }
+
+                // [LÓGICA CENTRAL] Se todos os uploads deram certo, preenche os campos ocultos
+                const photoURLs = successfulUploads.filter(r => r?.type === 'image').map(r => r.url).join('\n');
+                const audioURL = successfulUploads.find(r => r?.type === 'audio')?.url || 'Nenhum áudio enviado.';
+
+                document.getElementById('links_fotos_hidden').value = photoURLs;
+                document.getElementById('link_audio_hidden').value = audioURL;
                 
-                console.log("Enviando dados finais para o Formcarry...");
-                const response = await fetch(form.dataset.action, {
+                // [LÓGICA CENTRAL] Agora sim, envia o formulário SÓ COM TEXTO, que é leve e rápido
+                console.log("Todos os arquivos enviados. Enviando formulário final...");
+                uploadProgressText.textContent = "Finalizando...";
+                const finalFormData = new FormData(form);
+                
+                const response = await fetch(form.action, {
                     method: form.method,
                     body: finalFormData,
                     headers: { 'Accept': 'application/json' }
                 });
                 
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`O servidor de formulário respondeu com erro: ${response.status} - ${errorText}`);
-                }
-                
-                const result = await response.json();
-                if (result.code === 200) {
-                    showFinalMessage(true, failedUploads.length);
+                if (response.ok) {
+                    showFinalMessage(true);
                 } else {
-                    showFinalMessage(false, 0, result.message || 'Ocorreu um erro desconhecido no servidor de formulário.');
+                    const errorData = await response.json();
+                    const serverError = errorData.errors ? errorData.errors.map(e => e.message).join(', ') : 'Erro desconhecido no servidor.';
+                    throw new Error(serverError);
                 }
 
             } catch (error) {
-                console.error("Erro final no envio do formulário:", error);
+                console.error("Erro final no processo de envio:", error);
                 showFinalMessage(false, 0, error.message);
             } finally {
                 submitBtn.disabled = false;
