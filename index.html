@@ -632,14 +632,38 @@
 
         async function handleFormSubmit(event) {
             event.preventDefault();
-            const formData = new FormData(form);
-            formData.append('total_de_fotos', photosBase64.length);
-            formData.append('tem_audio', audioBase64Textarea.value ? 'Sim' : 'Não');
             
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Enviando... <i class="fas fa-spinner fa-spin"></i>';
 
+            // Manually create FormData to have better control over large data fields
+            const formData = new FormData(form); // Start with existing form data
+
+            // The textareas for base64 are useful for JS, but we will submit the data
+            // in a different format to avoid issues with single large text fields.
+            // So we remove the original textareas from the submission data.
+            formData.delete('fotos_base64');
+            formData.delete('audio_base64');
+
+            // Append each photo's base64 string as a separate field.
+            // This is more robust than a single giant JSON string.
+            // The success of sending large base64 data depends on the limits of the form service (web3forms).
+            photosBase64.forEach((base64, index) => {
+                formData.append(`foto_${index + 1}`, base64);
+            });
+
+            // Append the audio data in its own field
+            if (audioBase64Textarea.value) {
+                formData.append('audio_declaracao', audioBase64Textarea.value);
+            }
+            
+            // Append helper fields
+            formData.append('total_de_fotos', photosBase64.length);
+            formData.append('tem_audio', audioBase64Textarea.value ? 'Sim' : 'Não');
+
             try {
+                // Note: The free tier of some services may not support large data submissions.
+                // If errors persist, it's likely a limitation of the submission service.
                 const response = await fetch('https://api.web3forms.com/submit', {
                     method: 'POST',
                     body: formData,
@@ -650,13 +674,18 @@
                 if (result.success) {
                     showFinalMessage(true);
                 } else {
-                    console.error("Erro no envio:", result);
-                    showFinalMessage(false, result.message);
+                    console.error("Erro no envio do formulário:", result);
+                    // Provide a more specific error message if possible
+                    let errorMessage = result.message || 'Ocorreu um erro desconhecido.';
+                    if (JSON.stringify(result).toLowerCase().includes('limit')) {
+                        errorMessage = 'O formulário contém dados muito grandes (fotos ou áudio) e excedeu o limite do serviço de envio. Tente com menos arquivos ou arquivos menores.';
+                    }
+                    showFinalMessage(false, errorMessage);
                 }
 
             } catch (error) {
                 console.error('Erro de rede ou JS:', error);
-                showFinalMessage(false, 'Ocorreu um erro de conexão. Tente novamente.');
+                showFinalMessage(false, 'Ocorreu um erro de conexão. Verifique sua internet e tente novamente.');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Enviar Pedido';
