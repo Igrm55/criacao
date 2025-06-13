@@ -132,64 +132,81 @@
         #record-status .recording-dot { display: inline-block; width: 10px; height: 10px; background-color: #ff4d4d; border-radius: 50%; animation: blink 1.5s infinite; margin-right: 8px; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
         
-        /* --- ESTILOS DO NOVO PLAYER DE ÁUDIO --- */
+        /* --- NOVOS ESTILOS DO PLAYER DE ÁUDIO --- */
         #custom-audio-player {
             display: flex;
             align-items: center;
             gap: 1rem;
             margin-top: 1rem;
-            background-color: rgba(0,0,0,0.2);
+            background: linear-gradient(to right, rgba(30, 41, 59, 0.5), rgba(51, 65, 85, 0.5));
             padding: 0.75rem;
             border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
         }
         #player-play-btn {
             background: var(--gradiente-principal);
             border: none;
             color: white;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1rem;
+            font-size: 1.1rem;
             flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+        #player-play-btn:hover {
+            transform: scale(1.1);
         }
         #player-seek-bar {
+            --seek-before-width: 0%;
             flex-grow: 1;
             -webkit-appearance: none;
             appearance: none;
             width: 100%;
-            height: 5px;
+            height: 6px;
             background: var(--cor-cinza-claro);
             outline: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
+            position: relative;
+            background: linear-gradient(to right, var(--cor-primaria) 0%, var(--cor-secundaria) var(--seek-before-width), var(--cor-cinza-claro) var(--seek-before-width), var(--cor-cinza-claro) 100%);
         }
         #player-seek-bar::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 15px;
-            height: 15px;
-            background: var(--cor-primaria);
+            width: 18px;
+            height: 18px;
+            background: var(--cor-branco-puro);
             border-radius: 50%;
             cursor: pointer;
+            border: 3px solid var(--cor-secundaria);
+            transition: background-color 0.2s;
         }
         #player-seek-bar::-moz-range-thumb {
             width: 15px;
             height: 15px;
-            background: var(--cor-primaria);
+            background: var(--cor-branco-puro);
             border-radius: 50%;
             cursor: pointer;
+            border: 3px solid var(--cor-secundaria);
         }
+        #player-seek-bar:hover::-webkit-slider-thumb {
+            background: #f0f0f0;
+        }
+
         .player-time {
             font-size: 0.9rem;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--cor-branco-suave);
-            min-width: 40px;
+            min-width: 45px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
         }
-        audio#audio-playback-element { display: none; } /* Esconde o player original */
+        audio#audio-playback-element { display: none; }
 
 
         /* --- ESTILOS DA GALERIA DE IMAGENS --- */
@@ -236,11 +253,12 @@
             font-weight: bold;
             font-size: 14px;
             line-height: 1;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, transform 0.2s;
             z-index: 2;
         }
         .remove-image-btn:hover {
             background-color: var(--cor-primaria);
+            transform: scale(1.1);
         }
         #add-photo-btn {
             width: 100%;
@@ -358,10 +376,8 @@
                                 <button type="button" class="btn btn-secondary" id="record-btn"><i class="fas fa-microphone-alt"></i> Gravar</button>
                                 <button type="button" class="btn btn-primary hidden" id="stop-record-btn"><i class="fas fa-stop-circle"></i> Parar</button>
                             </div>
-                            <!-- Player de Áudio Original (escondido) -->
                             <audio id="audio-playback-element"></audio>
 
-                            <!-- Novo Player de Áudio Customizado -->
                             <div id="custom-audio-player" class="hidden">
                                 <button type="button" id="player-play-btn" class="btn"><i class="fas fa-play"></i></button>
                                 <span id="player-current-time" class="player-time">0:00</span>
@@ -462,14 +478,12 @@
         const uploadProgressText = document.getElementById('upload-progress-text');
         const uploadProgressBar = document.getElementById('upload-progress-bar');
 
-        // --- Variáveis da Galeria de Imagens ---
         const addPhotoBtn = document.getElementById('add-photo-btn');
         const fotosInput = document.getElementById('fotos-input');
         const imagePreviewContainer = document.getElementById('image-preview-container');
         const photoValidationInput = document.getElementById('photo-validation-input');
         let selectedImageFiles = [];
 
-        // --- Variáveis de Áudio ---
         const recordBtn = document.getElementById('record-btn');
         const stopRecordBtn = document.getElementById('stop-record-btn');
         const recordStatus = document.getElementById('record-status');
@@ -612,7 +626,6 @@
             showStep(currentStepIndex);
         });
 
-        // --- LÓGICA DA GALERIA DE IMAGENS (COM SELEÇÃO MÚLTIPLA) ---
         addPhotoBtn.addEventListener('click', () => fotosInput.click());
 
         fotosInput.addEventListener('change', (event) => {
@@ -632,7 +645,6 @@
                 showAlert('Limite Excedido', `Você pode adicionar mais ${availableSlots} foto(s). Você tentou adicionar ${files.length}.`);
             }
             
-            // Adiciona apenas os arquivos que cabem no limite
             Array.from(files).slice(0, availableSlots).forEach(file => {
                 selectedImageFiles.push(file);
             });
@@ -668,7 +680,6 @@
             photoValidationInput.value = selectedImageFiles.length > 0 ? 'valid' : '';
         }
         
-        // --- LÓGICA DO PLAYER E GRAVADOR DE ÁUDIO ---
         function setAudioSource(file, sourceName) {
             if (!file) {
                 audioFileToSubmit = null;
@@ -729,7 +740,6 @@
             }
         });
         
-        // Funções do player customizado
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
@@ -747,6 +757,8 @@
         });
 
         audioPlaybackElement.addEventListener('timeupdate', () => {
+            const progressPercent = (audioPlaybackElement.currentTime / audioPlaybackElement.duration) * 100;
+            playerSeekBar.style.setProperty('--seek-before-width', `${progressPercent}%`);
             playerSeekBar.value = audioPlaybackElement.currentTime;
             playerCurrentTime.textContent = formatTime(audioPlaybackElement.currentTime);
         });
@@ -759,13 +771,16 @@
         audioPlaybackElement.addEventListener('ended', () => {
              playerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
              playerSeekBar.value = 0;
+             playerSeekBar.style.setProperty('--seek-before-width', `0%`);
         });
 
         playerSeekBar.addEventListener('input', () => {
-            audioPlaybackElement.currentTime = playerSeekBar.value;
+            const seekTime = playerSeekBar.value;
+            audioPlaybackElement.currentTime = seekTime;
+            const progressPercent = (seekTime / audioPlaybackElement.duration) * 100;
+            playerSeekBar.style.setProperty('--seek-before-width', `${progressPercent}%`);
         });
 
-        // --- LÓGICA DE SUBMISSÃO ROBUSTA ---
         async function handleFormSubmit(event) {
             event.preventDefault();
             
@@ -799,40 +814,52 @@
             
             const uploadPromises = filesToUpload.map(file => {
                 const formData = new FormData();
-                let url;
+                let url, isAudio = false;
+
                 if (file.type.startsWith('image/')) {
                     url = "https://api.imgbb.com/1/upload";
                     formData.append("key", IMGBB_API_KEY);
                     formData.append("image", file);
                 } else if (file.type.startsWith('audio/')) {
-                    url = "https://file.io/?expires=1w";
-                    formData.append('file', file);
+                    // MUDANÇA PARA NOVO SERVIÇO DE UPLOAD DE ÁUDIO (transfer.sh)
+                    url = `https://transfer.sh/${file.name}`;
+                    isAudio = true;
+                } else {
+                    // Pular arquivos desconhecidos
+                    return Promise.resolve({ status: 'rejected', reason: `Tipo de arquivo não suportado: ${file.name}` });
                 }
                 
-                return fetch(url, { method: 'POST', body: formData })
-                    .then(res => res.json())
-                    .then(result => {
+                return fetch(url, { 
+                        method: isAudio ? 'PUT' : 'POST', 
+                        body: isAudio ? file : formData 
+                    })
+                    .then(res => {
                         updateProgress();
+                        if (res.ok) {
+                            return isAudio ? res.text() : res.json();
+                        }
+                        throw new Error(`Falha no upload de ${file.name}`);
+                    })
+                    .then(result => {
+                        if (isAudio) {
+                             return { status: 'fulfilled', value: { type: 'audio', url: result } };
+                        }
                         if(result.success) {
                             return { 
                                 status: 'fulfilled',
-                                value: {
-                                    type: file.type.startsWith('image/') ? 'image' : 'audio', 
-                                    url: result.data?.url || result.link 
-                                }
+                                value: { type: 'image', url: result.data.url }
                             };
                         }
                         return { status: 'rejected', reason: `Falha no upload de ${file.name}` };
                     })
                     .catch(error => {
                         updateProgress();
-                        console.error("Erro de rede no upload:", error);
+                        console.error("Erro de upload:", error);
                         return { status: 'rejected', reason: `Erro de rede no upload de ${file.name}` };
                     });
             });
 
             try {
-                // Usamos Promise.all para esperar todas as promessas, mesmo as rejeitadas.
                 const uploadResults = await Promise.all(uploadPromises);
 
                 const successfulUploads = uploadResults.filter(r => r.status === 'fulfilled').map(r => r.value);
