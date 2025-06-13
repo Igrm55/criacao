@@ -780,6 +780,50 @@
             const progressPercent = (seekTime / audioPlaybackElement.duration) * 100;
             playerSeekBar.style.setProperty('--seek-before-width', `${progressPercent}%`);
         });
+        
+        /**
+         * [CORREÇÃO] Função para fazer upload do áudio para um serviço confiável (GoFile.io)
+         * @param {File} file O arquivo de áudio a ser enviado.
+         * @param {Function} progressCallback A função a ser chamada após a conclusão do upload (sucesso ou falha).
+         * @returns {Promise<Object>} Uma promessa que resolve com o resultado do upload.
+         */
+        async function uploadAudioToGoFile(file, progressCallback) {
+            try {
+                // 1. Obter o melhor servidor disponível do GoFile
+                const serverResponse = await fetch('https://api.gofile.io/getServer');
+                if (!serverResponse.ok) throw new Error('Não foi possível obter um servidor de upload.');
+                const serverData = await serverResponse.json();
+                if (serverData.status !== 'ok') throw new Error('O status do servidor GoFile não é "ok".');
+                const server = serverData.data.server;
+
+                // 2. Enviar o arquivo para o servidor obtido
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const uploadResponse = await fetch(`https://${server}.gofile.io/uploadFile`, {
+                    method: 'POST',
+                    body: formData,
+                });
+                
+                if (!uploadResponse.ok) throw new Error(`Falha no upload para o GoFile: ${file.name}`);
+                const uploadData = await uploadResponse.json();
+                
+                progressCallback(); // Atualiza a barra de progresso
+
+                if (uploadData.status === 'ok') {
+                    // Sucesso: retorna o link da página de download
+                    return { status: 'fulfilled', value: { type: 'audio', url: uploadData.data.downloadPage } };
+                } else {
+                    // Falha no lado do GoFile
+                    return { status: 'rejected', reason: `Erro no GoFile: ${uploadData.status}` };
+                }
+            } catch (error) {
+                console.error("Erro no Upload para GoFile:", error);
+                progressCallback(); // Atualiza a barra de progresso mesmo em caso de erro
+                return { status: 'rejected', reason: error.message || `Erro de rede durante o upload do áudio.` };
+            }
+        }
+
 
         async function handleFormSubmit(event) {
             event.preventDefault();
@@ -812,51 +856,40 @@
                 uploadProgressBar.style.width = `${progress}%`;
             };
             
+            // [CORREÇÃO] Mapeia cada arquivo para sua respectiva promessa de upload
             const uploadPromises = filesToUpload.map(file => {
-                const formData = new FormData();
-                let url, isAudio = false;
-
                 if (file.type.startsWith('image/')) {
-                    url = "https://api.imgbb.com/1/upload";
+                    // Lógica de upload de imagem para ImgBB (mantida)
+                    const formData = new FormData();
                     formData.append("key", IMGBB_API_KEY);
                     formData.append("image", file);
+                    
+                    return fetch("https://api.imgbb.com/1/upload", { method: 'POST', body: formData })
+                        .then(res => {
+                             updateProgress();
+                             if(res.ok) return res.json();
+                             throw new Error(`Falha no upload de ${file.name}`);
+                        })
+                        .then(result => {
+                            if (result.success) {
+                                return { status: 'fulfilled', value: { type: 'image', url: result.data.url } };
+                            }
+                            return { status: 'rejected', reason: `Falha no upload de ${file.name}` };
+                        })
+                        .catch(error => {
+                            updateProgress(); // Garante que o progresso avance mesmo em erro
+                            console.error("Erro de upload de imagem:", error);
+                            return { status: 'rejected', reason: `Erro de rede no upload de ${file.name}` };
+                        });
+
                 } else if (file.type.startsWith('audio/')) {
-                    // MUDANÇA PARA NOVO SERVIÇO DE UPLOAD DE ÁUDIO (transfer.sh)
-                    url = `https://transfer.sh/${file.name}`;
-                    isAudio = true;
+                    // [CORREÇÃO] Usa a nova função para upload de áudio
+                    return uploadAudioToGoFile(file, updateProgress);
                 } else {
-                    // Pular arquivos desconhecidos
+                    // Pula tipos de arquivo não suportados
+                    updateProgress();
                     return Promise.resolve({ status: 'rejected', reason: `Tipo de arquivo não suportado: ${file.name}` });
                 }
-                
-                return fetch(url, { 
-                        method: isAudio ? 'PUT' : 'POST', 
-                        body: isAudio ? file : formData 
-                    })
-                    .then(res => {
-                        updateProgress();
-                        if (res.ok) {
-                            return isAudio ? res.text() : res.json();
-                        }
-                        throw new Error(`Falha no upload de ${file.name}`);
-                    })
-                    .then(result => {
-                        if (isAudio) {
-                             return { status: 'fulfilled', value: { type: 'audio', url: result } };
-                        }
-                        if(result.success) {
-                            return { 
-                                status: 'fulfilled',
-                                value: { type: 'image', url: result.data.url }
-                            };
-                        }
-                        return { status: 'rejected', reason: `Falha no upload de ${file.name}` };
-                    })
-                    .catch(error => {
-                        updateProgress();
-                        console.error("Erro de upload:", error);
-                        return { status: 'rejected', reason: `Erro de rede no upload de ${file.name}` };
-                    });
             });
 
             try {
@@ -908,7 +941,7 @@
             if(success) {
                 let message = `<i class="fas fa-check-circle success"></i><h2>Enviado com Sucesso!</h2><p>Suas informações foram recebidas. Em breve, entrarei em contato. Obrigado!</p>`;
                 if (failedCount > 0) {
-                    message += `<p style="color: var(--cor-dourado-premium); margin-top: 1rem;"><strong>Atenção:</strong> ${failedCount} arquivo(s) não puderam ser enviados por uma falha de conexão. Verifique-os e, se necessário, envie-os separadamente.</p>`;
+                    message += `<p style="color: var(--cor-dourado-premium); margin-top: 1rem;"><strong>Atenção:</strong> ${failedCount} arquivo(s) não puderam ser enviados por uma falha. Verifique-os e, se necessário, envie-os separadamente.</p>`;
                 }
                 finalMessageContainer.innerHTML = message;
             } else {
