@@ -780,17 +780,38 @@
         });
 
         /**
-         * Converte um arquivo para uma string Base64.
-         * @param {File} file O arquivo a ser convertido.
-         * @returns {Promise<string>} Uma promessa que resolve com a string Base64.
+         * [NOVO] Faz upload de um arquivo de áudio para o serviço 0x0.st.
+         * @param {File} file O arquivo de áudio para fazer upload.
+         * @returns {Promise<object>} Uma promessa que resolve com o resultado do upload.
          */
-        const fileToBase64 = (file) => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-        });
+        function uploadAudio(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            console.log(`Iniciando upload do áudio: ${file.name}`);
 
+            return fetch('https://0x0.st', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`O servidor respondeu com o status ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(url => {
+                const trimmedUrl = url.trim();
+                if (trimmedUrl.startsWith('http')) {
+                    console.log(`Áudio enviado com sucesso: ${trimmedUrl}`);
+                    return { status: 'fulfilled', value: { type: 'audio', url: trimmedUrl } };
+                }
+                throw new Error(`Serviço de upload retornou uma resposta inválida: ${trimmedUrl}`);
+            })
+            .catch(error => {
+                console.error('Falha no upload do áudio para 0x0.st:', error);
+                return { status: 'rejected', reason: `Falha no upload do áudio: ${error.message}` };
+            });
+        }
 
         async function handleFormSubmit(event) {
             event.preventDefault();
@@ -801,8 +822,9 @@
 
             const imageFilesToUpload = [...selectedImageFiles];
             const totalTasks = imageFilesToUpload.length + (audioFileToSubmit ? 1 : 0);
-
+            
             if (totalTasks === 0) {
+                 // Embora a validação de etapa já verifique isso, é uma boa segurança.
                 showAlert("Nenhum Arquivo", "Por favor, adicione pelo menos uma foto para enviar.");
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Enviar Pedido';
@@ -820,95 +842,87 @@
 
             uploadProgressText.textContent = `Processando arquivos... (0/${totalTasks})`;
             uploadProgressBar.style.width = '0%';
+            
+            const allPromises = [];
 
-            // Mapeia os uploads de imagem
-            const imageUploadPromises = imageFilesToUpload.map(file => {
+            // Adiciona as promessas de upload de imagem
+            imageFilesToUpload.forEach(file => {
                 const formData = new FormData();
                 formData.append("key", IMGBB_API_KEY);
                 formData.append("image", file);
                 
-                return fetch("https://api.imgbb.com/1/upload", { method: 'POST', body: formData })
+                const promise = fetch("https://api.imgbb.com/1/upload", { method: 'POST', body: formData })
                     .then(res => {
                         updateProgress();
                         if(res.ok) return res.json();
-                        throw new Error(`Falha no upload de ${file.name}`);
+                        throw new Error(`Falha no upload da imagem ${file.name}`);
                     })
                     .then(result => {
                         if (result.success) {
                             return { status: 'fulfilled', value: { type: 'image', url: result.data.url } };
                         }
-                        return { status: 'rejected', reason: `Falha no upload de ${file.name}` };
+                        return { status: 'rejected', reason: `Falha no upload da imagem ${file.name}` };
                     })
                     .catch(error => {
                         console.error("Erro de upload de imagem:", error);
                         return { status: 'rejected', reason: `Erro de rede no upload de ${file.name}` };
                     });
+                allPromises.push(promise);
             });
 
-            // Converte o áudio para Base64
-            let audioBase64Promise = Promise.resolve(null);
+            // Adiciona a promessa de upload de áudio, se existir
             if (audioFileToSubmit) {
-                audioBase64Promise = fileToBase64(audioFileToSubmit)
-                    .then(base64String => {
+                const audioPromise = uploadAudio(audioFileToSubmit)
+                    .then(result => {
                         updateProgress();
-                        return { status: 'fulfilled', value: { type: 'audio', base64: base64String } };
-                    })
-                    .catch(error => {
-                        updateProgress();
-                        console.error("Erro ao converter áudio para Base64:", error);
-                        return { status: 'rejected', reason: 'Falha ao converter o áudio.' };
+                        return result;
                     });
+                allPromises.push(audioPromise);
             }
 
             try {
-                // Aguarda todas as tarefas (uploads e conversão)
-                const imageUploadResults = await Promise.all(imageUploadPromises);
-                const audioResult = await audioBase64Promise;
+                const uploadResults = await Promise.all(allPromises);
 
-                const successfulImageUploads = imageUploadResults.filter(r => r.status === 'fulfilled').map(r => r.value);
-                const failedUploads = imageUploadResults.filter(r => r.status === 'rejected');
+                const successfulUploads = uploadResults.filter(r => r && r.status === 'fulfilled').map(r => r.value);
+                const failedUploads = uploadResults.filter(r => r && r.status === 'rejected');
 
-                if (audioResult && audioResult.status === 'rejected') {
-                    failedUploads.push(audioResult);
-                }
-
-                if (successfulImageUploads.length === 0 && (!audioResult || audioResult.status === 'rejected')) {
-                    throw new Error("Nenhum arquivo pôde ser processado. Verifique sua conexão ou os arquivos selecionados.");
+                if (successfulUploads.length === 0) {
+                    throw new Error("Todos os uploads de arquivo falharam. Verifique sua conexão com a internet.");
                 }
 
                 const finalFormData = new FormData(form);
-                const photoURLs = successfulImageUploads.map(r => r.url).join('\n');
+                const photoURLs = successfulUploads.filter(r => r?.type === 'image').map(r => r.url).join('\n');
+                const audioURL = successfulUploads.find(r => r?.type === 'audio')?.url || 'Nenhum áudio enviado ou falha no upload.';
+                
                 finalFormData.append('links_fotos', photoURLs);
-
-                if (audioResult && audioResult.status === 'fulfilled') {
-                    finalFormData.append('audio_base64', audioResult.value.base64);
-                } else {
-                    finalFormData.append('audio_base64', 'Nenhum áudio enviado ou falha na conversão.');
-                }
+                finalFormData.append('link_audio', audioURL);
 
                 if (failedUploads.length > 0) {
-                    const errorReasons = failedUploads.map(f => f.reason).join(', ');
-                    finalFormData.append('erros_de_processamento', `${failedUploads.length} arquivo(s) falharam: ${errorReasons}`);
+                    const errorReasons = failedUploads.map(f => f.reason).join('; ');
+                    finalFormData.append('erros_de_upload', `${failedUploads.length} arquivo(s) falharam: ${errorReasons}`);
                 }
                 
-                // Envia o formulário final para o Formcarry
+                console.log("Enviando dados finais para o Formcarry...");
                 const response = await fetch(form.dataset.action, {
                     method: form.method,
                     body: finalFormData,
                     headers: { 'Accept': 'application/json' }
                 });
                 
-                if (!response.ok) throw new Error(`O servidor respondeu com o status: ${response.status}`);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`O servidor de formulário respondeu com erro: ${response.status} - ${errorText}`);
+                }
                 
                 const result = await response.json();
                 if (result.code === 200) {
                     showFinalMessage(true, failedUploads.length);
                 } else {
-                    showFinalMessage(false, 0, result.message);
+                    showFinalMessage(false, 0, result.message || 'Ocorreu um erro desconhecido no servidor de formulário.');
                 }
 
             } catch (error) {
-                console.error("Erro final no envio:", error);
+                console.error("Erro final no envio do formulário:", error);
                 showFinalMessage(false, 0, error.message);
             } finally {
                 submitBtn.disabled = false;
@@ -925,7 +939,7 @@
             if(success) {
                 let message = `<i class="fas fa-check-circle success"></i><h2>Enviado com Sucesso!</h2><p>Suas informações foram recebidas. Em breve, entrarei em contato. Obrigado!</p>`;
                 if (failedCount > 0) {
-                    message += `<p style="color: var(--cor-dourado-premium); margin-top: 1rem;"><strong>Atenção:</strong> ${failedCount} arquivo(s) não puderam ser processados. Se necessário, envie-os separadamente.</p>`;
+                    message += `<p style="color: var(--cor-dourado-premium); margin-top: 1rem;"><strong>Atenção:</strong> ${failedCount} arquivo(s) não puderam ser enviados. Se necessário, envie-os separadamente.</p>`;
                 }
                 finalMessageContainer.innerHTML = message;
             } else {
