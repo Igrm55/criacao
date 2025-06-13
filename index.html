@@ -275,7 +275,12 @@
         <div id="form-content">
             <ul id="progress-bar"></ul>
             
-            <!-- [ALTERAÇÃO] Troca do endpoint do formulário para um mais robusto -->
+            <!-- 
+                [NOTA IMPORTANTE] O endpoint do Formspree (data-action) precisa ser ativado.
+                Após o PRIMEIRO envio bem-sucedido a partir da sua página, o Formspree enviará
+                um e-mail para o endereço de e-mail associado. Você DEVE clicar no link de ativação
+                nesse e-mail para que o formulário comece a encaminhar os envios para você.
+            -->
             <form id="creation-form" data-action="https://formspree.io/f/mknllvvy" method="POST">
 
                 <!-- [NOVO] Campos ocultos para armazenar os links dos arquivos -->
@@ -846,23 +851,35 @@
                 const audioFormData = new FormData();
                 audioFormData.append('file', audioFileToSubmit);
 
-                const audioPromise = fetch('https://0x0.st', { method: 'POST', body: audioFormData })
+                const audioPromise = fetch('https://api.gofile.io/getServer')
                     .then(response => {
-                        updateProgress();
-                        if (!response.ok) {
-                             return response.text().then(text => { throw new Error(`[0x0.st] ${response.status}: ${text}`) });
-                        }
-                        return response.text();
+                        if (!response.ok) throw new Error('GoFile.io: Não foi possível contatar o API para obter um servidor.');
+                        return response.json();
                     })
-                    .then(url => {
-                        const trimmedUrl = url.trim();
-                        if (trimmedUrl.startsWith('http')) {
-                            return { status: 'fulfilled', value: { type: 'audio', url: trimmedUrl } };
+                    .then(data => {
+                        if (data.status !== 'ok') throw new Error('GoFile.io: O API não retornou um servidor válido.');
+                        const server = data.data.server;
+                        return fetch(`https://${server}.gofile.io/uploadFile`, {
+                            method: 'POST',
+                            body: audioFormData,
+                        });
+                    })
+                    .then(uploadResponse => {
+                        updateProgress();
+                        if (!uploadResponse.ok) {
+                            return uploadResponse.text().then(text => { throw new Error(`GoFile.io: Falha no upload - ${uploadResponse.status} ${text}`) });
                         }
-                        throw new Error(`Resposta inválida do serviço de upload de áudio.`);
+                        return uploadResponse.json();
+                    })
+                    .then(uploadData => {
+                        if (uploadData.status === 'ok') {
+                            return { status: 'fulfilled', value: { type: 'audio', url: uploadData.data.downloadPage } };
+                        } else {
+                            throw new Error(`GoFile.io: Ocorreu um erro após o upload - ${uploadData.status}`);
+                        }
                     })
                     .catch(error => {
-                        console.error('Falha no upload do áudio:', error);
+                        console.error('Falha no upload do áudio para GoFile.io:', error);
                         return { status: 'rejected', reason: `Falha no upload do áudio: ${error.message}` };
                     });
                 allFileUploadPromises.push(audioPromise);
