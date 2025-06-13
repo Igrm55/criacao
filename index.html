@@ -121,6 +121,8 @@
         /* --- NOVOS ESTILOS PARA UPLOAD --- */
         .file-upload-btn { display: inline-block; padding: 0.8rem 1.5rem; border-radius: 8px; background: var(--cor-secundaria); color: var(--cor-branco-puro); cursor: pointer; text-align: center; transition: all 0.3s ease; }
         .file-upload-btn:hover { transform: scale(1.05); }
+        .file-upload-btn.disabled { background: var(--cor-cinza-claro); cursor: not-allowed; opacity: 0.7; }
+        .file-upload-btn.disabled:hover { transform: none; }
         .file-upload-btn i { margin-right: 8px; }
         input[type="file"] { display: none; }
         
@@ -235,8 +237,8 @@
                 <div class="form-step" data-step-name="Memórias" data-packages="laco,sinfonia,universo">
                     <div class="form-group">
                         <label for="photo-upload">Galeria de Momentos</label>
-                        <small>Envie suas fotos favoritas. Clique no botão para escolher uma foto de cada vez. Pelo menos uma foto é obrigatória.</small>
-                        <label for="photo-input" class="file-upload-btn">
+                        <small id="photo-upload-limit">Envie suas fotos favoritas. Clique no botão para escolher uma foto de cada vez. Pelo menos uma foto é obrigatória.</small>
+                        <label for="photo-input" class="file-upload-btn" id="photo-upload-label">
                             <i class="fa-solid fa-camera"></i> Adicionar Foto
                         </label>
                         <input type="file" id="photo-input" accept="image/*">
@@ -342,6 +344,8 @@
         const photoInput = document.getElementById('photo-input');
         const photoPreviewContainer = document.getElementById('photo-preview-container');
         const photosBase64Textarea = document.getElementById('fotos_base64');
+        const photoUploadLabel = document.getElementById('photo-upload-label');
+        const photoUploadLimitSmall = document.getElementById('photo-upload-limit');
         let photosBase64 = [];
         
         const audioInput = document.getElementById('audio-input');
@@ -356,9 +360,7 @@
         let isRecording = false;
 
         /**
-         * Converte um arquivo para Base64 e o adiciona a um array e a um campo de texto.
-         * @param {File} file - O arquivo a ser convertido.
-         * @param {string} type - 'photo' ou 'audio'.
+         * Converte um arquivo para Base64.
          */
         const fileToBase64 = (file, type) => {
             const reader = new FileReader();
@@ -384,10 +386,53 @@
         };
 
         // --- Funções de Foto ---
+
+        /**
+         * Retorna o limite de fotos baseado no pacote selecionado.
+         * @returns {number} O limite de fotos.
+         */
+        const getPhotoLimit = () => {
+            const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked');
+            if (!selectedPackage) return 5; // Default limit
+            switch (selectedPackage.id) {
+                case 'laco':
+                    return 5;
+                case 'sinfonia':
+                case 'universo':
+                    return 10;
+                default:
+                    return 5;
+            }
+        };
+
+        /**
+         * Atualiza a UI de upload de fotos (botão e texto)
+         */
+        const updatePhotoUploadUI = () => {
+            const limit = getPhotoLimit();
+            const count = photosBase64.length;
+            
+            // Atualiza o texto informativo
+            photoUploadLimitSmall.textContent = `Envie suas fotos favoritas (${count}/${limit}). Pelo menos uma foto é obrigatória.`;
+            
+            // Habilita/desabilita o botão
+            if (count >= limit) {
+                photoUploadLabel.classList.add('disabled');
+                photoInput.disabled = true;
+            } else {
+                photoUploadLabel.classList.remove('disabled');
+                photoInput.disabled = false;
+            }
+        };
+
         photoInput.addEventListener('change', (e) => {
+            const limit = getPhotoLimit();
+            if (photosBase64.length >= limit) {
+                showAlert('Limite Atingido', `Você já atingiu o limite de ${limit} fotos para este pacote.`);
+                return;
+            }
             if (e.target.files.length) {
                 fileToBase64(e.target.files[0], 'photo');
-                // Reseta o input para permitir selecionar o mesmo arquivo novamente
                 e.target.value = ''; 
             }
         });
@@ -403,7 +448,7 @@
                 `;
                 photoPreviewContainer.appendChild(item);
             });
-            // Adiciona event listener para os novos botões de remover
+            
             photoPreviewContainer.querySelectorAll('.remove-photo-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const indexToRemove = parseInt(e.target.dataset.index, 10);
@@ -412,6 +457,8 @@
                     renderPhotoPreview();
                 });
             });
+
+            updatePhotoUploadUI(); // Atualiza a UI após renderizar
         };
 
         // --- Funções de Áudio ---
@@ -423,16 +470,11 @@
 
         recordBtn.addEventListener('click', async () => {
             if (isRecording) {
-                // Parar gravação
-                mediaRecorder.stop();
-                recordBtn.classList.remove('recording');
-                recordBtn.innerHTML = '<i class="fa-solid fa-microphone"></i> Gravar';
-                isRecording = false;
+                if (mediaRecorder) mediaRecorder.stop();
             } else {
-                // Iniciar gravação
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
                     audioChunks = [];
 
                     mediaRecorder.ondataavailable = event => {
@@ -447,14 +489,17 @@
                         reader.readAsDataURL(audioBlob);
                         reader.onloadend = () => {
                             audioBase64Textarea.value = reader.result;
-                            audioPlayback.src = audioUrl;
-                            audioPlayback.classList.remove('hidden');
-                            audioRecordInfo.textContent = 'Gravação concluída. Você pode ouvir acima.';
-                            audioUploadInfo.textContent = '';
+                            // A trilha do microfone só é parada após a leitura do blob ser concluída.
+                            stream.getTracks().forEach(track => track.stop());
                         }
                         
-                        // Para a trilha do microfone para o ícone parar de aparecer
-                        stream.getTracks().forEach(track => track.stop());
+                        audioPlayback.src = audioUrl;
+                        audioPlayback.classList.remove('hidden');
+                        audioRecordInfo.textContent = 'Gravação concluída. Você pode ouvir acima.';
+                        audioUploadInfo.textContent = '';
+                        recordBtn.classList.remove('recording');
+                        recordBtn.innerHTML = '<i class="fa-solid fa-microphone"></i> Gravar';
+                        isRecording = false;
                     };
                     
                     mediaRecorder.start();
@@ -544,7 +589,6 @@
             if (!currentStep) return false;
             let isValid = true;
             
-            // Valida inputs normais
             const inputs = currentStep.querySelectorAll('input[required], textarea[required]');
             inputs.forEach(input => {
                 const group = input.closest('.form-group');
@@ -567,7 +611,6 @@
                 }
             });
             
-            // Valida campos base64 obrigatórios na etapa específica
             const base64RequiredTextarea = currentStep.querySelector('textarea[data-required="true"]');
             if(base64RequiredTextarea && !base64RequiredTextarea.value.trim()){
                  isValid = false;
@@ -590,7 +633,6 @@
         async function handleFormSubmit(event) {
             event.preventDefault();
             const formData = new FormData(form);
-            // Opcional: Adicionar um campo para indicar quantos arquivos foram enviados
             formData.append('total_de_fotos', photosBase64.length);
             formData.append('tem_audio', audioBase64Textarea.value ? 'Sim' : 'Não');
             
@@ -651,6 +693,10 @@
         packageOptions.forEach(option => {
             option.addEventListener('change', () => {
                 currentStepIndex = 0;
+                // Limpa as fotos se o cliente mudar de pacote, para evitar confusão com os limites
+                photosBase64 = [];
+                photosBase64Textarea.value = '';
+                renderPhotoPreview(); // Isso também vai chamar updatePhotoUploadUI()
                 filterVisibleSteps();
                 showStep(currentStepIndex); 
             });
@@ -685,6 +731,7 @@
         // --- Inicialização ---
         filterVisibleSteps();
         showStep(currentStepIndex);
+        updatePhotoUploadUI(); // Chamada inicial para configurar o limite de fotos
     });
     </script>
 </body>
