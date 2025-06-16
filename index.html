@@ -352,7 +352,7 @@
                                 <i class="fas fa-upload"></i>
                                 <div>Ou clique para enviar um arquivo</div>
                             </div>
-                            <input type="file" id="audio-input" accept="audio/*">
+                            <input type="file" id="audio-input" name="audio_upload" accept="audio/*">
                         </div>
                     </div>
                     <div class="form-group">
@@ -845,25 +845,30 @@
                 const successfulUrls = uploadResults.filter(r => r.status === 'fulfilled').map(r => r.value);
                 const failedUploads = uploadResults.filter(r => r.status === 'rejected');
 
-                document.getElementById('links_fotos_hidden').value = successfulUrls.join('\n');
+                uploadProgressText.textContent = "Preparando envio final...";
                 
+                // Create FormData from the form. This includes all text fields.
+                const finalFormData = new FormData(form);
+
+                // Set the hidden field for image URLs
+                finalFormData.set('links_das_fotos', successfulUrls.join('\n'));
+                
+                // Set the hidden field for upload errors
                 if (failedUploads.length > 0) {
                      const errorReasons = failedUploads.map(f => f.reason).join('; ');
-                     document.getElementById('erros_upload_hidden').value = `Falha no upload de ${failedUploads.length} imagem(s): ${errorReasons}`;
+                     finalFormData.set('erros_de_upload', `Falha no upload de ${failedUploads.length} imagem(s): ${errorReasons}`);
+                } else {
+                    finalFormData.delete('erros_de_upload');
                 }
 
-                uploadProgressText.textContent = "Preparando envio final...";
-                const finalFormData = new FormData();
-                const sourceFormData = new FormData(form);
-
-                for (const [key, value] of sourceFormData.entries()) {
-                    if (!(value instanceof File)) {
-                        finalFormData.append(key, value);
-                    }
-                }
+                // The 'audioFileToSubmit' holds the correct audio file (recorded or uploaded).
+                // The form might contain the uploaded file under 'audio_upload'.
+                // To avoid conflicts, we remove the original 'audio_upload' and append our definitive file.
+                finalFormData.delete('audio_upload'); 
 
                 if (audioFileToSubmit) {
-                    finalFormData.append('gravacao_de_audio', audioFileToSubmit, audioFileToSubmit.name);
+                    // Append the correct audio file under a consistent name for Formspree.
+                    finalFormData.append('anexo_audio', audioFileToSubmit, audioFileToSubmit.name);
                 }
                 
                 uploadProgressText.textContent = "Finalizando...";
