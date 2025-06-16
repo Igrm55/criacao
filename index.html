@@ -220,13 +220,11 @@
         <div id="form-content">
             <ul id="progress-bar"></ul>
             
-            <form id="creation-form" action="https://formspree.io/f/xwpbovgn" method="POST">
+            <form id="creation-form" action="https://formspree.io/f/xwpbovgn" method="POST" novalidate>
 
-                <!-- Campos ocultos para armazenar os links e dados -->
-                <textarea id="links_fotos_hidden" name="links_das_fotos" class="hidden"></textarea>
+                <!-- Campos ocultos não são mais necessários para a submissão, mas podem ser mantidos para referência -->
                 <input type="hidden" id="link_audio_hidden" name="link_do_audio">
-                <input type="hidden" id="erros_upload_hidden" name="erros_de_upload">
-
+                
                 <!-- Etapa 1: Boas-vindas e Pacote -->
                 <div class="form-step active" data-step-name="Início">
                     <div class="form-group">
@@ -918,7 +916,6 @@
                         audioFormData.append('file', audioFileToSubmit);
                         audioFormData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
                         
-                        // CORRECTED ENDPOINT: Using /auto/upload for better file type detection
                         const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`, { 
                             method: 'POST', 
                             body: audioFormData,
@@ -939,14 +936,11 @@
                     }
                 }
 
-                // --- AGGREGATE DATA AND SUBMIT TO FORMSPREE ---
+                // --- AGGREGATE DATA AND SUBMIT TO FORMSPREE (AS JSON) ---
                 uploadProgressText.textContent = "Preparando envio final...";
                 
                 const successfulUrls = imageUploadResults.filter(r => r.status === 'fulfilled').map(r => r.value);
                 const failedUploads = imageUploadResults.filter(r => r.status === 'rejected');
-
-                document.getElementById('links_fotos_hidden').value = successfulUrls.join('\n');
-                document.getElementById('link_audio_hidden').value = audioLink;
                 
                 let errorMessages = [];
                 if (failedUploads.length > 0) {
@@ -955,16 +949,36 @@
                 if(audioUploadError) {
                     errorMessages.push(audioUploadError);
                 }
-                document.getElementById('erros_upload_hidden').value = errorMessages.join('; ');
 
-                const finalFormData = new FormData(form);
+                // Build a simple object with all form data
+                const formDataObject = {};
+                const formElements = form.elements;
+                for (const element of formElements) {
+                     if (element.name && element.type !== 'submit' && element.type !== 'button' && element.type !== 'file') {
+                        if (element.type === 'radio') {
+                            if (element.checked) {
+                                formDataObject[element.name] = element.value;
+                            }
+                        } else {
+                            formDataObject[element.name] = element.value;
+                        }
+                    }
+                }
+
+                // Add dynamic data to the object
+                formDataObject['links_das_fotos'] = successfulUrls.join('\n');
+                formDataObject['link_do_audio'] = audioLink;
+                formDataObject['erros_de_upload'] = errorMessages.join('; ');
                 
                 uploadProgressText.textContent = "Finalizando...";
                 
                 const response = await fetch(form.action, {
-                    method: form.method,
-                    body: finalFormData,
-                    headers: { 'Accept': 'application/json' }
+                    method: 'POST',
+                    body: JSON.stringify(formDataObject),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
                 });
                 
                 uploadProgressBar.style.width = '100%';
