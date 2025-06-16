@@ -23,6 +23,7 @@
             --cor-fundo-card: rgba(30, 41, 59, 0.8);
             --borda-raio: 16px;
             --gradiente-principal: linear-gradient(90deg, var(--cor-primaria), var(--cor-secundaria));
+            --cor-erro: #ff4d4d;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -113,7 +114,7 @@
         #final-message { text-align: center; }
         #final-message i { font-size: 4rem; margin-bottom: 1rem; }
         #final-message .success { color: var(--cor-dourado-premium); }
-        #final-message .error { color: #FF4D4D; }
+        #final-message .error { color: var(--cor-erro); }
         #final-message h2 { margin-bottom: 1rem; }
         #final-message .btn i { margin-right: 0.5rem; }
 
@@ -131,7 +132,7 @@
         .audio-recorder { background: var(--cor-fundo); border: 1px solid var(--cor-cinza-claro); border-radius: var(--borda-raio); padding: 1.5rem; margin-top: 1.5rem; text-align: center; }
         .audio-recorder-buttons { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 1rem; }
         #record-status { font-weight: 500; color: var(--cor-dourado-premium); margin-bottom: 1rem; }
-        #record-status .recording-dot { display: inline-block; width: 10px; height: 10px; background-color: #ff4d4d; border-radius: 50%; animation: blink 1.5s infinite; margin-right: 8px; }
+        #record-status .recording-dot { display: inline-block; width: 10px; height: 10px; background-color: var(--cor-erro); border-radius: 50%; animation: blink 1.5s infinite; margin-right: 8px; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
         
         #custom-audio-player {
@@ -201,6 +202,10 @@
             border-radius: var(--borda-raio);
             padding: 1rem;
             min-height: 142px;
+            transition: border-color 0.3s ease;
+        }
+        #image-preview-container.error {
+            border-color: var(--cor-erro);
         }
         .image-preview-item { position: relative; width: 100%; padding-top: 100%; border-radius: 8px; overflow: hidden; background-color: var(--cor-fundo); }
         .image-preview-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -233,27 +238,27 @@
                             <strong>Você está a um passo de eternizar a história de amor de vocês!</strong> Estamos honrados em transformar seus sentimentos em uma obra de arte.
                         </div>
                         <label for="nome">Seu primeiro nome</label>
-                        <input type="text" id="nome" name="nome_do_cliente" required placeholder="Ex: Igor">
+                        <input type="text" id="nome" name="nome_do_cliente" placeholder="Ex: Igor">
                     </div>
                     <div class="form-group">
-                        <label>Qual pacote você adquiriu?</label>
+                        <label>Qual pacote você deseja adquirir?</label>
                         <div class="package-selection">
                             <div class="package-option">
-                                <input type="radio" id="laco" name="pacote_escolhido" value="Laço de Amor" required>
+                                <input type="radio" id="laco" name="pacote_escolhido" value="Laço de Amor">
                                 <label for="laco" class="package-label" id="laco-label">
                                     <i class="fa-solid fa-ribbon"></i>
                                     <span class="package-name">Laço de Amor</span>
                                 </label>
                             </div>
                             <div class="package-option">
-                                <input type="radio" id="sinfonia" name="pacote_escolhido" value="Nossa Sinfonia" required>
+                                <input type="radio" id="sinfonia" name="pacote_escolhido" value="Nossa Sinfonia">
                                 <label for="sinfonia" class="package-label" id="sinfonia-label">
                                     <i class="fa-solid fa-music"></i>
                                     <span class="package-name">Nossa Sinfonia</span>
                                 </label>
                             </div>
                             <div class="package-option">
-                                <input type="radio" id="universo" name="pacote_escolhido" value="Universo Particular" required>
+                                <input type="radio" id="universo" name="pacote_escolhido" value="Universo Particular">
                                 <label for="universo" class="package-label" id="universo-label">
                                     <i class="fa-solid fa-meteor"></i>
                                     <span class="package-name">Universo Particular</span>
@@ -268,7 +273,7 @@
                     <div class="form-group">
                         <label for="historia">A História de Vocês</label>
                         <small>Conte-me um pouco sobre vocês. Como se conheceram? Qual a memória mais engraçada ou emocionante? Detalhes, apelidos, piadas internas... tudo isso me ajuda a criar algo verdadeiramente único.</small>
-                        <textarea id="historia" name="historia_do_casal" required></textarea>
+                        <textarea id="historia" name="historia_do_casal"></textarea>
                     </div>
                 </div>
 
@@ -277,7 +282,7 @@
                     <div class="form-group">
                         <label for="paleta">Universo Visual e Cores</label>
                         <small>Descreva o estilo visual que você imagina. É algo mais romântico com tons de rosa? Sofisticado com dourado e preto? Vibrante e colorido? Sinta-se à vontade para descrever.</small>
-                        <textarea id="paleta" name="paleta_de_cores" required placeholder="Ex: Gosto de um visual mais clean e elegante, com tons de azul marinho, branco e detalhes em dourado..."></textarea>
+                        <textarea id="paleta" name="paleta_de_cores" placeholder="Ex: Gosto de um visual mais clean e elegante, com tons de azul marinho, branco e detalhes em dourado..."></textarea>
                     </div>
                 </div>
 
@@ -295,23 +300,30 @@
                     </div>
                 </div>
 
-                <!-- Etapa 5: Memórias (Uploads) -->
+                 <!-- Etapa 5: Música -->
+                <div class="form-step" data-step-name="Música" data-packages="laco,sinfonia">
+                    <div class="form-group">
+                        <label for="musica_spotify">Música Especial (Spotify)</label>
+                        <small>Adicione o link de uma música do Spotify que seja especial para vocês. Este será um dos temas do presente.</small>
+                        <input type="text" id="musica_spotify" name="musica_spotify_link" placeholder="Cole o link do Spotify aqui...">
+                    </div>
+                </div>
+
+                <!-- Etapa 6: Memórias (Uploads) -->
                 <div class="form-step" data-step-name="Memórias" data-packages="laco,sinfonia,universo">
                     <div class="form-group">
                         <label>Galeria de Momentos</label>
-                        <small>Adicione as fotos que marcaram a história de vocês. Máximo de 5 para 'Laço de Amor' e 10 para os demais.</small>
+                        <small id="gallery-instructions">Escolha um pacote para ver o limite de fotos.</small>
                         
                         <div id="image-preview-container"></div>
                 
                         <button type="button" id="add-photo-btn" class="btn btn-secondary" style="margin-top: 1rem;"><i class="fas fa-plus"></i> Adicionar Fotos</button>
                         
                         <input type="file" id="fotos-input" accept="image/*" class="hidden" multiple>
-                
-                        <input type="text" id="photo-validation-input" required style="display: none;">
                     </div>
                 </div>
                 
-                <!-- Etapa 6: Itens da Sinfonia -->
+                <!-- Etapa 7: Itens da Sinfonia -->
                 <div class="form-step" data-step-name="Sinfonia" data-packages="sinfonia,universo">
                     <div class="form-group">
                         <label>Sua Voz Declarando Seu Amor</label>
@@ -350,11 +362,11 @@
                     </div>
                 </div>
                 
-                <!-- Etapa 7: Itens do Universo -->
+                <!-- Etapa 8: Itens do Universo -->
                 <div class="form-step" data-step-name="Universo" data-packages="universo">
                     <div class="form-group">
                         <label>Playlist (Até 5 músicas)</label>
-                        <small>Cole o link do Spotify ou YouTube de cada música, um por linha.</small>
+                        <small>Cole o link do Spotify de cada música, um por linha.</small>
                          <textarea name="playlist_links" rows="5" placeholder="Link da Música 1&#10;Link da Música 2..."></textarea>
                     </div>
                     <div class="form-group">
@@ -370,6 +382,11 @@
                         <label for="pedido">Este presente é um pedido especial?</label>
                         <select id="pedido" name="e_um_pedido_especial"><option value="nao">Não</option><option value="sim">Sim, é um pedido de namoro/casamento!</option></select>
                     </div>
+                    <div id="ideia-pedido-container" class="form-group hidden">
+                        <label for="ideia_pedido">Qual é a sua ideia para o pedido?</label>
+                        <small>Descreva como você imagina esse momento especial, que tipo de animação ou arte podemos criar para o "SIM".</small>
+                        <textarea id="ideia_pedido" name="ideia_do_pedido" rows="4"></textarea>
+                   </div>
                 </div>
 
                 <!-- Etapa Final: Confirmação -->
@@ -432,7 +449,7 @@
         const addPhotoBtn = document.getElementById('add-photo-btn');
         const fotosInput = document.getElementById('fotos-input');
         const imagePreviewContainer = document.getElementById('image-preview-container');
-        const photoValidationInput = document.getElementById('photo-validation-input');
+        const galleryInstructions = document.getElementById('gallery-instructions');
         let selectedImageFiles = [];
 
         // Audio elements
@@ -451,6 +468,10 @@
         let audioChunks = [];
         let audioFileToSubmit = null;
         
+        // Special request field
+        const pedidoSelect = document.getElementById('pedido');
+        const ideaPedidoContainer = document.getElementById('ideia-pedido-container');
+
         let currentStepIndex = 0;
         let visibleSteps = [];
 
@@ -458,19 +479,21 @@
         function filterVisibleSteps() {
             const selectedPackageRadio = document.querySelector('input[name="pacote_escolhido"]:checked');
             if (!selectedPackageRadio) {
-                visibleSteps = [formSteps[0]];
+                visibleSteps = [formSteps[0]]; // Only show the first step if no package is selected
                 return;
             }
             const selectedPackageValue = selectedPackageRadio.id; 
             
-            visibleSteps = [formSteps[0]];
+            visibleSteps = [formSteps[0]]; // Always include the first step
             formSteps.forEach(step => {
                 const packages = step.dataset.packages;
                 const isFinalStep = step.dataset.stepName === 'Enviar';
+                // Include step if it's for all packages OR if it matches the selected package, but isn't the final step
                 if (packages && packages.split(',').includes(selectedPackageValue) && !isFinalStep) {
                     visibleSteps.push(step);
                 }
             });
+            // Always include the final 'Enviar' step
             visibleSteps.push(formSteps.find(step => step.dataset.stepName === 'Enviar'));
             updateProgressBar();
         }
@@ -518,64 +541,57 @@
         // Function to control button visibility
         function updateButtonVisibility() {
             prevBtn.classList.toggle('hidden', currentStepIndex === 0);
-            nextBtn.classList.toggle('hidden', currentStepIndex === visibleSteps.length - 1);
+            nextBtn.classList.toggle('hidden', currentStepIndex >= visibleSteps.length - 1);
             submitBtn.classList.toggle('hidden', currentStepIndex !== visibleSteps.length - 1);
         }
 
-        // Function to validate inputs in the current step
+        // Validation is disabled as per request
         function validateCurrentStep() {
-            const currentStep = visibleSteps[currentStepIndex];
-            if (!currentStep) return false;
-            
-            if (currentStep.dataset.stepName === 'Memórias') {
-                 if (selectedImageFiles.length === 0) {
-                     showAlert('Fotos Obrigatórias', 'Por favor, adicione pelo menos uma foto.');
-                     return false;
-                 }
+            const selectedPackageRadio = document.querySelector('input[name="pacote_escolhido"]:checked');
+            if(currentStepIndex === 0 && !selectedPackageRadio) {
+                showAlert('Selecione um Pacote', 'Por favor, escolha um pacote para podermos continuar.');
+                return false;
             }
-            
-            if (currentStep.dataset.stepName === 'Sinfonia') {
-                if (!audioFileToSubmit) {
-                    showAlert('Áudio Obrigatório', 'Por favor, grave ou envie um arquivo de áudio para este pacote.');
-                    return false;
-                }
-            }
-
-            const inputs = currentStep.querySelectorAll('[required]');
-            for (const input of inputs) {
-                 if (!input.value.trim()) {
-                     const group = input.closest('.form-group');
-                     const label = group ? group.querySelector('label') : null;
-                     const labelText = label ? `"${label.textContent}"` : 'um campo obrigatório';
-                     if(label) label.style.color = '#FF4D4D';
-                     showAlert('Campo Obrigatório', `Por favor, preencha ${labelText}.`);
-                     return false;
-                 } else {
-                     const group = input.closest('.form-group');
-                     const label = group ? group.querySelector('label') : null;
-                     if(label) label.style.color = '';
-                 }
-            }
-
+            // All other fields are optional, so we always allow proceeding
             return true;
         }
 
+        // Handle package selection changes
+        function handlePackageChange() {
+             const selectedPackageRadio = document.querySelector('input[name="pacote_escolhido"]:checked');
+             if (!selectedPackageRadio) return;
+
+             const selectedPackage = selectedPackageRadio.value;
+             let maxFiles = 0;
+             if (selectedPackage === 'Laço de Amor') {
+                maxFiles = 5;
+                galleryInstructions.textContent = `Envie os 5 melhores momentos de vocês. Limite de ${maxFiles} fotos.`;
+             } else {
+                maxFiles = 10;
+                galleryInstructions.textContent = `Envie os 10 melhores momentos de vocês. Limite de ${maxFiles} fotos.`;
+             }
+             
+             // Reset image selection if it exceeds the new limit
+             if(selectedImageFiles.length > maxFiles) {
+                 selectedImageFiles.splice(maxFiles);
+                 renderImagePreviews();
+                 showAlert('Fotos Ajustadas', `O limite de fotos para este pacote é ${maxFiles}. A sua seleção foi ajustada.`);
+             }
+
+            // Reset current step to the beginning and refilter visible steps
+            currentStepIndex = 0;
+            filterVisibleSteps();
+            showStep(currentStepIndex); 
+        }
+
         packageOptions.forEach(option => {
-            option.addEventListener('change', () => {
-                currentStepIndex = 0;
-                filterVisibleSteps();
-                showStep(currentStepIndex); 
-            });
+            option.addEventListener('change', handlePackageChange);
         });
 
         nextBtn.addEventListener('click', () => {
             if (validateCurrentStep()) {
                 currentStepIndex++;
                 showStep(currentStepIndex);
-            } else {
-                 if (!document.querySelector('input[name="pacote_escolhido"]:checked')) {
-                    showAlert('Campo Obrigatório', 'Por favor, selecione um pacote para continuar.');
-                }
             }
         });
 
@@ -588,32 +604,51 @@
         addPhotoBtn.addEventListener('click', () => fotosInput.click());
 
         fotosInput.addEventListener('change', (event) => {
-            const files = event.target.files;
+            const files = Array.from(event.target.files);
             if (files.length === 0) return;
+            
+            imagePreviewContainer.classList.remove('error');
 
             const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.value;
             if (!selectedPackage) {
                 showAlert('Selecione um Pacote', 'Por favor, escolha um pacote antes de adicionar fotos.');
+                fotosInput.value = '';
                 return;
             }
+
             const maxFiles = selectedPackage === 'Laço de Amor' ? 5 : 10;
             const currentCount = selectedImageFiles.length;
             const availableSlots = maxFiles - currentCount;
 
             if (files.length > availableSlots) {
-                showAlert('Limite Excedido', `Você pode adicionar mais ${availableSlots} foto(s). Você tentou adicionar ${files.length}.`);
+                showAlert('Limite Excedido', `Você só pode adicionar mais ${availableSlots} foto(s). Você tentou adicionar ${files.length}. As primeiras ${availableSlots} foram adicionadas.`);
+                // Only add files that fit
+                selectedImageFiles.push(...files.slice(0, availableSlots));
+            } else {
+                selectedImageFiles.push(...files);
             }
             
-            Array.from(files).slice(0, availableSlots).forEach(file => {
-                selectedImageFiles.push(file);
-            });
-            
+            if (selectedImageFiles.length >= maxFiles) {
+                imagePreviewContainer.classList.add('error');
+                showAlert('Limite Atingido', `Você atingiu o limite de ${maxFiles} fotos para este pacote. Para adicionar uma nova, remova uma existente.`);
+            }
+
             renderImagePreviews();
             fotosInput.value = ''; // Reset input to allow re-adding same file
         });
-
+        
         function renderImagePreviews() {
             imagePreviewContainer.innerHTML = '';
+            const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.value;
+            const maxFiles = selectedPackage === 'Laço de Amor' ? 5 : 10;
+            
+            // Re-check limit and apply error class
+            if (selectedImageFiles.length >= maxFiles) {
+                imagePreviewContainer.classList.add('error');
+            } else {
+                imagePreviewContainer.classList.remove('error');
+            }
+
             selectedImageFiles.forEach((file, index) => {
                 const previewItem = document.createElement('div');
                 previewItem.className = 'image-preview-item';
@@ -628,17 +663,26 @@
                 
                 removeBtn.addEventListener('click', () => {
                     selectedImageFiles.splice(index, 1);
-                    renderImagePreviews();
+                    renderImagePreviews(); // Re-render to update UI and error state
                 });
 
                 previewItem.appendChild(img);
                 previewItem.appendChild(removeBtn);
                 imagePreviewContainer.appendChild(previewItem);
             });
-
-            photoValidationInput.value = selectedImageFiles.length > 0 ? 'valid' : '';
         }
         
+        // Special Request (Pedido) Logic
+        if (pedidoSelect) {
+            pedidoSelect.addEventListener('change', () => {
+                if(pedidoSelect.value === 'sim') {
+                    ideaPedidoContainer.classList.remove('hidden');
+                } else {
+                    ideaPedidoContainer.classList.add('hidden');
+                }
+            });
+        }
+
         // Audio Handling
         function setAudioSource(file, sourceName) {
             if (!file) {
@@ -691,7 +735,7 @@
                 mediaRecorder.start();
             } catch (err) {
                 console.error("Erro ao acessar o microfone:", err);
-                showAlert("Erro de Microfone", "Não foi possível acessar seu microfone. Verifique as permissões.");
+                showAlert("Erro de Microfone", "Não foi possível acessar seu microfone. Verifique as permissões do seu navegador para este site.");
             }
         });
 
@@ -758,17 +802,9 @@
             uploadProgressInfo.classList.remove('hidden');
 
             const imageFilesToUpload = [...selectedImageFiles];
-            const totalTasks = imageFilesToUpload.length;
-            
-            if (totalTasks === 0) {
-                 showAlert("Nenhuma foto", "Por favor, adicione pelo menos uma foto para enviar.");
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Enviar Pedido';
-                uploadProgressInfo.classList.add('hidden');
-                return;
-            }
-
             let tasksCompleted = 0;
+            const totalTasks = imageFilesToUpload.length;
+
             const updateProgress = () => {
                 tasksCompleted++;
                 const progress = totalTasks > 0 ? Math.round((tasksCompleted / totalTasks) * 100) : 100;
@@ -816,25 +852,20 @@
                      document.getElementById('erros_upload_hidden').value = `Falha no upload de ${failedUploads.length} imagem(s): ${errorReasons}`;
                 }
 
-                // Create a new FormData object for the final submission
                 uploadProgressText.textContent = "Preparando envio final...";
                 const finalFormData = new FormData();
                 const sourceFormData = new FormData(form);
 
-                // Append all text/hidden/select/radio fields from the original form
                 for (const [key, value] of sourceFormData.entries()) {
                     if (!(value instanceof File)) {
                         finalFormData.append(key, value);
                     }
                 }
 
-                // Append the audio file as an attachment, if it exists
                 if (audioFileToSubmit) {
                     finalFormData.append('gravacao_de_audio', audioFileToSubmit, audioFileToSubmit.name);
                 }
                 
-                // Submit the final form data to Formspree
-                console.log("Enviando formulário final com anexo de áudio...");
                 uploadProgressText.textContent = "Finalizando...";
                 
                 const response = await fetch(form.action, {
