@@ -115,6 +115,8 @@
         #final-message .success { color: var(--cor-dourado-premium); }
         #final-message .error { color: #FF4D4D; }
         #final-message h2 { margin-bottom: 1rem; }
+        #final-message .btn i { margin-right: 0.5rem; }
+
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease-in-out; }
         .modal-overlay.visible { opacity: 1; visibility: visible; }
@@ -864,14 +866,26 @@
         function showFinalMessage(success, failedCount = 0, errorMsg = '') {
             formContent.classList.add('hidden');
             finalMessageContainer.classList.remove('hidden');
-            if(success) {
-                let message = `<i class="fas fa-check-circle success"></i><h2>Enviado com Sucesso!</h2><p>Suas informações foram recebidas. Em breve, entrarei em contato. Obrigado!</p>`;
+            if (success) {
+                const numeroWhatsapp = "5571999011447";
+                const mensagemWhatsapp = encodeURIComponent("Olá! Já preenchi o formulário no Portal de Criação. Como faço para prosseguir para o pagamento?");
+                const linkWhatsapp = `https://api.whatsapp.com/send?phone=${numeroWhatsapp}&text=${mensagemWhatsapp}`;
+
+                let message = `
+                    <i class="fas fa-check-circle success" style="color: var(--cor-primaria); font-size: 3.5rem;"></i>
+                    <h2 style="margin-top: 1rem;">Excelente! Informações Recebidas.</h2>
+                    <p style="color: var(--cor-branco-suave); margin-bottom: 2rem;">Já recebemos suas informações. O próximo passo é a confirmação do pagamento para iniciarmos a criação da sua memória inesquecível.</p>
+                    <a href="${linkWhatsapp}" target="_blank" class="btn btn-primary" style="text-decoration: none; display: inline-block; padding: 1rem 2.5rem;">
+                        <i class="fab fa-whatsapp"></i> Prosseguir para Pagamento
+                    </a>
+                `;
+
                 if (failedCount > 0) {
-                    message += `<p style="color: var(--cor-dourado-premium); margin-top: 1rem;"><strong>Atenção:</strong> ${failedCount} imagem(ns) não puderam ser enviadas. Se necessário, envie-as separadamente.</p>`;
+                    message += `<p style="color: var(--cor-dourado-premium); margin-top: 1.5rem; font-size: 0.9rem;"><strong>Atenção:</strong> ${failedCount} imagem(ns) não puderam ser enviadas. Se necessário, envie-as separadamente através do WhatsApp.</p>`;
                 }
                 finalMessageContainer.innerHTML = message;
             } else {
-                finalMessageContainer.innerHTML = `<i class="fas fa-times-circle error"></i><h2>Ocorreu um Erro</h2><p>Não foi possível enviar suas informações. Detalhe: ${errorMsg}</p><p>Por favor, tente novamente. Se o erro persistir, entre em contato.</p>`;
+                finalMessageContainer.innerHTML = `<i class="fas fa-times-circle error"></i><h2>Ocorreu um Erro</h2><p>Não foi possível enviar suas informações. Detalhe: ${errorMsg}</p><p>Por favor, tente novamente. Se o erro persistir, entre em contato diretamente pelo WhatsApp.</p>`;
             }
         }
         
