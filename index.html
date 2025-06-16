@@ -54,8 +54,8 @@
         .form-header { text-align: center; margin-bottom: 2rem; }
         .form-header h1 { font-family: 'Montserrat', sans-serif; font-size: clamp(1.8rem, 5vw, 2.2rem); color: var(--cor-branco-puro); margin-bottom: 0.5rem; }
         .form-header p { color: var(--cor-cinza-claro); font-size: 1rem; max-width: 500px; margin: auto; }
-        .congrats-message { background: rgba(255, 215, 0, 0.1); border-left: 4px solid var(--cor-dourado-premium); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: left; }
-        .congrats-message strong { color: var(--cor-dourado-premium); }
+        .welcome-message { background: rgba(255, 215, 0, 0.1); border-left: 4px solid var(--cor-dourado-premium); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: left; }
+        .welcome-message strong { color: var(--cor-dourado-premium); }
 
         #progress-bar { display: flex; list-style: none; margin-bottom: 2rem; position: relative; justify-content: space-between; }
         #progress-bar .step { text-align: center; position: relative; width: 100%; color: var(--cor-cinza-claro); font-weight: 500; font-size: 0.8rem; }
@@ -125,7 +125,7 @@
         .modal-close-btn { background: var(--gradiente-principal); color: var(--cor-branco-puro); border: none; padding: 0.8rem 2rem; border-radius: 50px; cursor: pointer; font-weight: 700; transition: transform 0.2s; }
         .modal-close-btn:hover { transform: scale(1.05); }
 
-        /* Estilos para o gravador de áudio */
+        /* Audio Recorder Styles */
         .audio-recorder { background: var(--cor-fundo); border: 1px solid var(--cor-cinza-claro); border-radius: var(--borda-raio); padding: 1.5rem; margin-top: 1.5rem; text-align: center; }
         .audio-recorder-buttons { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 1rem; }
         #record-status { font-weight: 500; color: var(--cor-dourado-premium); margin-bottom: 1rem; }
@@ -158,9 +158,7 @@
             flex-shrink: 0;
             transition: transform 0.2s ease;
         }
-        #player-play-btn:hover {
-            transform: scale(1.1);
-        }
+        #player-play-btn:hover { transform: scale(1.1); }
         #player-seek-bar {
             --seek-before-width: 0%;
             flex-grow: 1;
@@ -186,27 +184,11 @@
             border: 3px solid var(--cor-secundaria);
             transition: background-color 0.2s;
         }
-        #player-seek-bar::-moz-range-thumb {
-            width: 15px;
-            height: 15px;
-            background: var(--cor-branco-puro);
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid var(--cor-secundaria);
-        }
-        #player-seek-bar:hover::-webkit-slider-thumb {
-            background: #f0f0f0;
-        }
+        #player-seek-bar::-moz-range-thumb { width: 15px; height: 15px; background: var(--cor-branco-puro); border-radius: 50%; cursor: pointer; border: 3px solid var(--cor-secundaria); }
+        #player-seek-bar:hover::-webkit-slider-thumb { background: #f0f0f0; }
 
-        .player-time {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--cor-branco-suave);
-            min-width: 45px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-        }
+        .player-time { font-size: 0.9rem; font-weight: 600; color: var(--cor-branco-suave); min-width: 45px; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
         audio#audio-playback-element { display: none; }
-
 
         #image-preview-container {
             display: grid;
@@ -218,50 +200,11 @@
             padding: 1rem;
             min-height: 142px;
         }
-        .image-preview-item {
-            position: relative;
-            width: 100%;
-            padding-top: 100%; 
-            border-radius: 8px;
-            overflow: hidden;
-            background-color: var(--cor-fundo);
-        }
-        .image-preview-item img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .remove-image-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 25px;
-            height: 25px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            font-size: 14px;
-            line-height: 1;
-            transition: background-color 0.2s, transform 0.2s;
-            z-index: 2;
-        }
-        .remove-image-btn:hover {
-            background-color: var(--cor-primaria);
-            transform: scale(1.1);
-        }
-        #add-photo-btn {
-            width: 100%;
-        }
-
+        .image-preview-item { position: relative; width: 100%; padding-top: 100%; border-radius: 8px; overflow: hidden; background-color: var(--cor-fundo); }
+        .image-preview-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        .remove-image-btn { position: absolute; top: 5px; right: 5px; width: 25px; height: 25px; background-color: rgba(0, 0, 0, 0.7); color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 14px; line-height: 1; transition: background-color 0.2s, transform 0.2s; z-index: 2; }
+        .remove-image-btn:hover { background-color: var(--cor-primaria); transform: scale(1.1); }
+        #add-photo-btn { width: 100%; }
     </style>
 </head>
 <body>
@@ -275,24 +218,18 @@
         <div id="form-content">
             <ul id="progress-bar"></ul>
             
-            <!-- 
-                [NOTA IMPORTANTE] O endpoint do Formspree (data-action) precisa ser ativado.
-                Após o PRIMEIRO envio bem-sucedido a partir da sua página, o Formspree enviará
-                um e-mail para o endereço de e-mail associado. Você DEVE clicar no link de ativação
-                nesse e-mail para que o formulário comece a encaminhar os envios para você.
-            -->
-            <form id="creation-form" data-action="https://formspree.io/f/mknllvvy" method="POST">
+            <form id="creation-form" action="https://formspree.io/f/xwpbovgn" method="POST">
 
-                <!-- [NOVO] Campos ocultos para armazenar os links dos arquivos -->
-                <input type="hidden" id="links_fotos_hidden" name="links_das_fotos">
-                <input type="hidden" id="link_audio_hidden" name="link_do_audio">
+                <!-- Campos ocultos para armazenar os links e dados -->
+                <textarea id="links_fotos_hidden" name="links_das_fotos" class="hidden"></textarea>
+                <textarea id="audio_base64_hidden" name="audio_em_base64" class="hidden"></textarea>
                 <input type="hidden" id="erros_upload_hidden" name="erros_de_upload">
 
                 <!-- Etapa 1: Boas-vindas e Pacote -->
                 <div class="form-step active" data-step-name="Início">
                     <div class="form-group">
-                        <div class="congrats-message">
-                            <strong>Parabéns pela escolha magnífica!</strong> Você deu o primeiro passo para criar um presente que transcende o material e toca a alma. Estamos honrados em fazer parte disso.
+                        <div class="welcome-message">
+                            <strong>Você está a um passo de eternizar a história de amor de vocês!</strong> Estamos honrados em transformar seus sentimentos em uma obra de arte.
                         </div>
                         <label for="nome">Seu primeiro nome</label>
                         <input type="text" id="nome" name="nome_do_cliente" required placeholder="Ex: Igor">
@@ -441,7 +378,7 @@
                         <h2>Tudo Pronto para Enviar!</h2>
                         <p>Suas informações e arquivos estão prontos. Clique no botão abaixo para finalizar e enviar seu pedido para mim.</p>
                         <div id="upload-progress-info" class="hidden" style="margin-top: 1rem; font-weight: 500;">
-                            <p id="upload-progress-text">Fazendo upload dos arquivos... (0/0)</p>
+                            <p id="upload-progress-text">Processando arquivos... (0/0)</p>
                             <div style="background-color: var(--cor-cinza-claro); border-radius: 5px; padding: 2px; margin-top: 0.5rem;">
                                 <div id="upload-progress-bar" style="width: 0%; height: 10px; background: var(--gradiente-principal); border-radius: 3px; transition: width 0.3s ease;"></div>
                             </div>
@@ -469,10 +406,12 @@
     </div>
     
     <script>
-    const IMGBB_API_KEY = "23e594ea2d95d5f79c9bc059694feda1";
+    // User provided API Key for ImgBB
+    const IMGBB_API_KEY = "e61b4300ad03c6c66f116e9125345720";
 
     document.addEventListener('DOMContentLoaded', () => {
         
+        // Form elements
         const form = document.getElementById('creation-form');
         const formContent = document.getElementById('form-content');
         const finalMessageContainer = document.getElementById('final-message');
@@ -483,16 +422,19 @@
         const progressBar = document.getElementById('progress-bar');
         const packageOptions = document.querySelectorAll('input[name="pacote_escolhido"]');
 
+        // Upload progress elements
         const uploadProgressInfo = document.getElementById('upload-progress-info');
         const uploadProgressText = document.getElementById('upload-progress-text');
         const uploadProgressBar = document.getElementById('upload-progress-bar');
 
+        // Image upload elements
         const addPhotoBtn = document.getElementById('add-photo-btn');
         const fotosInput = document.getElementById('fotos-input');
         const imagePreviewContainer = document.getElementById('image-preview-container');
         const photoValidationInput = document.getElementById('photo-validation-input');
         let selectedImageFiles = [];
 
+        // Audio elements
         const recordBtn = document.getElementById('record-btn');
         const stopRecordBtn = document.getElementById('stop-record-btn');
         const recordStatus = document.getElementById('record-status');
@@ -511,6 +453,7 @@
         let currentStepIndex = 0;
         let visibleSteps = [];
 
+        // Function to filter steps based on selected package
         function filterVisibleSteps() {
             const selectedPackageRadio = document.querySelector('input[name="pacote_escolhido"]:checked');
             if (!selectedPackageRadio) {
@@ -531,6 +474,7 @@
             updateProgressBar();
         }
 
+        // Function to update the progress bar UI
         function updateProgressBar() {
             progressBar.innerHTML = '';
             visibleSteps.forEach(step => {
@@ -546,6 +490,7 @@
             updateProgressClasses();
         }
 
+        // Function to update active/completed classes for progress bar
         function updateProgressClasses() {
             const progressSteps = progressBar.querySelectorAll('.step');
             const progressLine = document.getElementById('progress-line');
@@ -558,7 +503,8 @@
             const widthPercentage = progressSteps.length > 1 ? (completedDots.length / (progressSteps.length - 1)) * 100 : 0;
             if(progressLine) progressLine.style.width = `${widthPercentage}%`;
         }
-
+        
+        // Function to show the correct step
         function showStep(stepIndex) {
             formSteps.forEach(step => step.classList.remove('active'));
             if(visibleSteps[stepIndex]) {
@@ -568,12 +514,14 @@
             updateProgressClasses();
         }
 
+        // Function to control button visibility
         function updateButtonVisibility() {
             prevBtn.classList.toggle('hidden', currentStepIndex === 0);
             nextBtn.classList.toggle('hidden', currentStepIndex === visibleSteps.length - 1);
             submitBtn.classList.toggle('hidden', currentStepIndex !== visibleSteps.length - 1);
         }
 
+        // Function to validate inputs in the current step
         function validateCurrentStep() {
             const currentStep = visibleSteps[currentStepIndex];
             if (!currentStep) return false;
@@ -635,6 +583,7 @@
             showStep(currentStepIndex);
         });
 
+        // Image handling
         addPhotoBtn.addEventListener('click', () => fotosInput.click());
 
         fotosInput.addEventListener('change', (event) => {
@@ -659,7 +608,7 @@
             });
             
             renderImagePreviews();
-            fotosInput.value = '';
+            fotosInput.value = ''; // Reset input to allow re-adding same file
         });
 
         function renderImagePreviews() {
@@ -689,6 +638,7 @@
             photoValidationInput.value = selectedImageFiles.length > 0 ? 'valid' : '';
         }
         
+        // Audio Handling
         function setAudioSource(file, sourceName) {
             if (!file) {
                 audioFileToSubmit = null;
@@ -749,6 +699,7 @@
             }
         });
         
+        // Custom Audio Player Logic
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
@@ -790,6 +741,16 @@
             playerSeekBar.style.setProperty('--seek-before-width', `${progressPercent}%`);
         });
 
+        // Function to convert a file to a Base64 string
+        const fileToBase64 = (file) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+
+        // Main form submission handler
         async function handleFormSubmit(event) {
             event.preventDefault();
             
@@ -801,7 +762,7 @@
             const totalTasks = imageFilesToUpload.length + (audioFileToSubmit ? 1 : 0);
             
             if (totalTasks === 0) {
-                showAlert("Nenhum Arquivo", "Por favor, adicione pelo menos uma foto para enviar.");
+                 showAlert("Nenhum Arquivo", "Por favor, adicione pelo menos uma foto para enviar.");
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Enviar Pedido';
                 uploadProgressInfo.classList.add('hidden');
@@ -819,23 +780,21 @@
             uploadProgressText.textContent = `Processando arquivos... 0%`;
             uploadProgressBar.style.width = '0%';
             
-            const allFileUploadPromises = [];
-
-            // Adiciona as promessas de upload de imagem
-            imageFilesToUpload.forEach(file => {
+            // Upload images to ImgBB
+            const imageUploadPromises = imageFilesToUpload.map(file => {
                 const formData = new FormData();
                 formData.append("key", IMGBB_API_KEY);
                 formData.append("image", file);
                 
-                const promise = fetch("https://api.imgbb.com/1/upload", { method: 'POST', body: formData })
+                return fetch("https://api.imgbb.com/1/upload", { method: 'POST', body: formData })
                     .then(res => {
-                        updateProgress();
+                        updateProgress(); // Update progress after each upload attempt
                         if(res.ok) return res.json();
                         return res.text().then(text => { throw new Error(`[imgbb] ${res.status}: ${text}`) });
                     })
                     .then(result => {
                         if (result.success) {
-                            return { status: 'fulfilled', value: { type: 'image', url: result.data.url } };
+                            return { status: 'fulfilled', value: result.data.url };
                         }
                         return { status: 'rejected', reason: `Falha no upload da imagem ${file.name}` };
                     })
@@ -843,69 +802,36 @@
                         console.error("Erro de upload de imagem:", error);
                         return { status: 'rejected', reason: `Erro de rede no upload de ${file.name}` };
                     });
-                allFileUploadPromises.push(promise);
             });
 
-            // Adiciona a promessa de upload de áudio, se existir
-            if (audioFileToSubmit) {
-                const audioFormData = new FormData();
-                audioFormData.append('file', audioFileToSubmit);
-
-                const audioPromise = fetch('https://api.gofile.io/getServer')
-                    .then(response => {
-                        if (!response.ok) throw new Error('GoFile.io: Não foi possível contatar o API para obter um servidor.');
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.status !== 'ok') throw new Error('GoFile.io: O API não retornou um servidor válido.');
-                        const server = data.data.server;
-                        return fetch(`https://${server}.gofile.io/uploadFile`, {
-                            method: 'POST',
-                            body: audioFormData,
-                        });
-                    })
-                    .then(uploadResponse => {
-                        updateProgress();
-                        if (!uploadResponse.ok) {
-                            return uploadResponse.text().then(text => { throw new Error(`GoFile.io: Falha no upload - ${uploadResponse.status} ${text}`) });
-                        }
-                        return uploadResponse.json();
-                    })
-                    .then(uploadData => {
-                        if (uploadData.status === 'ok') {
-                            return { status: 'fulfilled', value: { type: 'audio', url: uploadData.data.downloadPage } };
-                        } else {
-                            throw new Error(`GoFile.io: Ocorreu um erro após o upload - ${uploadData.status}`);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Falha no upload do áudio para GoFile.io:', error);
-                        return { status: 'rejected', reason: `Falha no upload do áudio: ${error.message}` };
-                    });
-                allFileUploadPromises.push(audioPromise);
-            }
-
             try {
-                // [LÓGICA CENTRAL] Aguarda TODOS os uploads de arquivos terminarem
-                const uploadResults = await Promise.all(allFileUploadPromises);
+                const uploadResults = await Promise.all(imageUploadPromises);
                 
-                const successfulUploads = uploadResults.filter(r => r && r.status === 'fulfilled').map(r => r.value);
-                const failedUploads = uploadResults.filter(r => r && r.status === 'rejected');
+                const successfulUrls = uploadResults.filter(r => r.status === 'fulfilled').map(r => r.value);
+                const failedUploads = uploadResults.filter(r => r.status === 'rejected');
 
+                document.getElementById('links_fotos_hidden').value = successfulUrls.join('\n');
+                
                 if (failedUploads.length > 0) {
                      const errorReasons = failedUploads.map(f => f.reason).join('; ');
-                     throw new Error(`Não foi possível fazer o upload de ${failedUploads.length} arquivo(s). Detalhes: ${errorReasons}`);
+                     document.getElementById('erros_upload_hidden').value = `Falha no upload de ${failedUploads.length} imagem(s): ${errorReasons}`;
                 }
 
-                // [LÓGICA CENTRAL] Se todos os uploads deram certo, preenche os campos ocultos
-                const photoURLs = successfulUploads.filter(r => r?.type === 'image').map(r => r.url).join('\n');
-                const audioURL = successfulUploads.find(r => r?.type === 'audio')?.url || 'Nenhum áudio enviado.';
-
-                document.getElementById('links_fotos_hidden').value = photoURLs;
-                document.getElementById('link_audio_hidden').value = audioURL;
+                // Convert audio to Base64 if it exists
+                if (audioFileToSubmit) {
+                    uploadProgressText.textContent = 'Processando áudio...';
+                    try {
+                        const audioBase64 = await fileToBase64(audioFileToSubmit);
+                        document.getElementById('audio_base64_hidden').value = audioBase64;
+                        updateProgress();
+                    } catch (audioError) {
+                        console.error('Erro ao converter áudio para Base64:', audioError);
+                        document.getElementById('erros_upload_hidden').value += '; Falha ao processar o arquivo de áudio.';
+                    }
+                }
                 
-                // [LÓGICA CENTRAL] Agora sim, envia o formulário SÓ COM TEXTO, que é leve e rápido
-                console.log("Todos os arquivos enviados. Enviando formulário final...");
+                // Submit form data to Formspree
+                console.log("Arquivos processados. Enviando formulário final...");
                 uploadProgressText.textContent = "Finalizando...";
                 const finalFormData = new FormData(form);
                 
@@ -916,7 +842,7 @@
                 });
                 
                 if (response.ok) {
-                    showFinalMessage(true);
+                    showFinalMessage(true, failedUploads.length);
                 } else {
                     const errorData = await response.json();
                     const serverError = errorData.errors ? errorData.errors.map(e => e.message).join(', ') : 'Erro desconhecido no servidor.';
@@ -941,7 +867,7 @@
             if(success) {
                 let message = `<i class="fas fa-check-circle success"></i><h2>Enviado com Sucesso!</h2><p>Suas informações foram recebidas. Em breve, entrarei em contato. Obrigado!</p>`;
                 if (failedCount > 0) {
-                    message += `<p style="color: var(--cor-dourado-premium); margin-top: 1rem;"><strong>Atenção:</strong> ${failedCount} arquivo(s) não puderam ser enviados. Se necessário, envie-os separadamente.</p>`;
+                    message += `<p style="color: var(--cor-dourado-premium); margin-top: 1rem;"><strong>Atenção:</strong> ${failedCount} imagem(ns) não puderam ser enviadas. Se necessário, envie-as separadamente.</p>`;
                 }
                 finalMessageContainer.innerHTML = message;
             } else {
@@ -949,6 +875,7 @@
             }
         }
         
+        // Modal Alert Logic
         function showAlert(title, message) {
             document.getElementById('modal-title').textContent = title;
             document.getElementById('modal-message').textContent = message;
@@ -963,6 +890,7 @@
             if (e.target === modalOverlay) modalOverlay.classList.remove('visible');
         });
         
+        // Initial setup
         filterVisibleSteps();
         showStep(currentStepIndex);
     });
