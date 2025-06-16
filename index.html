@@ -222,7 +222,6 @@
 
                 <!-- Campos ocultos para armazenar os links e dados -->
                 <textarea id="links_fotos_hidden" name="links_das_fotos" class="hidden"></textarea>
-                <textarea id="audio_base64_hidden" name="audio_em_base64" class="hidden"></textarea>
                 <input type="hidden" id="erros_upload_hidden" name="erros_de_upload">
 
                 <!-- Etapa 1: Boas-vindas e Pacote -->
@@ -671,6 +670,13 @@
                 };
 
                 mediaRecorder.onstop = () => {
+                    if (audioChunks.length === 0) {
+                        showAlert('Erro de Gravação', 'Nenhum áudio foi gravado. Tente novamente.');
+                        recordStatus.classList.add('hidden');
+                        stopRecordBtn.classList.add('hidden');
+                        recordBtn.classList.remove('hidden');
+                        return;
+                    }
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     const file = new File([audioBlob], `gravacao_${Date.now()}.webm`, { type: 'audio/webm' });
                     setAudioSource(file, 'Áudio gravado');
@@ -741,15 +747,6 @@
             playerSeekBar.style.setProperty('--seek-before-width', `${progressPercent}%`);
         });
 
-        // Function to convert a file to a Base64 string
-        const fileToBase64 = (file) => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-
-
         // Main form submission handler
         async function handleFormSubmit(event) {
             event.preventDefault();
@@ -759,10 +756,10 @@
             uploadProgressInfo.classList.remove('hidden');
 
             const imageFilesToUpload = [...selectedImageFiles];
-            const totalTasks = imageFilesToUpload.length + (audioFileToSubmit ? 1 : 0);
+            const totalTasks = imageFilesToUpload.length;
             
             if (totalTasks === 0) {
-                 showAlert("Nenhum Arquivo", "Por favor, adicione pelo menos uma foto para enviar.");
+                 showAlert("Nenhuma foto", "Por favor, adicione pelo menos uma foto para enviar.");
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Enviar Pedido';
                 uploadProgressInfo.classList.add('hidden');
@@ -772,12 +769,12 @@
             let tasksCompleted = 0;
             const updateProgress = () => {
                 tasksCompleted++;
-                const progress = Math.round((tasksCompleted / totalTasks) * 100);
-                uploadProgressText.textContent = `Processando arquivos... ${progress}%`;
+                const progress = totalTasks > 0 ? Math.round((tasksCompleted / totalTasks) * 100) : 100;
+                uploadProgressText.textContent = `Processando imagens... ${progress}%`;
                 uploadProgressBar.style.width = `${progress}%`;
             };
 
-            uploadProgressText.textContent = `Processando arquivos... 0%`;
+            uploadProgressText.textContent = `Processando imagens... 0%`;
             uploadProgressBar.style.width = '0%';
             
             // Upload images to ImgBB
@@ -788,7 +785,7 @@
                 
                 return fetch("https://api.imgbb.com/1/upload", { method: 'POST', body: formData })
                     .then(res => {
-                        updateProgress(); // Update progress after each upload attempt
+                        updateProgress();
                         if(res.ok) return res.json();
                         return res.text().then(text => { throw new Error(`[imgbb] ${res.status}: ${text}`) });
                     })
@@ -817,23 +814,26 @@
                      document.getElementById('erros_upload_hidden').value = `Falha no upload de ${failedUploads.length} imagem(s): ${errorReasons}`;
                 }
 
-                // Convert audio to Base64 if it exists
-                if (audioFileToSubmit) {
-                    uploadProgressText.textContent = 'Processando áudio...';
-                    try {
-                        const audioBase64 = await fileToBase64(audioFileToSubmit);
-                        document.getElementById('audio_base64_hidden').value = audioBase64;
-                        updateProgress();
-                    } catch (audioError) {
-                        console.error('Erro ao converter áudio para Base64:', audioError);
-                        document.getElementById('erros_upload_hidden').value += '; Falha ao processar o arquivo de áudio.';
+                // Create a new FormData object for the final submission
+                uploadProgressText.textContent = "Preparando envio final...";
+                const finalFormData = new FormData();
+                const sourceFormData = new FormData(form);
+
+                // Append all text/hidden/select/radio fields from the original form
+                for (const [key, value] of sourceFormData.entries()) {
+                    if (!(value instanceof File)) {
+                        finalFormData.append(key, value);
                     }
                 }
+
+                // Append the audio file as an attachment, if it exists
+                if (audioFileToSubmit) {
+                    finalFormData.append('gravacao_de_audio', audioFileToSubmit, audioFileToSubmit.name);
+                }
                 
-                // Submit form data to Formspree
-                console.log("Arquivos processados. Enviando formulário final...");
+                // Submit the final form data to Formspree
+                console.log("Enviando formulário final com anexo de áudio...");
                 uploadProgressText.textContent = "Finalizando...";
-                const finalFormData = new FormData(form);
                 
                 const response = await fetch(form.action, {
                     method: form.method,
