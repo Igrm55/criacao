@@ -58,8 +58,15 @@
         .welcome-message { background: rgba(255, 215, 0, 0.1); border-left: 4px solid var(--cor-dourado-premium); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: left; }
         .welcome-message strong { color: var(--cor-dourado-premium); }
 
-        #progress-bar { display: flex; list-style: none; margin-bottom: 2rem; position: relative; justify-content: space-between; }
-        #progress-bar .step { text-align: center; position: relative; width: 100%; color: var(--cor-cinza-claro); font-weight: 500; font-size: 0.8rem; }
+        #progress-bar { display: flex; list-style: none; margin-bottom: 2rem; position: relative; justify-content: space-between; padding: 0; }
+        #progress-bar .step { 
+            text-align: center; 
+            position: relative; 
+            color: var(--cor-cinza-claro); 
+            font-weight: 500; 
+            font-size: 0.8rem;
+            flex: 1; /* <-- FIX: Make steps share space equally */
+        }
         #progress-bar .step .dot { height: 25px; width: 25px; border: 2px solid var(--cor-cinza-claro); border-radius: 50%; display: inline-block; margin-bottom: 5px; transition: all 0.4s ease; }
         #progress-bar .step.active .dot, #progress-bar .step.completed .dot { background: var(--gradiente-principal); border-color: var(--cor-primaria); transform: scale(1.2); }
         #progress-bar .step.active, #progress-bar .step.completed { color: var(--cor-branco-puro); }
@@ -128,7 +135,7 @@
             color: white;
             margin-top: 1.5rem;
             display: inline-block;
-            text-decoration: none; /* remove underline from link */
+            text-decoration: none;
             padding: 0.9rem 2rem;
             border-radius: 50px;
             font-size: 1rem;
@@ -141,7 +148,7 @@
             background: #1DAE56;
             transform: scale(1.05);
         }
-        .btn-whatsapp i { margin-right: 8px; }
+        .btn-whatsapp i { font-size: 1.2rem; margin-right: 8px; vertical-align: middle; }
 
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease-in-out; }
@@ -381,6 +388,14 @@
         <div id="final-message" class="hidden"></div>
     </div>
     
+    <div id="alert-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="modal-title">Atenção</h2>
+            <p id="modal-message">Mensagem de alerta.</p>
+            <button id="modal-close" class="modal-close-btn">Entendi</button>
+        </div>
+    </div>
+    
     <script>
     // User provided API Key for ImgBB
     const IMGBB_API_KEY = "e61b4300ad03c6c66f116e9125345720";
@@ -434,6 +449,12 @@
         const pedidoSelect = document.getElementById('pedido');
         const pedidoIdeiaGroup = document.getElementById('pedido-ideia-group');
         const pedidoIdeiaTextarea = document.getElementById('pedido-ideia');
+
+        // --- Modal ---
+        const alertModal = document.getElementById('alert-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalCloseBtn = document.getElementById('modal-close');
 
         // --- State ---
         let currentStepIndex = 0;
@@ -491,18 +512,13 @@
             };
             packageConfig = configs[selectedPackageValue];
 
-            // Update image instructions
             imageUploadInstruction.textContent = `Selecione os seus ${packageConfig.maxFiles} melhores momentos. Pelo menos uma foto é obrigatória.`;
-            
-            // Update music instructions
             musicInstruction.textContent = packageConfig.musicText;
             const musicaTextarea = document.getElementById('musica_spotify');
             musicaTextarea.placeholder = packageConfig.musicPlaceholder;
             musicaTextarea.rows = packageConfig.musicRows;
 
-            // Re-validate images in case the package changed
             validateImageSelection();
-            
             filterVisibleSteps();
         }
 
@@ -530,7 +546,7 @@
 
         function updateProgressBar() {
             progressBar.innerHTML = '';
-            visibleSteps.forEach((step, index) => {
+            visibleSteps.forEach((step) => {
                 const stepName = step.dataset.stepName;
                 const li = document.createElement('li');
                 li.className = 'step';
@@ -582,19 +598,14 @@
                 }
             }
         }
-
-        function clearInputError(inputElement) {
-            const formGroup = inputElement.closest('.form-group');
-            if (formGroup) {
-                formGroup.classList.remove('has-error');
-            }
-        }
         
         function validateCurrentStep() {
             let isValid = true;
-            clearAllErrors(visibleSteps[currentStepIndex]);
             const currentStep = visibleSteps[currentStepIndex];
             if (!currentStep) return false;
+            
+            const errorGroups = currentStep.querySelectorAll('.has-error');
+            errorGroups.forEach(group => group.classList.remove('has-error'));
 
             const inputs = currentStep.querySelectorAll('[required]');
             inputs.forEach(input => {
@@ -623,29 +634,22 @@
                 if (!audioFileToSubmit) {
                     isValid = false;
                     audioError.style.display = 'block';
+                } else {
+                    audioError.style.display = 'none';
                 }
             }
             return isValid;
         }
         
-        function clearAllErrors(stepElement) {
-             const errorGroups = stepElement.querySelectorAll('.has-error');
-             errorGroups.forEach(group => group.classList.remove('has-error'));
-             audioError.style.display = 'none';
-             imageError.style.display = 'none';
-        }
-        
         function validateImageSelection() {
-            if (!packageConfig.maxFiles) return true; // Don't validate if package not chosen
+            if (!packageConfig.maxFiles) return true;
 
             imageError.style.display = 'none';
             photoValidationInput.value = selectedImageFiles.length > 0 ? 'valid' : '';
             
             if (selectedImageFiles.length === 0) {
-                 photoValidationInput.value = ''; // make it fail the [required] check
-                 imageError.textContent = "É obrigatório enviar pelo menos uma foto.";
-                 imageError.style.display = 'block';
-                 return false;
+                 photoValidationInput.value = '';
+                 return true; // It's not an error state, but the main validation will catch it as not filled.
             } else if (selectedImageFiles.length > packageConfig.maxFiles) {
                 photoValidationInput.value = '';
                 imageError.textContent = `Limite excedido! Remova ${selectedImageFiles.length - packageConfig.maxFiles} foto(s) para continuar.`;
@@ -683,7 +687,6 @@
             showStep(currentStepIndex);
         });
 
-        // Image handling
         addPhotoBtn.addEventListener('click', () => fotosInput.click());
 
         fotosInput.addEventListener('change', () => {
@@ -716,8 +719,7 @@
             validateImageSelection();
         }
         
-        // Audio Handling
-        function setAudioSource(file, sourceName) {
+        function setAudioSource(file) {
             audioFileToSubmit = file;
             if (!file) {
                 audioPlaybackElement.removeAttribute('src');
@@ -761,7 +763,6 @@
         stopRecordBtn.addEventListener('click', () => mediaRecorder?.stop());
         audioInput.addEventListener('change', (e) => e.target.files[0] && setAudioSource(e.target.files[0]));
         
-        // --- Audio Player ---
         function formatTime(s) { const m=Math.floor(s/60); const sec=Math.floor(s%60); return `${m}:${sec<10?'0':''}${sec}`; }
         playerPlayBtn.addEventListener('click', () => {
             if(audioPlaybackElement.paused){ audioPlaybackElement.play(); playerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';}
@@ -786,18 +787,17 @@
             submitBtn.innerHTML = 'Enviando... <i class="fas fa-spinner fa-spin"></i>';
             uploadProgressInfo.classList.remove('hidden');
 
-            const imageFilesToUpload = [...selectedImageFiles];
             let tasksCompleted = 0;
             const updateProgress = () => {
                 tasksCompleted++;
-                const progress = imageFilesToUpload.length > 0 ? Math.round((tasksCompleted / imageFilesToUpload.length) * 100) : 100;
+                const progress = selectedImageFiles.length > 0 ? Math.round((tasksCompleted / selectedImageFiles.length) * 100) : 100;
                 uploadProgressText.textContent = `Processando imagens... ${progress}%`;
                 uploadProgressBar.style.width = `${progress}%`;
             };
             uploadProgressText.textContent = `Processando imagens... 0%`;
             uploadProgressBar.style.width = '0%';
             
-            const imageUploadPromises = imageFilesToUpload.map(file => {
+            const imageUploadPromises = selectedImageFiles.map(file => {
                 const formData = new FormData();
                 formData.append("key", IMGBB_API_KEY);
                 formData.append("image", file);
@@ -812,7 +812,10 @@
 
             try {
                 const uploadResults = await Promise.all(imageUploadPromises);
-                document.getElementById('links_fotos_hidden').value = uploadResults.filter(r => r.status === 'fulfilled').map(r => r.value).join('\n');
+                
+                const successfulUrls = uploadResults.filter(r => r.status === 'fulfilled').map(r => r.value);
+                document.getElementById('links_fotos_hidden').value = successfulUrls.join('\n');
+                
                 const failedUploads = uploadResults.filter(r => r.status === 'rejected');
                 if (failedUploads.length > 0) {
                      document.getElementById('erros_upload_hidden').value = `Falha no upload de ${failedUploads.length} imagem(s).`;
@@ -820,12 +823,12 @@
 
                 uploadProgressText.textContent = "Preparando envio final...";
                 const finalFormData = new FormData(form);
-                 if (audioFileToSubmit) {
+                if (audioFileToSubmit) {
                     finalFormData.append('gravacao_de_audio', audioFileToSubmit, audioFileToSubmit.name);
                 }
                 
                 const response = await fetch(form.action, {
-                    method: form.method,
+                    method: 'POST',
                     body: finalFormData,
                     headers: { 'Accept': 'application/json' }
                 });
@@ -834,7 +837,7 @@
                     showFinalMessage(true, failedUploads.length);
                 } else {
                     const data = await response.json();
-                    throw new Error(data.errors ? data.errors.map(e => e.message).join(', ') : 'Erro no servidor.');
+                    throw new Error(data.errors ? data.errors.map(e => e.message).join(', ') : 'Erro no servidor do formulário.');
                 }
             } catch (error) {
                 showFinalMessage(false, 0, error.message);
@@ -868,39 +871,29 @@
                 }
                 finalMessageContainer.innerHTML = message;
             } else {
-                finalMessageContainer.innerHTML = `<i class="fas fa-times-circle error"></i><h2>Ocorreu um Erro</h2><p>${errorMsg}</p><p>Por favor, tente novamente ou entre em contato.</p>`;
+                finalMessageContainer.innerHTML = `<i class="fas fa-times-circle error"></i><h2>Ocorreu um Erro</h2><p>${errorMsg}</p><p>Por favor, tente novamente ou entre em contato diretamente pelo WhatsApp.</p>`;
             }
         }
         
-        // --- Modal ---
         function showAlert(title, message) {
-            const modalOverlay = document.createElement('div');
-            modalOverlay.className = 'modal-overlay';
-            const modalContent = document.createElement('div');
-            modalContent.className = 'modal-content';
-            modalContent.innerHTML = `<h2 id="modal-title">${title}</h2><p id="modal-message">${message}</p><button id="modal-close" class="modal-close-btn">Entendi</button>`;
-            modalOverlay.appendChild(modalContent);
-            document.body.appendChild(modalOverlay);
-
-            setTimeout(() => modalOverlay.classList.add('visible'), 10);
-
-            const closeModal = () => {
-                modalOverlay.classList.remove('visible');
-                setTimeout(() => modalOverlay.remove(), 300);
-            };
-
-            modalContent.querySelector('#modal-close').onclick = closeModal;
-            modalOverlay.onclick = (e) => {
-                if (e.target === modalOverlay) closeModal();
-            };
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            alertModal.classList.add('visible');
         }
+
+        modalCloseBtn.addEventListener('click', () => alertModal.classList.remove('visible'));
+        alertModal.addEventListener('click', (e) => {
+            if (e.target === alertModal) {
+                alertModal.classList.remove('visible');
+            }
+        });
 
 
         // --- Initial Setup ---
         createSecretMessageInputs();
-        updateUIForPackage(); // Set initial state
-        filterVisibleSteps(); // Filter for the first time
-        showStep(currentStepIndex); // Show the first step
+        updateUIForPackage();
+        filterVisibleSteps();
+        showStep(currentStepIndex);
     });
     </script>
 </body>
