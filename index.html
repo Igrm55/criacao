@@ -73,10 +73,10 @@
         .form-group label { display: block; margin-bottom: 0.75rem; font-weight: 600; font-size: 1.1rem; color: var(--cor-branco-suave); }
         .form-group small { display: block; color: var(--cor-cinza-claro); font-size: 0.85rem; margin-top: -0.5rem; margin-bottom: 0.75rem; }
 
-        input[type="text"], textarea, select {
+        input[type="text"], input[type="email"], textarea, select {
             width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid var(--cor-cinza-claro); background-color: var(--cor-fundo); color: var(--cor-branco-puro); font-size: 1rem; font-family: 'Poppins', sans-serif; transition: all 0.3s ease;
         }
-        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--cor-primaria); box-shadow: 0 0 10px var(--cor-primaria); }
+        input:focus, input[type="email"]:focus, textarea:focus, select:focus { outline: none; border-color: var(--cor-primaria); box-shadow: 0 0 10px var(--cor-primaria); }
         textarea { resize: vertical; min-height: 120px; }
 
         .package-selection { display: grid; grid-template-columns: 1fr; gap: 1rem; }
@@ -228,6 +228,10 @@
                         </div>
                         <label for="nome">Seu primeiro nome</label>
                         <input type="text" id="nome" name="nome_do_cliente" required placeholder="Ex: Igor">
+                    </div>
+                     <div class="form-group">
+                        <label for="email">Seu melhor e-mail</label>
+                        <input type="email" id="email" name="email" required placeholder="Ex: seuemail@dominio.com">
                     </div>
                     <div class="form-group">
                         <label>Qual pacote você deseja adquirir?</label>
@@ -743,7 +747,7 @@
                 filesToProcess.push({ file: audioFileToSubmit, type: 'audio' });
             }
             
-            if (filesToProcess.length === 0 && selectedImageFiles.length === 0) {
+            if (selectedImageFiles.length === 0) {
                  showAlert('Nenhum arquivo', 'Você precisa enviar pelo menos uma foto.');
                  submitBtn.disabled = false;
                  submitBtn.innerHTML = 'Enviar Pedido';
@@ -811,6 +815,10 @@
                 const formData = new FormData(form);
                 const formDataObject = Object.fromEntries(formData.entries());
 
+                // Adicionar campos especiais para o Formspree
+                formDataObject['_replyto'] = formDataObject.email;
+                formDataObject['_subject'] = `Novo Pedido do Portal: ${formDataObject.nome_do_cliente}`;
+                
                 formDataObject['links_das_fotos'] = successfulImageUrls.join('\n') || 'Nenhuma foto enviada.';
                 formDataObject['link_do_audio'] = audioLink || 'Nenhum áudio enviado.';
                 formDataObject['erros_de_upload'] = errorMessages.length > 0 ? errorMessages.join('; ') : 'Nenhum erro.';
@@ -856,7 +864,7 @@
                 `;
 
                 if (hadUploadErrors) {
-                    message += `<p style="color: var(--cor-dourado-premium); margin-top: 1.5rem; font-weight: 500; font-size: 0.9rem;"><strong>Atenção:</strong> Um ou mais arquivos não puderam ser enviados. Por favor, envie-os manualmente pelo WhatsApp para garantir que seu presente fique perfeito.</p>`;
+                    message += `<p style="color: var(--cor-dourado-premium); margin-top: 1.5rem; font-weight: 500; font-size: 0.9rem;"><strong>Atenção:</strong> Um ou mais arquivos não puderam ser enviados. Por favor, envie-os manually pelo WhatsApp para garantir que seu presente fique perfeito.</p>`;
                 }
                 finalMessageContainer.innerHTML = message;
             } else {
