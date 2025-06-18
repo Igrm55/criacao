@@ -393,15 +393,10 @@
     
     <script>
     // --- Configurações de Upload ---
-
-    // Chave da API para ImgBB (upload de imagens)
     const IMGBB_API_KEY = "e61b4300ad03c6c66f116e9125345720";
-
-    // Configurações do Cloudinary (upload de áudio)
-    const CLOUDINARY_CLOUD_NAME = "dfibfzxsj"; // Seu Cloud Name
-    const CLOUDINARY_UPLOAD_PRESET = "ml_default"; // Sua predefinição de upload
-    const FORMSPREE_ENDPOINT = "https://formspree.io/f/xwpbovgn"; // Seu endpoint do Formspree
-
+    const CLOUDINARY_CLOUD_NAME = "dfibfzxsj";
+    const CLOUDINARY_UPLOAD_PRESET = "ml_default";
+    const FORMSPREE_ENDPOINT = "https://formspree.io/f/xwpbovgn";
     // --- Fim das Configurações ---
 
 
@@ -448,7 +443,6 @@
         let currentStepIndex = 0;
         let visibleSteps = [];
 
-        // Filtra os passos do formulário com base no pacote selecionado
         function filterVisibleSteps() {
             const selectedPackageRadio = document.querySelector('input[name="pacote_escolhido"]:checked');
             if (!selectedPackageRadio) {
@@ -457,7 +451,7 @@
             }
             const selectedPackageValue = selectedPackageRadio.id; 
             
-            visibleSteps = [formSteps[0]]; // O primeiro passo é sempre visível
+            visibleSteps = [formSteps[0]];
             formSteps.forEach(step => {
                 const packages = step.dataset.packages;
                 const isFinalStep = step.dataset.stepName === 'Enviar';
@@ -465,11 +459,10 @@
                     visibleSteps.push(step);
                 }
             });
-            visibleSteps.push(formSteps.find(step => step.dataset.stepName === 'Enviar')); // O último passo é sempre visível
+            visibleSteps.push(formSteps.find(step => step.dataset.stepName === 'Enviar'));
             updateProgressBar();
         }
 
-        // Atualiza a barra de progresso
         function updateProgressBar() {
             progressBar.innerHTML = '';
             visibleSteps.forEach(step => {
@@ -485,7 +478,6 @@
             updateProgressClasses();
         }
 
-        // Atualiza as classes 'active' e 'completed' na barra de progresso
         function updateProgressClasses() {
             const progressSteps = progressBar.querySelectorAll('.step');
             const progressLine = document.getElementById('progress-line');
@@ -501,7 +493,6 @@
             progressLine.style.width = `${widthPercentage}%`;
         }
         
-        // Mostra o passo atual do formulário
         function showStep(stepIndex) {
             formSteps.forEach(step => step.classList.remove('active'));
             if(visibleSteps[stepIndex]) {
@@ -511,33 +502,31 @@
             updateProgressClasses();
         }
 
-        // Controla a visibilidade dos botões de navegação
         function updateButtonVisibility() {
             prevBtn.classList.toggle('hidden', currentStepIndex === 0);
             nextBtn.classList.toggle('hidden', currentStepIndex === visibleSteps.length - 1);
             submitBtn.classList.toggle('hidden', currentStepIndex !== visibleSteps.length - 1);
         }
 
-        // Valida os campos obrigatórios do passo atual
         function validateCurrentStep() {
             const currentStep = visibleSteps[currentStepIndex];
             if (!currentStep) return false;
             
-            const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.value;
-
-            // Validação específica para a etapa de Memórias (fotos)
+            // Validação de fotos
             if (currentStep.dataset.stepName === 'Memórias' && selectedImageFiles.length === 0) {
                  showAlert('Fotos Obrigatórias', 'Por favor, adicione pelo menos uma foto para continuar.');
                  return false;
             }
             
-            // Validação específica para a etapa de Sinfonia (áudio)
-            if (currentStep.dataset.stepName === 'Sinfonia' && !audioFileToSubmit) {
-                showAlert('Áudio Obrigatório', 'Por favor, grave ou envie um arquivo de áudio para este pacote.');
+            // Validação de áudio (APENAS para pacotes que exigem)
+            const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.value;
+            const audioIsRequiredForPackage = selectedPackage === 'Nossa Sinfonia' || selectedPackage === 'Universo Particular';
+            if (currentStep.dataset.stepName === 'Sinfonia' && audioIsRequiredForPackage && !audioFileToSubmit) {
+                showAlert('Áudio Obrigatório', 'Para este pacote, você precisa gravar ou enviar um arquivo de áudio.');
                 return false;
             }
 
-            // Validação genérica para campos com 'required'
+            // Validação genérica de campos 'required'
             const inputs = currentStep.querySelectorAll('[required]');
             for (const input of inputs) {
                 const isRadio = input.type === 'radio';
@@ -552,12 +541,12 @@
                      const label = group ? group.querySelector('label') : null;
                      const labelText = label ? `"${label.textContent}"` : 'um campo obrigatório';
                      if(label) label.style.color = '#FF4D4D';
-                     showAlert('Campo Obrigatório', `Por favor, preencha ${labelText}.`);
+                     showAlert('Campo Obrigatório', `Por favor, preencha o campo ${labelText}.`);
                      return false;
                  } else {
                      const group = input.closest('.form-group');
                      const label = group ? group.querySelector('label') : null;
-                     if(label) label.style.color = ''; // Reseta a cor se for válido
+                     if(label) label.style.color = '';
                  }
             }
             return true;
@@ -581,7 +570,6 @@
             showStep(currentStepIndex);
         });
 
-        // --- LÓGICA DE UPLOAD DE IMAGEM ---
         addPhotoBtn.addEventListener('click', () => fotosInput.click());
 
         fotosInput.addEventListener('change', (event) => {
@@ -597,12 +585,11 @@
                 showAlert('Limite Excedido', `Você pode adicionar mais ${availableSlots} foto(s). Você tentou adicionar ${files.length}. Somente as primeiras ${availableSlots} foram adicionadas.`);
             }
             
-            // Adiciona apenas os arquivos permitidos
             const filesToAdd = Array.from(files).slice(0, availableSlots);
             selectedImageFiles.push(...filesToAdd);
             
             renderImagePreviews();
-            fotosInput.value = ''; // Limpa o input para permitir selecionar os mesmos arquivos de novo
+            fotosInput.value = '';
         });
 
         function renderImagePreviews() {
@@ -610,27 +597,22 @@
             selectedImageFiles.forEach((file, index) => {
                 const previewItem = document.createElement('div');
                 previewItem.className = 'image-preview-item';
-
                 const img = document.createElement('img');
                 img.src = URL.createObjectURL(file);
-                
                 const removeBtn = document.createElement('button');
                 removeBtn.type = 'button';
                 removeBtn.className = 'remove-image-btn';
                 removeBtn.innerHTML = '&times;';
-                
                 removeBtn.addEventListener('click', () => {
                     selectedImageFiles.splice(index, 1);
                     renderImagePreviews();
                 });
-
                 previewItem.appendChild(img);
                 previewItem.appendChild(removeBtn);
                 imagePreviewContainer.appendChild(previewItem);
             });
         }
         
-        // --- LÓGICA DE GRAVAÇÃO E UPLOAD DE ÁUDIO ---
         function setAudioSource(file, sourceName) {
             if (!file) {
                 audioFileToSubmit = null;
@@ -643,6 +625,7 @@
             const audioUrl = URL.createObjectURL(file);
             audioPlaybackElement.src = audioUrl;
             audioUploadStatus.textContent = `Áudio selecionado: ${sourceName}`;
+            audioUploadStatus.style.color = 'var(--cor-dourado-premium)';
             customAudioPlayer.classList.remove('hidden');
         }
 
@@ -662,8 +645,6 @@
                     stopRecordBtn.classList.remove('hidden');
                 };
 
-                // **LÓGICA SIMPLIFICADA**: Remove a conversão para MP3 no cliente.
-                // O arquivo .webm gravado será enviado diretamente para o Cloudinary.
                 mediaRecorder.onstop = () => {
                     recordStatus.textContent = 'Processando gravação...';
                     stopRecordBtn.classList.add('hidden');
@@ -677,7 +658,6 @@
                     
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     const recordedFile = new File([audioBlob], `gravacao_${Date.now()}.webm`, { type: 'audio/webm' });
-
                     setAudioSource(recordedFile, recordedFile.name);
                     recordStatus.textContent = 'Gravação pronta para envio!';
                 };
@@ -695,8 +675,6 @@
             }
         });
 
-        // **FUNCIONALIDADE MELHORADA**: Aceita qualquer tipo de áudio que o usuário enviar.
-        // O Cloudinary será responsável por processar o formato.
         audioInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
@@ -705,7 +683,6 @@
             }
         });
         
-        // --- LÓGICA DO PLAYER DE ÁUDIO CUSTOMIZADO ---
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
@@ -723,6 +700,7 @@
         });
 
         audioPlaybackElement.addEventListener('timeupdate', () => {
+            if(!audioPlaybackElement.duration) return;
             const progressPercent = (audioPlaybackElement.currentTime / audioPlaybackElement.duration) * 100;
             playerSeekBar.style.setProperty('--seek-before-width', `${progressPercent}%`);
             playerSeekBar.value = audioPlaybackElement.currentTime;
@@ -737,6 +715,7 @@
         audioPlaybackElement.addEventListener('ended', () => {
              playerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
              playerSeekBar.value = 0;
+             playerCurrentTime.textContent = formatTime(0);
              playerSeekBar.style.setProperty('--seek-before-width', `0%`);
         });
 
@@ -744,113 +723,113 @@
             audioPlaybackElement.currentTime = playerSeekBar.value;
         });
 
-        // --- FUNÇÃO PRINCIPAL DE ENVIO DO FORMULÁRIO ---
+        // --- FUNÇÃO DE ENVIO DO FORMULÁRIO (RECONSTRUÍDA E UNIFICADA) ---
         async function handleFormSubmit() {
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Enviando... <i class="fas fa-spinner fa-spin"></i>';
             uploadProgressInfo.classList.remove('hidden');
-            uploadProgressBar.style.width = '0%';
 
-            // --- 1. UPLOAD DE IMAGENS ---
-            const imageFilesToUpload = [...selectedImageFiles];
-            let totalTasks = imageFilesToUpload.length;
-            let tasksCompleted = 0;
-            
-            const updateProgress = () => {
-                tasksCompleted++;
-                let progress = Math.round((tasksCompleted / totalTasks) * 100);
-                uploadProgressBar.style.width = `${progress}%`;
-                uploadProgressText.textContent = `Processando arquivos... (${tasksCompleted}/${totalTasks})`;
-            };
+            const filesToProcess = [];
 
-            const imageUploadPromises = imageFilesToUpload.map(file => {
-                const formData = new FormData();
-                formData.append("key", IMGBB_API_KEY);
-                formData.append("image", file);
-                
-                return fetch("https://api.imgbb.com/1/upload", { method: 'POST', body: formData })
-                    .then(res => res.json())
-                    .then(result => {
-                        updateProgress();
-                        if (result.success) return { status: 'fulfilled', value: result.data.url };
-                        return { status: 'rejected', reason: result.error?.message || `Falha no upload de ${file.name}` };
-                    })
-                    .catch(error => {
-                        updateProgress();
-                        return { status: 'rejected', reason: `Erro de rede no upload de ${file.name}: ${error.message}` };
-                    });
+            // 1. Adicionar arquivos de imagem à fila de processamento
+            selectedImageFiles.forEach(file => {
+                filesToProcess.push({ file: file, type: 'image' });
             });
-            
-            // Adiciona o upload de áudio à contagem total de tarefas se necessário
+
+            // 2. Adicionar arquivo de áudio à fila se for necessário
             const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.value;
-            const requiresAudio = (selectedPackage === 'Nossa Sinfonia' || selectedPackage === 'Universo Particular') && audioFileToSubmit;
-            if (requiresAudio) {
-                totalTasks++;
+            const audioIsRequired = (selectedPackage === 'Nossa Sinfonia' || selectedPackage === 'Universo Particular') && audioFileToSubmit;
+            if (audioIsRequired) {
+                filesToProcess.push({ file: audioFileToSubmit, type: 'audio' });
             }
-            uploadProgressText.textContent = `Processando arquivos... (0/${totalTasks})`;
+            
+            if (filesToProcess.length === 0 && selectedImageFiles.length === 0) {
+                 showAlert('Nenhum arquivo', 'Você precisa enviar pelo menos uma foto.');
+                 submitBtn.disabled = false;
+                 submitBtn.innerHTML = 'Enviar Pedido';
+                 uploadProgressInfo.classList.add('hidden');
+                 return;
+            }
 
-            try {
-                const imageUploadResults = await Promise.all(imageUploadPromises);
-                
-                // --- 2. UPLOAD DE ÁUDIO ---
-                let audioLink = '';
-                let audioUploadError = '';
+            // 3. Função unificada para fazer upload de um arquivo
+            const uploadFile = (item) => {
+                const formData = new FormData();
+                let url = '';
+                let isImage = item.type === 'image';
 
-                if (requiresAudio) {
-                    try {
-                        const audioFormData = new FormData();
-                        audioFormData.append('file', audioFileToSubmit);
-                        audioFormData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-                        
-                        const uploadRes = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`, { 
-                            method: 'POST', 
-                            body: audioFormData,
-                        });
-                        
-                        const uploadData = await uploadRes.json();
-                        updateProgress();
-
-                        if (uploadData.secure_url) {
-                            audioLink = uploadData.secure_url;
-                        } else {
-                            throw new Error(uploadData.error?.message || 'Erro desconhecido no Cloudinary');
-                        }
-                    } catch(err) {
-                        updateProgress();
-                        console.error("Falha no upload de áudio:", err);
-                        audioUploadError = `Falha no upload do áudio: ${err.message}.`;
-                    }
+                if (isImage) {
+                    formData.append('key', IMGBB_API_KEY);
+                    formData.append('image', item.file);
+                    url = 'https://api.imgbb.com/1/upload';
+                } else { // audio
+                    formData.append('file', item.file);
+                    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+                    url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
                 }
 
-                // --- 3. AGREGAR DADOS E ENVIAR PARA O FORMSPREE ---
-                uploadProgressText.textContent = "Finalizando...";
-                
-                const successfulImageUrls = imageUploadResults.filter(r => r.status === 'fulfilled').map(r => r.value);
-                const failedUploads = imageUploadResults.filter(r => r.status === 'rejected');
-                
-                let errorMessages = failedUploads.map(f => f.reason);
-                if (audioUploadError) errorMessages.push(audioUploadError);
+                return fetch(url, { method: 'POST', body: formData })
+                    .then(res => res.json())
+                    .then(data => {
+                        if ((isImage && data.success) || (!isImage && data.secure_url)) {
+                             return { type: item.type, status: 'fulfilled', value: isImage ? data.data.url : data.secure_url };
+                        }
+                        const reason = isImage ? (data.error?.message || `Falha no upload de ${item.file.name}`) : (data.error?.message || 'Erro no upload do áudio');
+                        return { type: item.type, status: 'rejected', reason: reason };
+                    })
+                    .catch(error => {
+                        return { type: item.type, status: 'rejected', reason: `Erro de rede: ${error.message}` };
+                    });
+            };
 
+            // 4. Rastrear progresso e executar todos os uploads
+            const totalTasks = filesToProcess.length;
+            let tasksCompleted = 0;
+            uploadProgressText.textContent = `Processando... (0/${totalTasks})`;
+            uploadProgressBar.style.width = '0%';
+            
+            const uploadPromises = filesToProcess.map(item => 
+                uploadFile(item).then(result => {
+                    tasksCompleted++;
+                    const progress = Math.round((tasksCompleted / totalTasks) * 100);
+                    uploadProgressBar.style.width = `${progress}%`;
+                    uploadProgressText.textContent = `Processando... (${tasksCompleted}/${totalTasks})`;
+                    return result;
+                })
+            );
+
+            try {
+                // 5. Aguardar todos os uploads e processar os resultados
+                const allResults = await Promise.all(uploadPromises);
+
+                const successfulImageUrls = allResults.filter(r => r.type === 'image' && r.status === 'fulfilled').map(r => r.value);
+                const audioResult = allResults.find(r => r.type === 'audio' && r.status === 'fulfilled');
+                const audioLink = audioResult ? audioResult.value : '';
+                const failedUploads = allResults.filter(r => r.status === 'rejected');
+                const errorMessages = failedUploads.map(f => `[${f.type}] ${f.reason}`);
+
+                // 6. Montar o objeto de dados e enviar para o Formspree
                 const formData = new FormData(form);
                 const formDataObject = Object.fromEntries(formData.entries());
 
-                formDataObject['links_das_fotos'] = successfulImageUrls.join('\n');
+                formDataObject['links_das_fotos'] = successfulImageUrls.join('\n') || 'Nenhuma foto enviada.';
                 formDataObject['link_do_audio'] = audioLink || 'Nenhum áudio enviado.';
                 formDataObject['erros_de_upload'] = errorMessages.length > 0 ? errorMessages.join('; ') : 'Nenhum erro.';
-                
+
                 const response = await fetch(FORMSPREE_ENDPOINT, {
                     method: 'POST',
                     body: JSON.stringify(formDataObject),
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }
                 });
-                
+
                 if (response.ok) {
                     showFinalMessage(true, errorMessages.length > 0);
                 } else {
-                    throw new Error('Não foi possível enviar os dados do formulário.');
+                    const errorData = await response.json();
+                    throw new Error(errorData.errors?.map(e => e.message).join(', ') || 'Erro ao enviar dados do formulário.');
                 }
 
             } catch (error) {
+                console.error("Erro final no processo de envio:", error);
                 showFinalMessage(false, true, error.message);
             }
         }
@@ -881,11 +860,10 @@
                 }
                 finalMessageContainer.innerHTML = message;
             } else {
-                finalMessageContainer.innerHTML = `<i class="fas fa-times-circle error"></i><h2>Ocorreu um Erro</h2><p>Não foi possível enviar suas informações. Detalhe: ${errorMsg}</p><p>Por favor, tente novamente. Se o erro persistir, entre em contato diretamente pelo WhatsApp.</p>`;
+                finalMessageContainer.innerHTML = `<i class="fas fa-times-circle error"></i><h2>Ocorreu um Erro</h2><p>Não foi possível enviar suas informações. Detalhe: ${errorMsg}</p><p>Por favor, tente novamente ou entre em contato diretamente pelo WhatsApp se o erro persistir.</p>`;
             }
         }
         
-        // --- LÓGICA DO MODAL DE ALERTA ---
         function showAlert(title, message) {
             document.getElementById('modal-title').textContent = title;
             document.getElementById('modal-message').textContent = message;
