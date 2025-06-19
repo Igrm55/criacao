@@ -345,7 +345,7 @@
                 <!-- Etapa 4: Essência -->
                 <div class="form-step" data-step-name="Essência" data-packages="laco,sinfonia,universo">
                      <div class="upsell-note-step hidden" id="upsell-laco-essencia">Quer um presente ainda mais emocionante? Com o plano <strong class="sinfonia-text">Nossa Sinfonia</strong>, você pode incluir um áudio com sua voz e ter uma galeria com o dobro de fotos, tornando cada momento inesquecível.</div>
-                    <div class="upsell-note-step hidden" id="upsell-sinfonia-essencia">Que tal transformar este presente em uma experiência mágica? O plano <strong class="universo-text">Universo Particular</strong> revela uma mensagem secreta com senha e o mapa astral do casal, criando uma conexão ainda mais profunda.</div>
+                     <div class="upsell-note-step hidden" id="upsell-sinfonia-essencia">Que tal transformar este presente em uma experiência mágica? O plano <strong class="universo-text">Universo Particular</strong> revela uma mensagem secreta com senha e o mapa astral do casal, criando uma conexão ainda mais profunda.</div>
                     <div class="form-group">
                         <label for="carta">Sua Declaração</label>
                         <small>Escreva ou cole aqui o texto que será o coração do presente.</small>
@@ -360,8 +360,8 @@
 
                 <!-- Etapa 5: Música -->
                  <div class="form-step" data-step-name="Música" data-packages="laco,sinfonia,universo">
-                     <div class="upsell-note-step hidden" id="upsell-laco-musica">Quer um presente ainda mais emocionante? Com o plano <strong class="sinfonia-text">Nossa Sinfonia</strong>, você pode incluir um áudio com sua voz e ter uma galeria com o dobro de fotos, tornando cada momento inesquecível.</div>
-                     <div class="upsell-note-step hidden" id="upsell-sinfonia-musica">Que tal transformar este presente em uma experiência mágica? O plano <strong class="universo-text">Universo Particular</strong> revela uma mensagem secreta com senha e o mapa astral do casal, criando uma conexão ainda mais profunda.</div>
+                       <div class="upsell-note-step hidden" id="upsell-laco-musica">Quer um presente ainda mais emocionante? Com o plano <strong class="sinfonia-text">Nossa Sinfonia</strong>, você pode incluir um áudio com sua voz e ter uma galeria com o dobro de fotos, tornando cada momento inesquecível.</div>
+                       <div class="upsell-note-step hidden" id="upsell-sinfonia-musica">Que tal transformar este presente em uma experiência mágica? O plano <strong class="universo-text">Universo Particular</strong> revela uma mensagem secreta com senha e o mapa astral do casal, criando uma conexão ainda mais profunda.</div>
                     <div class="form-group" id="laco-sinfonia-music-group">
                         <label>Música do Casal</label>
                         <small>Cole aqui o link de uma música do Spotify.</small>
@@ -377,8 +377,8 @@
 
                 <!-- Etapa 6: Memórias (Uploads) -->
                 <div class="form-step" data-step-name="Memórias" data-packages="laco,sinfonia,universo">
-                     <div class="upsell-note-step hidden" id="upsell-laco-memorias">Quer um presente ainda mais emocionante? Com o plano <strong class="sinfonia-text">Nossa Sinfonia</strong>, você pode incluir um áudio com sua voz e ter uma galeria com o dobro de fotos, tornando cada momento inesquecível.</div>
-                    <div class="upsell-note-step hidden" id="upsell-sinfonia-memorias">Que tal transformar este presente em uma experiência mágica? O plano <strong class="universo-text">Universo Particular</strong> revela uma mensagem secreta com senha e o mapa astral do casal, criando uma conexão ainda mais profunda.</div>
+                      <div class="upsell-note-step hidden" id="upsell-laco-memorias">Quer um presente ainda mais emocionante? Com o plano <strong class="sinfonia-text">Nossa Sinfonia</strong>, você pode incluir um áudio com sua voz e ter uma galeria com o dobro de fotos, tornando cada momento inesquecível.</div>
+                     <div class="upsell-note-step hidden" id="upsell-sinfonia-memorias">Que tal transformar este presente em uma experiência mágica? O plano <strong class="universo-text">Universo Particular</strong> revela uma mensagem secreta com senha e o mapa astral do casal, criando uma conexão ainda mais profunda.</div>
                     <div class="form-group">
                         <label>Galeria de Momentos</label>
                         <small>Adicione as fotos que marcaram a história de vocês.</small>
@@ -391,7 +391,7 @@
                 
                 <!-- Etapa 7: Áudio -->
                 <div class="form-step" data-step-name="Sinfonia" data-packages="sinfonia,universo">
-                     <div class="upsell-note-step hidden" id="upsell-sinfonia-audio">Que tal transformar este presente em uma experiência mágica? O plano <strong class="universo-text">Universo Particular</strong> revela uma mensagem secreta com senha e o mapa astral do casal, criando uma conexão ainda mais profunda.</div>
+                       <div class="upsell-note-step hidden" id="upsell-sinfonia-audio">Que tal transformar este presente em uma experiência mágica? O plano <strong class="universo-text">Universo Particular</strong> revela uma mensagem secreta com senha e o mapa astral do casal, criando uma conexão ainda mais profunda.</div>
                     <div class="form-group">
                         <label>Envie Sua Declaração em Áudio</label>
                         <small>Grave um áudio com sua voz ou envie um vídeo, o áudio será extraído automaticamente.</small>
@@ -480,8 +480,7 @@
     </div>
     
     <script>
-    // --- Configurações de Upload ---
-    const IMGBB_API_KEY = "e61b4300ad03c6c66f116e9125345720";
+    // --- Configurações de Upload e Envio ---
     const CLOUDINARY_CLOUD_NAME = "dfibfzxsj";
     const CLOUDINARY_UPLOAD_PRESET = "ml_default";
     const FORMSPREE_ENDPOINT = "https://formspree.io/f/xwpbovgn";
@@ -614,13 +613,13 @@
                  // Lógica para mostrar o upsell sutil
                  const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.id;
                  if (currentStep.dataset.stepName !== 'História' && currentStep.dataset.stepName !== 'Início' && currentStep.dataset.stepName !== 'Enviar') {
-                    if (selectedPackage === 'laco') {
-                       const upsellToShow = currentStep.querySelector('[id^="upsell-laco-"]');
-                       if (upsellToShow) upsellToShow.classList.remove('hidden');
-                    } else if (selectedPackage === 'sinfonia') {
-                       const upsellToShow = currentStep.querySelector('[id^="upsell-sinfonia-"]');
-                       if (upsellToShow) upsellToShow.classList.remove('hidden');
-                    }
+                     if (selectedPackage === 'laco') {
+                        const upsellToShow = currentStep.querySelector('[id^="upsell-laco-"]');
+                        if (upsellToShow) upsellToShow.classList.remove('hidden');
+                     } else if (selectedPackage === 'sinfonia') {
+                        const upsellToShow = currentStep.querySelector('[id^="upsell-sinfonia-"]');
+                        if (upsellToShow) upsellToShow.classList.remove('hidden');
+                     }
                  }
             }
             updateButtonVisibility();
@@ -632,8 +631,8 @@
             nextBtn.classList.toggle('hidden', currentStepIndex === visibleSteps.length - 1);
             submitBtn.classList.toggle('hidden', currentStepIndex !== visibleSteps.length - 1);
         }
-
-        // REMOVIDA A OBRIGATORIEDADE
+        
+        // Validação foi removida para ser opcional, como no código original
         function validateCurrentStep() {
             return true;
         }
@@ -770,89 +769,106 @@
                 pedidoDetalhesGroup.classList.add('hidden');
             }
         });
+        
+        /**
+         * REWRITTEN & ROBUST: Handles file upload to Cloudinary.
+         * Works on all browsers, including iOS Safari.
+         */
+        async function uploadToCloudinary(file, resourceType) {
+            const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+            formData.append('resource_type', resourceType);
 
-        // --- FUNÇÃO DE ENVIO DO FORMULÁRIO ---
+            // CRITICAL FIX FOR iOS/SAFARI: Do NOT set the Content-Type header manually.
+            // The browser will create it with the necessary 'boundary' parameter.
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                // Throw a detailed error if Cloudinary returns an error
+                const errorMsg = data.error?.message || `Erro no upload do arquivo ${file.name}`;
+                throw new Error(errorMsg);
+            }
+            
+            return data;
+        }
+
+
+        // --- NEW, ROBUST FORM SUBMISSION LOGIC ---
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Enviando... <i class="fas fa-spinner fa-spin"></i>';
             uploadProgressInfo.classList.remove('hidden');
 
-            const filesToProcess = [];
+            const uploadTasks = [];
 
+            // Prepare image upload tasks
             selectedImageFiles.forEach(file => {
-                filesToProcess.push({ file: file, type: 'image' });
+                uploadTasks.push({ file: file, type: 'image' });
             });
 
+            // Prepare audio/video upload task
             const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.value;
             const isAudioPackage = (selectedPackage === 'Nossa Sinfonia' || selectedPackage === 'Universo Particular') && audioFileToSubmit;
             if (isAudioPackage) {
-                filesToProcess.push({ file: audioFileToSubmit, type: 'audio' });
+                // For audio/video, upload with 'video' resource type, as Cloudinary handles both this way.
+                uploadTasks.push({ file: audioFileToSubmit, type: 'video' });
             }
-
-            const uploadFile = (item) => {
-                const formData = new FormData();
-                let url = '';
-                let isImage = item.type === 'image';
-
-                if (isImage) {
-                    formData.append('key', IMGBB_API_KEY);
-                    formData.append('image', item.file);
-                    url = 'https://api.imgbb.com/1/upload';
-                } else {
-                    formData.append('file', item.file);
-                    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-                    url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
-                }
-
-                return fetch(url, { method: 'POST', body: formData })
-                    .then(res => res.json())
-                    .then(data => {
-                        if ((isImage && data.success) || (!isImage && data.secure_url)) {
-                             return { type: item.type, status: 'fulfilled', value: isImage ? data.data.url : data.secure_url };
-                        }
-                        const reason = isImage ? (data.error?.message || `Falha no upload de ${item.file.name}`) : (data.error?.message || 'Erro no upload do áudio');
-                        return { type: item.type, status: 'rejected', reason: reason };
-                    })
-                    .catch(error => {
-                        return { type: item.type, status: 'rejected', reason: `Erro de rede: ${error.message}` };
-                    });
-            };
-
-            const totalTasks = filesToProcess.length;
-            let tasksCompleted = 0;
-            uploadProgressText.textContent = `Processando... (0/${totalTasks})`;
-            uploadProgressBar.style.width = '0%';
             
-            const uploadPromises = filesToProcess.map(item => 
-                uploadFile(item).then(result => {
-                    tasksCompleted++;
-                    if(totalTasks > 0) {
-                        const progress = Math.round((tasksCompleted / totalTasks) * 100);
+            const totalTasks = uploadTasks.length;
+            let tasksCompleted = 0;
+            uploadProgressBar.style.width = '0%';
+            uploadProgressText.textContent = `Processando... (0/${totalTasks})`;
+
+            const uploadPromises = uploadTasks.map(task => 
+                uploadToCloudinary(task.file, task.type)
+                    .then(result => {
+                        tasksCompleted++;
+                        const progress = totalTasks > 0 ? Math.round((tasksCompleted / totalTasks) * 100) : 0;
                         uploadProgressBar.style.width = `${progress}%`;
                         uploadProgressText.textContent = `Processando... (${tasksCompleted}/${totalTasks})`;
-                    }
-                    return result;
-                })
+                        // Return a success object with type and URL
+                        return { type: task.type, status: 'fulfilled', value: result.secure_url };
+                    })
+                    .catch(error => {
+                        // Return a failure object with type and reason
+                        return { type: task.type, status: 'rejected', reason: error.message };
+                    })
             );
 
             try {
                 const allResults = await Promise.all(uploadPromises);
 
-                const successfulImageUrls = allResults.filter(r => r.type === 'image' && r.status === 'fulfilled').map(r => r.value);
-                const audioResult = allResults.find(r => r.type === 'audio' && r.status === 'fulfilled');
-                const audioLink = audioResult ? audioResult.value : '';
+                const successfulImageUrls = allResults
+                    .filter(r => r.type === 'image' && r.status === 'fulfilled')
+                    .map(r => r.value);
+                
+                const audioResult = allResults.find(r => r.type === 'video' && r.status === 'fulfilled');
+                let audioLink = '';
+                if(audioResult) {
+                    // MAGIC TRANSFORMATION: Change extension to .mp3 to get audio-only
+                    audioLink = audioResult.value.replace(/\.\w+$/, '.mp3');
+                }
+
                 const failedUploads = allResults.filter(r => r.status === 'rejected');
                 const errorMessages = failedUploads.map(f => `[${f.type}] ${f.reason}`);
+                const hadUploadErrors = failedUploads.length > 0;
 
                 const formData = new FormData(form);
                 const formDataObject = Object.fromEntries(formData.entries());
                 
-                formDataObject['_subject'] = `Novo Pedido do Portal: ${formDataObject.nome_do_cliente || 'Cliente anônimo'}`;
+                formDataObject['_subject'] = `Novo Pedido do Portal: ${formDataObject.nome_do_cliente || 'Cliente'}`;
                 
                 formDataObject['links_das_fotos'] = successfulImageUrls.join('\n') || 'Nenhuma foto enviada.';
                 formDataObject['link_do_audio'] = audioLink || 'Nenhum áudio enviado.';
-                formDataObject['erros_de_upload'] = errorMessages.length > 0 ? errorMessages.join('; ') : 'Nenhum erro.';
+                formDataObject['erros_de_upload'] = hadUploadErrors ? errorMessages.join('; ') : 'Nenhum erro.';
 
                 const response = await fetch(FORMSPREE_ENDPOINT, {
                     method: 'POST',
@@ -861,7 +877,7 @@
                 });
 
                 if (response.ok) {
-                    showFinalMessage(true, errorMessages.length > 0);
+                    showFinalMessage(true, hadUploadErrors);
                 } else {
                     const errorData = await response.json();
                     throw new Error(errorData.errors?.map(e => e.message).join(', ') || 'Erro ao enviar dados do formulário.');
@@ -870,6 +886,10 @@
             } catch (error) {
                 console.error("Erro final no processo de envio:", error);
                 showFinalMessage(false, true, error.message);
+            } finally {
+                // Re-enable button no matter what
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Enviar Pedido';
             }
         });
 
