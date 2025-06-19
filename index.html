@@ -100,9 +100,9 @@
             color: var(--cor-cinza-claro);
             font-size: 0.9rem;
         }
-        .instructions ol { padding-left: 1.2rem; }
-        .instructions li { margin-bottom: 0.5rem; }
-        .instructions strong { color: var(--cor-branco-suave); }
+        .instructions ol { padding-left: 1.2rem; list-style-position: inside; }
+        .instructions li { margin-bottom: 0.75rem; line-height: 1.5; }
+        .instructions strong { color: var(--cor-branco-suave); font-weight: 600; }
         
         .upsell-note-step {
             background-color: rgba(255, 215, 0, 0.05);
@@ -205,13 +205,13 @@
                 <div class="form-step active" data-step-name="Início">
                     <div class="form-group">
                         <label for="nome">Seu primeiro nome</label>
-                        <input type="text" id="nome" name="nome_do_cliente" placeholder="Ex: Igor" required>
+                        <input type="text" id="nome" name="nome_do_cliente" placeholder="Ex: Igor">
                     </div>
                     <div class="form-group">
                         <label>Qual pacote você deseja adquirir?</label>
                         <div class="package-selection">
                             <div class="package-option">
-                                <input type="radio" id="laco" name="pacote_escolhido" value="Laço de Amor" required>
+                                <input type="radio" id="laco" name="pacote_escolhido" value="Laço de Amor">
                                 <label for="laco" class="package-label" id="laco-label">
                                     <i class="fa-solid fa-ribbon"></i>
                                     <span class="package-name">Laço de Amor</span>
@@ -219,7 +219,7 @@
                                 </label>
                             </div>
                             <div class="package-option">
-                                <input type="radio" id="sinfonia" name="pacote_escolhido" value="Nossa Sinfonia" required>
+                                <input type="radio" id="sinfonia" name="pacote_escolhido" value="Nossa Sinfonia">
                                 <label for="sinfonia" class="package-label" id="sinfonia-label">
                                     <i class="fa-solid fa-music"></i>
                                     <span class="package-name">Nossa Sinfonia</span>
@@ -227,7 +227,7 @@
                                 </label>
                             </div>
                             <div class="package-option">
-                                <input type="radio" id="universo" name="pacote_escolhido" value="Universo Particular" required>
+                                <input type="radio" id="universo" name="pacote_escolhido" value="Universo Particular">
                                 <label for="universo" class="package-label" id="universo-label">
                                     <i class="fa-solid fa-meteor"></i>
                                     <span class="package-name">Universo Particular</span>
@@ -254,7 +254,7 @@
                     <div class="form-group">
                         <label for="paleta">Universo Visual e Cores</label>
                         <small>Descreva o estilo que você imagina. Romântico, sofisticado, vibrante? Quais cores?</small>
-                        <textarea id="paleta" name="paleta_de_cores" placeholder="Ex: Tons de azul marinho, branco e detalhes em dourado..." required></textarea>
+                        <textarea id="paleta" name="paleta_de_cores" placeholder="Ex: Tons de azul marinho, branco e detalhes em dourado..."></textarea>
                     </div>
                 </div>
 
@@ -265,12 +265,12 @@
                     <div class="form-group">
                         <label for="carta">Sua Declaração</label>
                         <small>Escreva ou cole aqui o texto que será o coração do presente.</small>
-                        <textarea id="carta" name="carta_de_declaracao" required></textarea>
+                        <textarea id="carta" name="carta_de_declaracao"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="data-inicio">Data de Início do Relacionamento</label>
                         <small>Para o contador de tempo (ex: 25/12/2020).</small>
-                        <input type="text" id="data-inicio" name="data_de_inicio" placeholder="DD/MM/AAAA" required>
+                        <input type="text" id="data-inicio" name="data_de_inicio" placeholder="DD/MM/AAAA">
                     </div>
                 </div>
 
@@ -281,12 +281,12 @@
                     <div class="form-group" id="laco-sinfonia-music-group">
                         <label>Música do Casal</label>
                         <small>Cole aqui o link de uma música do Spotify.</small>
-                        <input type="text" id="musica-unica" name="link_musica_spotify" placeholder="https://open.spotify.com/track/..." required>
+                        <input type="text" id="musica-unica" name="link_musica_spotify" placeholder="https://open.spotify.com/track/...">
                     </div>
                      <div class="form-group" id="universo-music-group">
                         <label>Sua Playlist (até 5 músicas)</label>
                         <small>Cole aqui os links das músicas do Spotify, um por linha.</small>
-                        <textarea id="musica-playlist" name="playlist_links_spotify" rows="5" placeholder="https://open.spotify.com/track/...\nhttps://open.spotify.com/track/..." required></textarea>
+                        <textarea id="musica-playlist" name="playlist_links_spotify" rows="5" placeholder="https://open.spotify.com/track/...\nhttps://open.spotify.com/track/..."></textarea>
                     </div>
                 </div>
 
@@ -298,16 +298,19 @@
                     <div class="form-group">
                         <label for="fotos-link">Link da Pasta com as Fotos</label>
                         <div class="instructions">
-                            <p>Para enviar suas fotos, siga este passo a passo:</p>
+                            <p><strong>Como enviar suas fotos (passo a passo detalhado):</strong></p>
                             <ol>
-                                <li>Acesse o <strong>Google Drive</strong> (drive.google.com) ou outro serviço de nuvem (OneDrive, Dropbox).</li>
-                                <li>Crie uma <strong>nova pasta</strong> e coloque todas as fotos nela.</li>
-                                <li>Clique com o botão direito na pasta e procure a opção <strong>"Compartilhar"</strong>.</li>
-                                <li>Mude a permissão de acesso para <strong>"Qualquer pessoa com o link"</strong>.</li>
-                                <li><strong>Copie o link</strong> e cole no campo abaixo.</li>
+                                <li>Abra o aplicativo ou o site do <strong>Google Drive</strong>.</li>
+                                <li>Toque no botão de <strong>"+" (sinal de mais)</strong> e escolha <strong>"Nova Pasta"</strong>. Dê um nome para a pasta, por exemplo: <strong>"Fotos do Presente"</strong>.</li>
+                                <li>Abra a pasta que você acabou de criar. Toque no <strong>"+"</strong> novamente e escolha <strong>"Fazer upload"</strong>. Selecione todas as fotos que deseja nos enviar.</li>
+                                <li>Espere as fotos carregarem. Depois, volte para a lista de pastas, encontre a sua pasta e toque nos <strong>três pontinhos (⋮)</strong> ao lado do nome dela.</li>
+                                <li>No menu que abrir, toque em <strong>"Compartilhar"</strong>.</li>
+                                <li>Toque onde diz <strong>"Acesso geral"</strong> (pode estar escrito "Restrito"). Mude essa opção para <strong>"Qualquer pessoa com o link"</strong>.</li>
+                                <li>No canto de cima da tela, toque no <strong>ícone de corrente/link</strong> para copiar o link.</li>
+                                <li>Volte aqui e cole o link no campo abaixo.</li>
                             </ol>
                         </div>
-                        <input type="text" id="fotos-link" name="link_google_drive_fotos" placeholder="Cole aqui o link da pasta com as fotos" required>
+                        <input type="text" id="fotos-link" name="link_google_drive_fotos" placeholder="Cole aqui o link da pasta com as fotos">
                     </div>
                 </div>
                 
@@ -317,20 +320,23 @@
                     <div class="form-group">
                         <label for="audio-link">Link do seu Áudio ou Vídeo</label>
                          <div class="instructions">
-                            <p>Siga os mesmos passos para o seu arquivo de áudio ou vídeo:</p>
+                            <p><strong>Como enviar seu áudio ou vídeo (passo a passo detalhado):</strong></p>
                             <ol>
-                                <li>Faça o upload do seu arquivo para o <strong>Google Drive</strong>.</li>
-                                <li>Clique com o botão direito no arquivo e vá em <strong>"Compartilhar"</strong>.</li>
-                                <li>Mude a permissão para <strong>"Qualquer pessoa com o link"</strong>.</li>
-                                <li><strong>Copie o link</strong> e cole no campo abaixo.</li>
+                                <li>Abra o <strong>Google Drive</strong>.</li>
+                                <li>Toque no botão de <strong>"+" (sinal de mais)</strong> e depois em <strong>"Fazer upload"</strong>. Selecione o seu arquivo de áudio ou vídeo.</li>
+                                <li>Espere o arquivo carregar. Depois, encontre-o na sua lista de arquivos e toque nos <strong>três pontinhos (⋮)</strong> ao lado do nome dele.</li>
+                                <li>No menu, toque em <strong>"Compartilhar"</strong>.</li>
+                                <li>Toque em <strong>"Acesso geral"</strong> e mude a permissão de "Restrito" para <strong>"Qualquer pessoa com o link"</strong>.</li>
+                                <li>Toque no <strong>ícone de corrente/link</strong> para copiar o link.</li>
+                                <li>Volte aqui e cole o link no campo abaixo.</li>
                             </ol>
                         </div>
-                        <input type="text" id="audio-link" name="link_google_drive_audio" placeholder="Cole aqui o link do seu áudio ou vídeo" required>
+                        <input type="text" id="audio-link" name="link_google_drive_audio" placeholder="Cole aqui o link do seu áudio ou vídeo">
                     </div>
                     <div class="form-group">
                         <label>Corações com Mensagens</label>
                         <small>Escreva até 10 frases curtas e carinhosas (uma por linha).</small>
-                        <textarea name="mensagens_secretas_para_coracoes" rows="5" placeholder="Escreva uma mensagem por linha..." required></textarea>
+                        <textarea name="mensagens_secretas_para_coracoes" rows="5" placeholder="Escreva uma mensagem por linha..."></textarea>
                     </div>
                 </div>
                 
@@ -338,12 +344,12 @@
                 <div class="form-step" data-step-name="Universo" data-packages="universo">
                     <div class="form-group">
                         <label>Mensagem Secreta com Senha</label>
-                        <input type="text" name="senha_da_mensagem_secreta" placeholder="Crie uma senha (Ex: apelido, data especial)" required><textarea name="texto_da_mensagem_secreta" placeholder="Escreva aqui a mensagem super secreta" style="margin-top: 0.5rem;" required></textarea>
+                        <input type="text" name="senha_da_mensagem_secreta" placeholder="Crie uma senha (Ex: apelido, data especial)"><textarea name="texto_da_mensagem_secreta" placeholder="Escreva aqui a mensagem super secreta" style="margin-top: 0.5rem;"></textarea>
                     </div>
                     <div class="form-group">
                         <label>Mapa Astral do Casal</label>
                         <small>Precisamos dos signos para criar a mágica.</small>
-                        <input type="text" name="signo_1" placeholder="Signo da Pessoa 1 (Ex: Áries)" style="margin-bottom: 0.5rem;" required><input type="text" name="signo_2" placeholder="Signo da Pessoa 2 (Ex: Touro)" style="margin-bottom: 0.5rem;" required>
+                        <input type="text" name="signo_1" placeholder="Signo da Pessoa 1 (Ex: Áries)" style="margin-bottom: 0.5rem;"><input type="text" name="signo_2" placeholder="Signo da Pessoa 2 (Ex: Touro)" style="margin-bottom: 0.5rem;">
                     </div>
                     <div class="form-group">
                         <label for="pedido">Este presente é um pedido especial?</label>
@@ -496,42 +502,13 @@
             submitBtn.classList.toggle('hidden', currentStepIndex !== visibleSteps.length - 1);
         }
         
-        // --- CORRECTED VALIDATION LOGIC ---
+        // --- VALIDATION REMOVED ---
+        // This function now always returns true, allowing the user to advance freely.
         function validateCurrentStep() {
-            const currentStep = visibleSteps[currentStepIndex];
-            // Find all required inputs within the current step
-            const inputs = currentStep.querySelectorAll('input[required], textarea[required], select[required]');
-            let isValid = true;
-
-            for (const input of inputs) {
-                // IMPORTANT: Check if the input is actually visible before validating.
-                // An element is not visible if its offsetParent is null, which is true for elements with `display: none`.
-                if (input.offsetParent === null) {
-                    continue; // Skip validation for hidden inputs
-                }
-
-                if (input.type === 'radio') {
-                    const groupName = input.name;
-                    const group = form.querySelectorAll(`input[name="${groupName}"]`);
-                    if (!Array.from(group).some(radio => radio.checked)) {
-                        isValid = false;
-                        break;
-                    }
-                } else if (!input.value.trim()) {
-                    // It's visible and empty, so validation fails
-                    isValid = false;
-                    break;
-                }
-            }
-
-            if (!isValid) {
-                alert('Por favor, preencha todos os campos obrigatórios antes de avançar.');
-            }
-            return isValid;
+            return true;
         }
 
         packageOptions.forEach(option => option.addEventListener('change', () => {
-            // No need to reset index, just refilter and show
             filterVisibleSteps();
             showStep(currentStepIndex); 
         }));
@@ -550,12 +527,6 @@
 
         pedidoSelect.addEventListener('change', () => {
             pedidoDetalhesGroup.classList.toggle('hidden', pedidoSelect.value !== 'sim');
-            const detailsTextarea = document.getElementById('pedido-detalhes');
-            if(pedidoSelect.value === 'sim') {
-                detailsTextarea.required = true;
-            } else {
-                detailsTextarea.required = false;
-            }
         });
 
         // --- SIMPLIFIED FORM SUBMISSION LOGIC ---
