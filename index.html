@@ -89,6 +89,20 @@
         }
         input:focus, input[type="email"]:focus, textarea:focus, select:focus { outline: none; border-color: var(--cor-primaria); box-shadow: 0 0 15px var(--cor-primaria); }
         textarea { resize: vertical; min-height: 140px; }
+
+        .instructions {
+            background-color: rgba(10, 16, 31, 0.7);
+            border-left: 4px solid var(--cor-laco-amor);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+            color: var(--cor-cinza-claro);
+            font-size: 0.9rem;
+        }
+        .instructions ol { padding-left: 1.2rem; }
+        .instructions li { margin-bottom: 0.5rem; }
+        .instructions strong { color: var(--cor-branco-suave); }
         
         .upsell-note-step {
             background-color: rgba(255, 215, 0, 0.05);
@@ -104,7 +118,6 @@
         .upsell-note-step strong { font-weight: 700; }
         .upsell-note-step .sinfonia-text { color: var(--cor-primaria); }
         .upsell-note-step .universo-text { color: var(--cor-dourado-premium); }
-        
 
         .package-selection { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
         @media (min-width: 600px) { .package-selection { grid-template-columns: repeat(3, 1fr); } }
@@ -126,23 +139,6 @@
         #laco:checked + #laco-label { border-color: var(--cor-laco-amor); box-shadow: 0 0 20px var(--cor-laco-amor); }
         #sinfonia:checked + #sinfonia-label { border-color: var(--cor-primaria); box-shadow: 0 0 20px var(--cor-primaria); }
         #universo:checked + #universo-label { border-color: var(--cor-dourado-premium); box-shadow: 0 0 20px var(--cor-dourado-premium); }
-        
-        .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
-        .file-upload-btn { border: 2px dashed var(--cor-cinza-claro); background-color: rgba(10, 16, 31, 0.5); color: var(--cor-cinza-claro); padding: 2.5rem; border-radius: var(--borda-raio); cursor: pointer; transition: all 0.3s ease; text-align: center; }
-        .file-upload-btn i { font-size: 2.5rem; margin-bottom: 0.8rem; display: block; }
-        input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; width: 100%; }
-        .file-upload-wrapper:hover .file-upload-btn { border-color: var(--cor-primaria); color: var(--cor-branco-puro); background-color: rgba(255, 0, 128, 0.1); }
-        .file-upload-status { margin-top: 1rem; text-align: center; color: var(--cor-dourado-premium); font-weight: 600; }
-        .error-message {
-            color: var(--cor-vermelho-erro);
-            font-weight: 700;
-            text-align: center;
-            margin-top: 1rem;
-            padding: 0.5rem;
-            border-radius: 8px;
-            background-color: rgba(255, 77, 77, 0.1);
-            border: 1px solid var(--cor-vermelho-erro);
-        }
 
         .btn-group { display: flex; justify-content: space-between; margin-top: 2.5rem; gap: 1rem; flex-wrap: wrap; }
         .btn { padding: 1rem 2.5rem; border: none; border-radius: 50px; font-size: 1rem; font-family: 'Montserrat', sans-serif; font-weight: 700; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;}
@@ -190,86 +186,6 @@
             box-shadow: 0 5px 20px #25d36680;
         }
         #final-message .whatsapp-link i { font-size: 1.5rem; }
-
-
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease-in-out; }
-        .modal-overlay.visible { opacity: 1; visibility: visible; }
-        .modal-content { background: #10182b; padding: 2.5rem; border-radius: var(--borda-raio); border: 1px solid var(--cor-primaria); box-shadow: 0 0 30px rgba(255, 0, 128, 0.4); text-align: center; max-width: 400px; width: 90%; transform: scale(0.9); transition: transform 0.3s ease-in-out; }
-        .modal-overlay.visible .modal-content { transform: scale(1); }
-        .modal-content h2 { margin-bottom: 1rem; color: var(--cor-branco-puro); }
-        .modal-content p { color: var(--cor-cinza-claro); margin-bottom: 1.5rem; }
-        #modal-close { background: var(--gradiente-principal); color: var(--cor-branco-puro); border: none; padding: 0.8rem 2rem; border-radius: 50px; cursor: pointer; font-weight: 700; transition: transform 0.2s; }
-        #modal-close:hover { transform: scale(1.05); }
-        
-        #custom-audio-player {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-top: 1rem;
-            background: linear-gradient(to right, rgba(30, 41, 59, 0.8), rgba(51, 65, 85, 0.8));
-            padding: 0.75rem 1rem;
-            border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        #player-play-btn {
-            background: var(--gradiente-principal);
-            border: none;
-            color: white;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.1rem;
-            flex-shrink: 0;
-            transition: transform 0.2s ease;
-        }
-        #player-play-btn:hover { transform: scale(1.1); }
-        #player-seek-bar {
-            --seek-before-width: 0%;
-            flex-grow: 1;
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100%;
-            height: 6px;
-            outline: none;
-            border-radius: 10px;
-            cursor: pointer;
-            position: relative;
-            background: linear-gradient(to right, var(--cor-primaria) 0%, var(--cor-secundaria) var(--seek-before-width), var(--cor-cinza-claro) var(--seek-before-width), var(--cor-cinza-claro) 100%);
-        }
-        #player-seek-bar::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            background: var(--cor-branco-puro);
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid var(--cor-secundaria);
-        }
-        .player-time { font-size: 0.9rem; font-weight: 600; color: var(--cor-branco-suave); min-width: 45px; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
-        audio#audio-playback-element { display: none; }
-
-        #image-preview-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-            border: 2px dashed var(--cor-cinza-claro);
-            border-radius: var(--borda-raio);
-            padding: 1rem;
-            min-height: 142px;
-            background-color: rgba(0,0,0,0.1);
-        }
-        #photo-error-message { margin-top: 1rem; }
-        .image-preview-item { position: relative; width: 100%; padding-top: 100%; border-radius: 8px; overflow: hidden; background-color: var(--cor-fundo); }
-        .image-preview-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-        .remove-image-btn { position: absolute; top: 5px; right: 5px; width: 25px; height: 25px; background-color: rgba(0, 0, 0, 0.7); color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 14px; line-height: 1; transition: background-color 0.2s, transform 0.2s; z-index: 2; }
-        .remove-image-btn:hover { background-color: var(--cor-primaria); transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -289,13 +205,13 @@
                 <div class="form-step active" data-step-name="Início">
                     <div class="form-group">
                         <label for="nome">Seu primeiro nome</label>
-                        <input type="text" id="nome" name="nome_do_cliente" placeholder="Ex: Igor">
+                        <input type="text" id="nome" name="nome_do_cliente" placeholder="Ex: Igor" required>
                     </div>
                     <div class="form-group">
                         <label>Qual pacote você deseja adquirir?</label>
                         <div class="package-selection">
                             <div class="package-option">
-                                <input type="radio" id="laco" name="pacote_escolhido" value="Laço de Amor">
+                                <input type="radio" id="laco" name="pacote_escolhido" value="Laço de Amor" required>
                                 <label for="laco" class="package-label" id="laco-label">
                                     <i class="fa-solid fa-ribbon"></i>
                                     <span class="package-name">Laço de Amor</span>
@@ -303,7 +219,7 @@
                                 </label>
                             </div>
                             <div class="package-option">
-                                <input type="radio" id="sinfonia" name="pacote_escolhido" value="Nossa Sinfonia">
+                                <input type="radio" id="sinfonia" name="pacote_escolhido" value="Nossa Sinfonia" required>
                                 <label for="sinfonia" class="package-label" id="sinfonia-label">
                                     <i class="fa-solid fa-music"></i>
                                     <span class="package-name">Nossa Sinfonia</span>
@@ -311,7 +227,7 @@
                                 </label>
                             </div>
                             <div class="package-option">
-                                <input type="radio" id="universo" name="pacote_escolhido" value="Universo Particular">
+                                <input type="radio" id="universo" name="pacote_escolhido" value="Universo Particular" required>
                                 <label for="universo" class="package-label" id="universo-label">
                                     <i class="fa-solid fa-meteor"></i>
                                     <span class="package-name">Universo Particular</span>
@@ -338,7 +254,7 @@
                     <div class="form-group">
                         <label for="paleta">Universo Visual e Cores</label>
                         <small>Descreva o estilo que você imagina. Romântico, sofisticado, vibrante? Quais cores?</small>
-                        <textarea id="paleta" name="paleta_de_cores" placeholder="Ex: Tons de azul marinho, branco e detalhes em dourado..."></textarea>
+                        <textarea id="paleta" name="paleta_de_cores" placeholder="Ex: Tons de azul marinho, branco e detalhes em dourado..." required></textarea>
                     </div>
                 </div>
 
@@ -349,12 +265,12 @@
                     <div class="form-group">
                         <label for="carta">Sua Declaração</label>
                         <small>Escreva ou cole aqui o texto que será o coração do presente.</small>
-                        <textarea id="carta" name="carta_de_declaracao"></textarea>
+                        <textarea id="carta" name="carta_de_declaracao" required></textarea>
                     </div>
                     <div class="form-group">
                         <label for="data-inicio">Data de Início do Relacionamento</label>
                         <small>Para o contador de tempo (ex: 25/12/2020).</small>
-                        <input type="text" id="data-inicio" name="data_de_inicio" placeholder="DD/MM/AAAA">
+                        <input type="text" id="data-inicio" name="data_de_inicio" placeholder="DD/MM/AAAA" required>
                     </div>
                 </div>
 
@@ -365,12 +281,12 @@
                     <div class="form-group" id="laco-sinfonia-music-group">
                         <label>Música do Casal</label>
                         <small>Cole aqui o link de uma música do Spotify.</small>
-                        <input type="text" id="musica-unica" name="link_musica_spotify" placeholder="https://open.spotify.com/track/...">
+                        <input type="text" id="musica-unica" name="link_musica_spotify" placeholder="https://open.spotify.com/track/..." required>
                     </div>
                      <div class="form-group" id="universo-music-group">
                         <label>Sua Playlist (até 5 músicas)</label>
                         <small>Cole aqui os links das músicas do Spotify, um por linha.</small>
-                        <textarea id="musica-playlist" name="playlist_links_spotify" rows="5" placeholder="https://open.spotify.com/track/...\nhttps://open.spotify.com/track/..."></textarea>
+                        <textarea id="musica-playlist" name="playlist_links_spotify" rows="5" placeholder="https://open.spotify.com/track/...\nhttps://open.spotify.com/track/..." required></textarea>
                     </div>
                 </div>
 
@@ -380,12 +296,18 @@
                       <div class="upsell-note-step hidden" id="upsell-laco-memorias">Quer um presente ainda mais emocionante? Com o plano <strong class="sinfonia-text">Nossa Sinfonia</strong>, você pode incluir um áudio com sua voz e ter uma galeria com o dobro de fotos, tornando cada momento inesquecível.</div>
                      <div class="upsell-note-step hidden" id="upsell-sinfonia-memorias">Que tal transformar este presente em uma experiência mágica? O plano <strong class="universo-text">Universo Particular</strong> revela uma mensagem secreta com senha e o mapa astral do casal, criando uma conexão ainda mais profunda.</div>
                     <div class="form-group">
-                        <label>Galeria de Momentos</label>
-                        <small>Adicione as fotos que marcaram a história de vocês.</small>
-                        <div id="image-preview-container"></div>
-                        <div id="photo-error-message" class="error-message hidden"></div>
-                        <button type="button" id="add-photo-btn" class="btn btn-secondary" style="margin-top: 1rem;"><i class="fas fa-plus"></i> Adicionar Fotos</button>
-                        <input type="file" id="fotos-input" accept="image/*" class="hidden" multiple>
+                        <label for="fotos-link">Link da Pasta com as Fotos</label>
+                        <div class="instructions">
+                            <p>Para enviar suas fotos, siga este passo a passo:</p>
+                            <ol>
+                                <li>Acesse o <strong>Google Drive</strong> (drive.google.com) ou outro serviço de nuvem (OneDrive, Dropbox).</li>
+                                <li>Crie uma <strong>nova pasta</strong> e coloque todas as fotos nela.</li>
+                                <li>Clique com o botão direito na pasta e procure a opção <strong>"Compartilhar"</strong>.</li>
+                                <li>Mude a permissão de acesso para <strong>"Qualquer pessoa com o link"</strong>.</li>
+                                <li><strong>Copie o link</strong> e cole no campo abaixo.</li>
+                            </ol>
+                        </div>
+                        <input type="text" id="fotos-link" name="link_google_drive_fotos" placeholder="Cole aqui o link da pasta com as fotos" required>
                     </div>
                 </div>
                 
@@ -393,33 +315,22 @@
                 <div class="form-step" data-step-name="Sinfonia" data-packages="sinfonia,universo">
                        <div class="upsell-note-step hidden" id="upsell-sinfonia-audio">Que tal transformar este presente em uma experiência mágica? O plano <strong class="universo-text">Universo Particular</strong> revela uma mensagem secreta com senha e o mapa astral do casal, criando uma conexão ainda mais profunda.</div>
                     <div class="form-group">
-                        <label>Envie Sua Declaração em Áudio</label>
-                        <small>Grave um áudio com sua voz ou envie um vídeo, o áudio será extraído automaticamente.</small>
-                        
-                        <div class="file-upload-wrapper" style="margin-top: 1.5rem;">
-                            <div class="file-upload-btn">
-                                <i class="fas fa-upload"></i>
-                                <div>Clique para enviar áudio ou vídeo</div>
-                            </div>
-                            <input type="file" id="audio-input" accept="audio/*,video/*">
+                        <label for="audio-link">Link do seu Áudio ou Vídeo</label>
+                         <div class="instructions">
+                            <p>Siga os mesmos passos para o seu arquivo de áudio ou vídeo:</p>
+                            <ol>
+                                <li>Faça o upload do seu arquivo para o <strong>Google Drive</strong>.</li>
+                                <li>Clique com o botão direito no arquivo e vá em <strong>"Compartilhar"</strong>.</li>
+                                <li>Mude a permissão para <strong>"Qualquer pessoa com o link"</strong>.</li>
+                                <li><strong>Copie o link</strong> e cole no campo abaixo.</li>
+                            </ol>
                         </div>
-
-                        <div id="audio-preview-section" class="hidden" style="margin-top: 1.5rem;">
-                            <div class="file-upload-status" id="audio-upload-status" style="margin-bottom: 1rem;"></div>
-                            <audio id="audio-playback-element"></audio>
-                            <div id="custom-audio-player">
-                                <button type="button" id="player-play-btn" class="btn"><i class="fas fa-play"></i></button>
-                                <span id="player-current-time" class="player-time">0:00</span>
-                                <input type="range" id="player-seek-bar" value="0" step="1">
-                                <span id="player-duration" class="player-time">0:00</span>
-                            </div>
-                        </div>
-
+                        <input type="text" id="audio-link" name="link_google_drive_audio" placeholder="Cole aqui o link do seu áudio ou vídeo" required>
                     </div>
                     <div class="form-group">
                         <label>Corações com Mensagens</label>
                         <small>Escreva até 10 frases curtas e carinhosas (uma por linha).</small>
-                        <textarea name="mensagens_secretas_para_coracoes" rows="5" placeholder="Escreva uma mensagem por linha..."></textarea>
+                        <textarea name="mensagens_secretas_para_coracoes" rows="5" placeholder="Escreva uma mensagem por linha..." required></textarea>
                     </div>
                 </div>
                 
@@ -427,12 +338,12 @@
                 <div class="form-step" data-step-name="Universo" data-packages="universo">
                     <div class="form-group">
                         <label>Mensagem Secreta com Senha</label>
-                        <input type="text" name="senha_da_mensagem_secreta" placeholder="Crie uma senha (Ex: apelido, data especial)"><textarea name="texto_da_mensagem_secreta" placeholder="Escreva aqui a mensagem super secreta" style="margin-top: 0.5rem;"></textarea>
+                        <input type="text" name="senha_da_mensagem_secreta" placeholder="Crie uma senha (Ex: apelido, data especial)" required><textarea name="texto_da_mensagem_secreta" placeholder="Escreva aqui a mensagem super secreta" style="margin-top: 0.5rem;" required></textarea>
                     </div>
                     <div class="form-group">
                         <label>Mapa Astral do Casal</label>
                         <small>Precisamos dos signos para criar a mágica.</small>
-                        <input type="text" name="signo_1" placeholder="Signo da Pessoa 1 (Ex: Áries)" style="margin-bottom: 0.5rem;"><input type="text" name="signo_2" placeholder="Signo da Pessoa 2 (Ex: Touro)" style="margin-bottom: 0.5rem;">
+                        <input type="text" name="signo_1" placeholder="Signo da Pessoa 1 (Ex: Áries)" style="margin-bottom: 0.5rem;" required><input type="text" name="signo_2" placeholder="Signo da Pessoa 2 (Ex: Touro)" style="margin-bottom: 0.5rem;" required>
                     </div>
                     <div class="form-group">
                         <label for="pedido">Este presente é um pedido especial?</label>
@@ -450,13 +361,7 @@
                     <div id="confirmation-step" style="text-align: center;">
                         <i class="fas fa-paper-plane" style="font-size: 3rem; margin-bottom: 1rem; color: var(--cor-primaria);"></i>
                         <h2>Tudo Pronto para Enviar!</h2>
-                        <p>Suas informações e arquivos estão prontos. Clique no botão abaixo para finalizar e enviar seu pedido para mim.</p>
-                        <div id="upload-progress-info" class="hidden" style="margin-top: 1rem; font-weight: 500;">
-                            <p id="upload-progress-text">Processando arquivos... (0/0)</p>
-                            <div style="background-color: var(--cor-cinza-claro); border-radius: 5px; padding: 2px; margin-top: 0.5rem;">
-                                <div id="upload-progress-bar" style="width: 0%; height: 10px; background: var(--gradiente-principal); border-radius: 3px; transition: width 0.3s ease;"></div>
-                            </div>
-                        </div>
+                        <p>Suas informações estão prontas. Clique no botão abaixo para finalizar e enviar seu pedido para mim.</p>
                     </div>
                 </div>
 
@@ -470,26 +375,14 @@
         <div id="final-message" class="hidden"></div>
     </div>
     
-    <!-- Modal de Alerta -->
-    <div id="alert-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h2 id="modal-title">Atenção</h2>
-            <p id="modal-message">Mensagem de alerta.</p>
-            <button id="modal-close" class="modal-close-btn">Entendi</button>
-        </div>
-    </div>
-    
     <script>
-    // --- Configurações de Upload e Envio ---
-    const CLOUDINARY_CLOUD_NAME = "dfibfzxsj";
-    const CLOUDINARY_UPLOAD_PRESET = "ml_default";
+    // --- Configurações de Envio ---
     const FORMSPREE_ENDPOINT = "https://formspree.io/f/xwpbovgn";
     // --- Fim das Configurações ---
 
 
     document.addEventListener('DOMContentLoaded', () => {
         
-        // Elementos do formulário
         const form = document.getElementById('creation-form');
         const formContent = document.getElementById('form-content');
         const finalMessageContainer = document.getElementById('final-message');
@@ -499,39 +392,13 @@
         const submitBtn = document.getElementById('submit-btn');
         const progressBar = document.getElementById('progress-bar');
         const packageOptions = document.querySelectorAll('input[name="pacote_escolhido"]');
-
-        // Elementos de progresso do upload
-        const uploadProgressInfo = document.getElementById('upload-progress-info');
-        const uploadProgressText = document.getElementById('upload-progress-text');
-        const uploadProgressBar = document.getElementById('upload-progress-bar');
-
-        // Elementos de upload de imagem
-        const addPhotoBtn = document.getElementById('add-photo-btn');
-        const fotosInput = document.getElementById('fotos-input');
-        const imagePreviewContainer = document.getElementById('image-preview-container');
-        const photoErrorMessage = document.getElementById('photo-error-message');
-        let selectedImageFiles = [];
-
-        // Elementos de áudio
-        const audioInput = document.getElementById('audio-input');
-        const audioPreviewSection = document.getElementById('audio-preview-section');
-        const audioUploadStatus = document.getElementById('audio-upload-status');
-        const audioPlaybackElement = document.getElementById('audio-playback-element');
-        const customAudioPlayer = document.getElementById('custom-audio-player');
-        const playerPlayBtn = document.getElementById('player-play-btn');
-        const playerSeekBar = document.getElementById('player-seek-bar');
-        const playerCurrentTime = document.getElementById('player-current-time');
-        const playerDuration = document.getElementById('player-duration');
-        let audioFileToSubmit = null;
         
-        // Elementos de música, pedido e upsell
         const lacoSinfoniaMusicGroup = document.getElementById('laco-sinfonia-music-group');
         const universoMusicGroup = document.getElementById('universo-music-group');
         const upsellLaco = document.querySelectorAll('[id^="upsell-laco-"]');
         const upsellSinfonia = document.querySelectorAll('[id^="upsell-sinfonia-"]');
         const pedidoSelect = document.getElementById('pedido');
         const pedidoDetalhesGroup = document.getElementById('pedido-detalhes-group');
-
 
         let currentStepIndex = 0;
         let visibleSteps = [];
@@ -568,7 +435,6 @@
             }
         }
 
-
         function updateProgressBar() {
             progressBar.innerHTML = '';
             visibleSteps.forEach(step => {
@@ -602,7 +468,6 @@
         function showStep(stepIndex) {
             formSteps.forEach(step => step.classList.remove('active'));
             
-            // Oculta todas as mensagens de upsell
             upsellLaco.forEach(el => el.classList.add('hidden'));
             upsellSinfonia.forEach(el => el.classList.add('hidden'));
 
@@ -610,7 +475,6 @@
             if(currentStep) {
                  currentStep.classList.add('active');
                  
-                 // Lógica para mostrar o upsell sutil
                  const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.id;
                  if (currentStep.dataset.stepName !== 'História' && currentStep.dataset.stepName !== 'Início' && currentStep.dataset.stepName !== 'Enviar') {
                      if (selectedPackage === 'laco') {
@@ -632,13 +496,42 @@
             submitBtn.classList.toggle('hidden', currentStepIndex !== visibleSteps.length - 1);
         }
         
-        // Validação foi removida para ser opcional, como no código original
+        // --- CORRECTED VALIDATION LOGIC ---
         function validateCurrentStep() {
-            return true;
+            const currentStep = visibleSteps[currentStepIndex];
+            // Find all required inputs within the current step
+            const inputs = currentStep.querySelectorAll('input[required], textarea[required], select[required]');
+            let isValid = true;
+
+            for (const input of inputs) {
+                // IMPORTANT: Check if the input is actually visible before validating.
+                // An element is not visible if its offsetParent is null, which is true for elements with `display: none`.
+                if (input.offsetParent === null) {
+                    continue; // Skip validation for hidden inputs
+                }
+
+                if (input.type === 'radio') {
+                    const groupName = input.name;
+                    const group = form.querySelectorAll(`input[name="${groupName}"]`);
+                    if (!Array.from(group).some(radio => radio.checked)) {
+                        isValid = false;
+                        break;
+                    }
+                } else if (!input.value.trim()) {
+                    // It's visible and empty, so validation fails
+                    isValid = false;
+                    break;
+                }
+            }
+
+            if (!isValid) {
+                alert('Por favor, preencha todos os campos obrigatórios antes de avançar.');
+            }
+            return isValid;
         }
 
         packageOptions.forEach(option => option.addEventListener('change', () => {
-            currentStepIndex = 0;
+            // No need to reset index, just refilter and show
             filterVisibleSteps();
             showStep(currentStepIndex); 
         }));
@@ -655,220 +548,26 @@
             showStep(currentStepIndex);
         });
 
-        addPhotoBtn.addEventListener('click', () => fotosInput.click());
-
-        fotosInput.addEventListener('change', (event) => {
-            const files = event.target.files;
-            if (!files.length) return;
-
-            const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.value;
-            const maxFiles = selectedPackage === 'Laço de Amor' ? 5 : 10;
-            const currentCount = selectedImageFiles.length;
-            
-            if (currentCount + files.length > maxFiles) {
-                photoErrorMessage.textContent = `Limite de ${maxFiles} fotos excedido! Remova algumas antes de adicionar novas.`;
-                photoErrorMessage.classList.remove('hidden');
-                return;
-            }
-            
-            photoErrorMessage.classList.add('hidden');
-            const filesToAdd = Array.from(files);
-            selectedImageFiles.push(...filesToAdd);
-            
-            renderImagePreviews();
-            fotosInput.value = '';
-        });
-        
-        function renderImagePreviews() {
-            imagePreviewContainer.innerHTML = '';
-            selectedImageFiles.forEach((file, index) => {
-                const previewItem = document.createElement('div');
-                previewItem.className = 'image-preview-item';
-                const img = document.createElement('img');
-                img.src = URL.createObjectURL(file);
-                const removeBtn = document.createElement('button');
-                removeBtn.type = 'button';
-                removeBtn.className = 'remove-image-btn';
-                removeBtn.innerHTML = '&times;';
-                removeBtn.addEventListener('click', () => {
-                    selectedImageFiles.splice(index, 1);
-                    photoErrorMessage.classList.add('hidden');
-                    renderImagePreviews();
-                });
-                previewItem.appendChild(img);
-                previewItem.appendChild(removeBtn);
-                imagePreviewContainer.appendChild(previewItem);
-            });
-        }
-        
-        function setAudioSource(file) {
-            if (!file) {
-                audioFileToSubmit = null;
-                audioPlaybackElement.removeAttribute('src');
-                audioPreviewSection.classList.add('hidden');
-                return;
-            }
-            audioFileToSubmit = file;
-            const audioUrl = URL.createObjectURL(file);
-            audioPlaybackElement.src = audioUrl;
-            audioUploadStatus.textContent = `Arquivo selecionado: ${file.name}`;
-            audioPreviewSection.classList.remove('hidden');
-        }
-
-        audioInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                setAudioSource(file);
-            }
-        });
-        
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-
-        playerPlayBtn.addEventListener('click', () => {
-            if (audioPlaybackElement.paused) {
-                audioPlaybackElement.play();
-                playerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            } else {
-                audioPlaybackElement.pause();
-                playerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
-            }
-        });
-
-        audioPlaybackElement.addEventListener('timeupdate', () => {
-            if(!audioPlaybackElement.duration) return;
-            const progressPercent = (audioPlaybackElement.currentTime / audioPlaybackElement.duration) * 100;
-            playerSeekBar.style.setProperty('--seek-before-width', `${progressPercent}%`);
-            playerSeekBar.value = audioPlaybackElement.currentTime;
-            playerCurrentTime.textContent = formatTime(audioPlaybackElement.currentTime);
-        });
-
-        audioPlaybackElement.addEventListener('loadedmetadata', () => {
-            playerSeekBar.max = audioPlaybackElement.duration;
-            playerDuration.textContent = formatTime(audioPlaybackElement.duration);
-        });
-        
-        audioPlaybackElement.addEventListener('ended', () => {
-             playerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
-             playerSeekBar.value = 0;
-             playerCurrentTime.textContent = formatTime(0);
-             playerSeekBar.style.setProperty('--seek-before-width', `0%`);
-        });
-
-        playerSeekBar.addEventListener('input', () => {
-            audioPlaybackElement.currentTime = playerSeekBar.value;
-        });
-        
         pedidoSelect.addEventListener('change', () => {
-            if (pedidoSelect.value === 'sim') {
-                pedidoDetalhesGroup.classList.remove('hidden');
+            pedidoDetalhesGroup.classList.toggle('hidden', pedidoSelect.value !== 'sim');
+            const detailsTextarea = document.getElementById('pedido-detalhes');
+            if(pedidoSelect.value === 'sim') {
+                detailsTextarea.required = true;
             } else {
-                pedidoDetalhesGroup.classList.add('hidden');
+                detailsTextarea.required = false;
             }
         });
-        
-        /**
-         * REWRITTEN & ROBUST: Handles file upload to Cloudinary.
-         * Works on all browsers, including iOS Safari.
-         */
-        async function uploadToCloudinary(file, resourceType) {
-            const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-            formData.append('resource_type', resourceType);
 
-            // CRITICAL FIX FOR iOS/SAFARI: Do NOT set the Content-Type header manually.
-            // The browser will create it with the necessary 'boundary' parameter.
-            const response = await fetch(url, {
-                method: 'POST',
-                body: formData,
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                // Throw a detailed error if Cloudinary returns an error
-                const errorMsg = data.error?.message || `Erro no upload do arquivo ${file.name}`;
-                throw new Error(errorMsg);
-            }
-            
-            return data;
-        }
-
-
-        // --- NEW, ROBUST FORM SUBMISSION LOGIC ---
+        // --- SIMPLIFIED FORM SUBMISSION LOGIC ---
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Enviando... <i class="fas fa-spinner fa-spin"></i>';
-            uploadProgressInfo.classList.remove('hidden');
-
-            const uploadTasks = [];
-
-            // Prepare image upload tasks
-            selectedImageFiles.forEach(file => {
-                uploadTasks.push({ file: file, type: 'image' });
-            });
-
-            // Prepare audio/video upload task
-            const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.value;
-            const isAudioPackage = (selectedPackage === 'Nossa Sinfonia' || selectedPackage === 'Universo Particular') && audioFileToSubmit;
-            if (isAudioPackage) {
-                // For audio/video, upload with 'video' resource type, as Cloudinary handles both this way.
-                uploadTasks.push({ file: audioFileToSubmit, type: 'video' });
-            }
-            
-            const totalTasks = uploadTasks.length;
-            let tasksCompleted = 0;
-            uploadProgressBar.style.width = '0%';
-            uploadProgressText.textContent = `Processando... (0/${totalTasks})`;
-
-            const uploadPromises = uploadTasks.map(task => 
-                uploadToCloudinary(task.file, task.type)
-                    .then(result => {
-                        tasksCompleted++;
-                        const progress = totalTasks > 0 ? Math.round((tasksCompleted / totalTasks) * 100) : 0;
-                        uploadProgressBar.style.width = `${progress}%`;
-                        uploadProgressText.textContent = `Processando... (${tasksCompleted}/${totalTasks})`;
-                        // Return a success object with type and URL
-                        return { type: task.type, status: 'fulfilled', value: result.secure_url };
-                    })
-                    .catch(error => {
-                        // Return a failure object with type and reason
-                        return { type: task.type, status: 'rejected', reason: error.message };
-                    })
-            );
 
             try {
-                const allResults = await Promise.all(uploadPromises);
-
-                const successfulImageUrls = allResults
-                    .filter(r => r.type === 'image' && r.status === 'fulfilled')
-                    .map(r => r.value);
-                
-                const audioResult = allResults.find(r => r.type === 'video' && r.status === 'fulfilled');
-                let audioLink = '';
-                if(audioResult) {
-                    // MAGIC TRANSFORMATION: Change extension to .mp3 to get audio-only
-                    audioLink = audioResult.value.replace(/\.\w+$/, '.mp3');
-                }
-
-                const failedUploads = allResults.filter(r => r.status === 'rejected');
-                const errorMessages = failedUploads.map(f => `[${f.type}] ${f.reason}`);
-                const hadUploadErrors = failedUploads.length > 0;
-
                 const formData = new FormData(form);
                 const formDataObject = Object.fromEntries(formData.entries());
-                
                 formDataObject['_subject'] = `Novo Pedido do Portal: ${formDataObject.nome_do_cliente || 'Cliente'}`;
-                
-                formDataObject['links_das_fotos'] = successfulImageUrls.join('\n') || 'Nenhuma foto enviada.';
-                formDataObject['link_do_audio'] = audioLink || 'Nenhum áudio enviado.';
-                formDataObject['erros_de_upload'] = hadUploadErrors ? errorMessages.join('; ') : 'Nenhum erro.';
 
                 const response = await fetch(FORMSPREE_ENDPOINT, {
                     method: 'POST',
@@ -877,7 +576,7 @@
                 });
 
                 if (response.ok) {
-                    showFinalMessage(true, hadUploadErrors);
+                    showFinalMessage(true);
                 } else {
                     const errorData = await response.json();
                     throw new Error(errorData.errors?.map(e => e.message).join(', ') || 'Erro ao enviar dados do formulário.');
@@ -885,16 +584,14 @@
 
             } catch (error) {
                 console.error("Erro final no processo de envio:", error);
-                showFinalMessage(false, true, error.message);
+                showFinalMessage(false, error.message);
             } finally {
-                // Re-enable button no matter what
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Enviar Pedido';
             }
         });
 
-
-        function showFinalMessage(success, hadUploadErrors = false, errorMsg = '') {
+        function showFinalMessage(success, errorMsg = '') {
             formContent.classList.add('hidden');
             finalMessageContainer.classList.remove('hidden');
             if(success) {
@@ -902,7 +599,7 @@
                 const textoWhatsapp = encodeURIComponent("Olá! Já preenchi o formulário no Portal de Criação. Como faço para prosseguir com o pagamento?");
                 const linkWhatsapp = `https://api.whatsapp.com/send?phone=${numeroWhatsapp}&text=${textoWhatsapp}`;
 
-                let message = `
+                finalMessageContainer.innerHTML = `
                     <div class="whatsapp-card">
                         <i class="fas fa-rocket success-icon"></i>
                         <h2>Excelente! Tudo pronto para decolar.</h2>
@@ -913,11 +610,6 @@
                         </a>
                     </div>
                 `;
-
-                if (hadUploadErrors) {
-                    message += `<p style="color: var(--cor-dourado-premium); margin-top: 1.5rem; font-weight: 500; font-size: 0.9rem;"><strong>Atenção:</strong> Um ou mais arquivos não puderam ser enviados. Por favor, envie-os manualmente pelo WhatsApp.</p>`;
-                }
-                finalMessageContainer.innerHTML = message;
             } else {
                  finalMessageContainer.innerHTML = `
                     <div class="whatsapp-card">
@@ -930,21 +622,7 @@
             }
         }
         
-        function showAlert(title, message) {
-            document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-message').textContent = message;
-            document.getElementById('alert-modal').classList.add('visible');
-        }
-
-        const modalOverlay = document.getElementById('alert-modal');
-        const modalCloseBtn = document.getElementById('modal-close');
-        
-        modalCloseBtn.addEventListener('click', () => modalOverlay.classList.remove('visible'));
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) modalOverlay.classList.remove('visible');
-        });
-        
-        // Configuração inicial
+        // Initial setup
         filterVisibleSteps();
         showStep(currentStepIndex);
     });
