@@ -7,7 +7,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
@@ -16,11 +16,12 @@
             --cor-primaria: #ff0080;
             --cor-secundaria: #ff69b4;
             --cor-dourado-premium: #FFD700;
-            --cor-laco-amor: #cba3ff;
+            --cor-laco-amor: #48dbfb;
             --cor-branco-puro: #ffffff;
             --cor-branco-suave: #e0e7ef;
             --cor-cinza-claro: #b0bac9;
-            --cor-fundo-card: rgba(30, 41, 59, 0.8);
+            --cor-vermelho-erro: #ff4d4d;
+            --cor-fundo-card: rgba(30, 41, 59, 0.5);
             --borda-raio: 16px;
             --gradiente-principal: linear-gradient(90deg, var(--cor-primaria), var(--cor-secundaria));
         }
@@ -37,111 +38,179 @@
             align-items: flex-start;
             min-height: 100vh;
             padding: 2rem;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 52.5 L12.5 35 Q12.5 17.5 30 25 Q47.5 17.5 47.5 35 Z' fill='rgba(160,0,255,0.03)'/%3E%3C/svg%3E");
+            background: var(--cor-fundo) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 52.5 L12.5 35 Q12.5 17.5 30 25 Q47.5 17.5 47.5 35 Z' fill='rgba(72,219,251,0.03)'/%3E%3C/svg%3E");
         }
 
         #form-container {
             width: 100%;
             max-width: 700px;
             background: var(--cor-fundo-card);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             border-radius: var(--borda-raio);
             padding: clamp(1.5rem, 5vw, 2.5rem);
-            border: 1px solid var(--cor-secundaria);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--cor-primaria);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 0, 128, 0.2);
         }
 
-        .form-header { text-align: center; margin-bottom: 2rem; }
-        .form-header h1 { font-family: 'Montserrat', sans-serif; font-size: clamp(1.8rem, 5vw, 2.2rem); color: var(--cor-branco-puro); margin-bottom: 0.5rem; }
+        .form-header { text-align: center; margin-bottom: 2.5rem; }
+        .form-header h1 { 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: clamp(2rem, 5vw, 2.5rem); 
+            color: var(--cor-branco-puro); 
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            background: var(--gradiente-principal);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 8px var(--cor-primaria));
+        }
         .form-header p { color: var(--cor-cinza-claro); font-size: 1rem; max-width: 500px; margin: auto; }
-        .welcome-message { background: rgba(255, 215, 0, 0.1); border-left: 4px solid var(--cor-dourado-premium); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: left; }
-        .welcome-message strong { color: var(--cor-dourado-premium); }
-
-        #progress-bar { display: flex; list-style: none; margin-bottom: 2rem; position: relative; justify-content: space-between; }
-        #progress-bar .step { text-align: center; position: relative; width: 100%; color: var(--cor-cinza-claro); font-weight: 500; font-size: 0.8rem; }
-        #progress-bar .step .dot { height: 25px; width: 25px; border: 2px solid var(--cor-cinza-claro); border-radius: 50%; display: inline-block; margin-bottom: 5px; transition: all 0.4s ease; }
-        #progress-bar .step.active .dot, #progress-bar .step.completed .dot { background: var(--gradiente-principal); border-color: var(--cor-primaria); transform: scale(1.2); }
+        
+        #progress-bar { display: flex; list-style: none; margin-bottom: 2.5rem; position: relative; justify-content: space-between; }
+        #progress-bar .step { text-align: center; position: relative; width: 100%; color: var(--cor-cinza-claro); font-weight: 600; font-size: 0.85rem; transition: color 0.4s ease; }
+        #progress-bar .step .dot { height: 25px; width: 25px; border: 2px solid var(--cor-cinza-claro); border-radius: 50%; display: inline-block; margin-bottom: 8px; transition: all 0.4s ease; background-color: var(--cor-fundo); }
+        #progress-bar .step.active .dot { border-color: var(--cor-primaria); transform: scale(1.2); box-shadow: 0 0 10px var(--cor-primaria);}
+        #progress-bar .step.completed .dot { background: var(--gradiente-principal); border-color: var(--cor-primaria); transform: scale(1.1); }
         #progress-bar .step.active, #progress-bar .step.completed { color: var(--cor-branco-puro); }
-        #progress-bar::before, #progress-line { content: ''; position: absolute; top: 12px; left: 0; height: 3px; width: 100%; background: var(--cor-cinza-claro); z-index: -1; }
-        #progress-line { background: var(--gradiente-principal); width: 0%; transition: width 0.4s ease; }
+        #progress-bar::before, #progress-line { content: ''; position: absolute; top: 12px; left: 0; height: 3px; width: 100%; background: var(--cor-cinza-claro); z-index: -1; opacity: 0.3; }
+        #progress-line { background: var(--gradiente-principal); width: 0%; transition: width 0.4s ease; opacity: 1; }
 
-        .form-step { display: none; animation: fadeIn 0.5s ease-in-out; }
+        .form-step { display: none; animation: fadeIn 0.6s ease-in-out; }
         .form-step.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.75rem; font-weight: 600; font-size: 1.1rem; color: var(--cor-branco-suave); }
-        .form-group small { display: block; color: var(--cor-cinza-claro); font-size: 0.85rem; margin-top: -0.5rem; margin-bottom: 0.75rem; }
+        .form-group { margin-bottom: 1.8rem; }
+        .form-group label { display: block; margin-bottom: 0.75rem; font-weight: 700; font-size: 1.2rem; color: var(--cor-branco-puro); }
+        .form-group small { display: block; color: var(--cor-cinza-claro); font-size: 0.9rem; margin-top: -0.5rem; margin-bottom: 0.75rem; }
 
         input[type="text"], input[type="email"], textarea, select {
-            width: 100%; padding: 0.9rem; border-radius: 8px; border: 1px solid var(--cor-cinza-claro); background-color: var(--cor-fundo); color: var(--cor-branco-puro); font-size: 1rem; font-family: 'Poppins', sans-serif; transition: all 0.3s ease;
+            width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid var(--cor-cinza-claro); background-color: rgba(10, 16, 31, 0.7); color: var(--cor-branco-puro); font-size: 1rem; font-family: 'Poppins', sans-serif; transition: all 0.3s ease;
         }
-        input:focus, input[type="email"]:focus, textarea:focus, select:focus { outline: none; border-color: var(--cor-primaria); box-shadow: 0 0 10px var(--cor-primaria); }
-        textarea { resize: vertical; min-height: 120px; }
+        input:focus, input[type="email"]:focus, textarea:focus, select:focus { outline: none; border-color: var(--cor-primaria); box-shadow: 0 0 15px var(--cor-primaria); }
+        textarea { resize: vertical; min-height: 140px; }
+        
+        .upsell-note-step {
+            background-color: rgba(255, 215, 0, 0.05);
+            border-left: 4px solid var(--cor-dourado-premium);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-style: italic;
+            color: var(--cor-cinza-claro);
+            text-align: left;
+            line-height: 1.6;
+        }
+        .upsell-note-step strong { font-weight: 700; }
+        .upsell-note-step .sinfonia-text { color: var(--cor-primaria); }
+        .upsell-note-step .universo-text { color: var(--cor-dourado-premium); }
+        
 
-        .package-selection { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        .package-selection { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
         @media (min-width: 600px) { .package-selection { grid-template-columns: repeat(3, 1fr); } }
         .package-option { position: relative; }
         .package-option input[type="radio"] { opacity: 0; position: absolute; width: 100%; height: 100%; cursor: pointer; }
-        .package-label { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--cor-fundo); border: 2px solid var(--cor-cinza-claro); border-radius: var(--borda-raio); padding: 1.5rem 1rem; text-align: center; transition: all 0.3s ease; height: 100%; }
-        .package-label i { font-size: 2.5rem; margin-bottom: 0.75rem; transition: all 0.3s ease; }
-        .package-label .package-name { font-weight: 700; color: var(--cor-branco-puro); }
-        .package-option input:checked + .package-label { border-color: var(--cor-primaria); box-shadow: 0 0 15px var(--cor-primaria); transform: translateY(-5px); }
-        .package-option input:checked + .package-label i { transform: scale(1.1); }
+        .package-label { display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(145deg, #0f1738, #1a102c); border: 2px solid var(--cor-cinza-claro); border-radius: var(--borda-raio); padding: 1.5rem 1rem; text-align: center; transition: all 0.3s ease; height: 100%; }
+        .package-label i { font-size: 2.8rem; margin-bottom: 1rem; transition: all 0.3s ease; }
+        .package-label .package-name { font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--cor-branco-puro); }
+        .package-price { font-size: 1.8rem; font-family: 'Montserrat', sans-serif; font-weight: 800; margin-top: 0.75rem; }
+        
+        #laco-label .package-price { color: var(--cor-laco-amor); }
+        #sinfonia-label .package-price { color: var(--cor-primaria); }
+        #universo-label .package-price { color: var(--cor-dourado-premium); }
+        
+        .package-option input:checked + .package-label { transform: translateY(-8px) scale(1.03); }
         #laco-label i { color: var(--cor-laco-amor); }
         #sinfonia-label i { color: var(--cor-primaria); }
         #universo-label i { color: var(--cor-dourado-premium); }
-        .package-option input:checked + #sinfonia-label i { background: var(--gradiente-principal); -webkit-background-clip: text; background-clip: text; color: transparent; }
-
+        #laco:checked + #laco-label { border-color: var(--cor-laco-amor); box-shadow: 0 0 20px var(--cor-laco-amor); }
+        #sinfonia:checked + #sinfonia-label { border-color: var(--cor-primaria); box-shadow: 0 0 20px var(--cor-primaria); }
+        #universo:checked + #universo-label { border-color: var(--cor-dourado-premium); box-shadow: 0 0 20px var(--cor-dourado-premium); }
+        
         .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
-        .file-upload-btn { border: 2px dashed var(--cor-cinza-claro); background-color: var(--cor-fundo); color: var(--cor-cinza-claro); padding: 2rem; border-radius: var(--borda-raio); cursor: pointer; transition: all 0.3s ease; text-align: center; }
-        .file-upload-btn i { font-size: 2rem; margin-bottom: 0.5rem; }
+        .file-upload-btn { border: 2px dashed var(--cor-cinza-claro); background-color: rgba(10, 16, 31, 0.5); color: var(--cor-cinza-claro); padding: 2.5rem; border-radius: var(--borda-raio); cursor: pointer; transition: all 0.3s ease; text-align: center; }
+        .file-upload-btn i { font-size: 2.5rem; margin-bottom: 0.8rem; display: block; }
         input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; width: 100%; }
-        .file-upload-wrapper:hover .file-upload-btn { border-color: var(--cor-primaria); color: var(--cor-branco-puro); }
-        .file-upload-status { margin-top: 1rem; text-align: center; color: var(--cor-dourado-premium); font-weight: 500; }
+        .file-upload-wrapper:hover .file-upload-btn { border-color: var(--cor-primaria); color: var(--cor-branco-puro); background-color: rgba(255, 0, 128, 0.1); }
+        .file-upload-status { margin-top: 1rem; text-align: center; color: var(--cor-dourado-premium); font-weight: 600; }
+        .error-message {
+            color: var(--cor-vermelho-erro);
+            font-weight: 700;
+            text-align: center;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            background-color: rgba(255, 77, 77, 0.1);
+            border: 1px solid var(--cor-vermelho-erro);
+        }
 
-        .btn-group { display: flex; justify-content: space-between; margin-top: 2rem; gap: 1rem; flex-wrap: wrap; }
-        .btn { padding: 0.9rem 2rem; border: none; border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; }
-        .btn-primary { background: var(--gradiente-principal); background-size: 200% auto; color: var(--cor-branco-puro); }
-        .btn-primary:hover { transform: scale(1.05); background-position: right center; box-shadow: 0 5px 15px var(--cor-primaria); }
+        .btn-group { display: flex; justify-content: space-between; margin-top: 2.5rem; gap: 1rem; flex-wrap: wrap; }
+        .btn { padding: 1rem 2.5rem; border: none; border-radius: 50px; font-size: 1rem; font-family: 'Montserrat', sans-serif; font-weight: 700; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;}
+        .btn-primary { background: var(--gradiente-principal); background-size: 200% auto; color: var(--cor-branco-puro); box-shadow: 0 5px 15px rgba(255, 0, 128, 0.3); }
+        .btn-primary:hover { transform: scale(1.05); background-position: right center; box-shadow: 0 8px 25px var(--cor-primaria); }
         .btn-secondary { background-color: transparent; border: 2px solid var(--cor-cinza-claro); color: var(--cor-cinza-claro); }
-        .btn-secondary:hover { border-color: var(--cor-branco-suave); color: var(--cor-branco-suave); }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-secondary:hover { border-color: var(--cor-branco-suave); color: var(--cor-branco-suave); background-color: rgba(255,255,255,0.1); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; transform: none; }
         
         .hidden { display: none; }
         
-        #final-message { text-align: center; }
-        #final-message i { font-size: 4rem; margin-bottom: 1rem; }
-        #final-message .success { color: var(--cor-dourado-premium); }
-        #final-message .error { color: #FF4D4D; }
-        #final-message h2 { margin-bottom: 1rem; }
+        #final-message { text-align: center; animation: fadeIn 1s; }
+        #final-message .whatsapp-card {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border-radius: var(--borda-raio);
+            padding: 2.5rem;
+            border: 1px solid var(--cor-primaria);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        #final-message i.success-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: var(--cor-dourado-premium);
+            text-shadow: 0 0 15px var(--cor-dourado-premium);
+        }
+        #final-message .error-icon { color: var(--cor-vermelho-erro); }
+        #final-message h2 { font-size: 2rem; margin-bottom: 1rem; }
+        #final-message p { font-size: 1.1rem; line-height: 1.8; color: var(--cor-cinza-claro); }
+        #final-message .whatsapp-link {
+             margin-top: 2rem; 
+             text-decoration: none; 
+             display: inline-flex; 
+             align-items: center; 
+             gap: 1rem;
+             padding: 1rem 2.5rem;
+             background: #25D366;
+             color: white;
+             border-radius: 50px;
+             font-family: 'Montserrat', sans-serif;
+             font-weight: 700;
+             transition: all 0.3s ease;
+        }
+        #final-message .whatsapp-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px #25d36680;
+        }
+        #final-message .whatsapp-link i { font-size: 1.5rem; }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease-in-out; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease-in-out; }
         .modal-overlay.visible { opacity: 1; visibility: visible; }
-        .modal-content { background: var(--cor-fundo-card); padding: 2rem; border-radius: var(--borda-raio); border: 1px solid var(--cor-primaria); box-shadow: 0 0 30px rgba(255, 0, 128, 0.4); text-align: center; max-width: 400px; width: 90%; transform: scale(0.9); transition: transform 0.3s ease-in-out; }
+        .modal-content { background: #10182b; padding: 2.5rem; border-radius: var(--borda-raio); border: 1px solid var(--cor-primaria); box-shadow: 0 0 30px rgba(255, 0, 128, 0.4); text-align: center; max-width: 400px; width: 90%; transform: scale(0.9); transition: transform 0.3s ease-in-out; }
         .modal-overlay.visible .modal-content { transform: scale(1); }
         .modal-content h2 { margin-bottom: 1rem; color: var(--cor-branco-puro); }
         .modal-content p { color: var(--cor-cinza-claro); margin-bottom: 1.5rem; }
-        .modal-close-btn { background: var(--gradiente-principal); color: var(--cor-branco-puro); border: none; padding: 0.8rem 2rem; border-radius: 50px; cursor: pointer; font-weight: 700; transition: transform 0.2s; }
-        .modal-close-btn:hover { transform: scale(1.05); }
-
-        /* Audio Recorder Styles */
-        .audio-recorder { background: var(--cor-fundo); border: 1px solid var(--cor-cinza-claro); border-radius: var(--borda-raio); padding: 1.5rem; margin-top: 1.5rem; text-align: center; }
-        .audio-recorder-buttons { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-        #record-status { font-weight: 500; color: var(--cor-dourado-premium); margin-bottom: 1rem; min-height: 1.2em; }
-        #record-status .recording-dot { display: inline-block; width: 10px; height: 10px; background-color: #ff4d4d; border-radius: 50%; animation: blink 1.5s infinite; margin-right: 8px; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        #modal-close { background: var(--gradiente-principal); color: var(--cor-branco-puro); border: none; padding: 0.8rem 2rem; border-radius: 50px; cursor: pointer; font-weight: 700; transition: transform 0.2s; }
+        #modal-close:hover { transform: scale(1.05); }
         
         #custom-audio-player {
             display: flex;
             align-items: center;
             gap: 1rem;
             margin-top: 1rem;
-            background: linear-gradient(to right, rgba(30, 41, 59, 0.5), rgba(51, 65, 85, 0.5));
-            padding: 0.75rem;
+            background: linear-gradient(to right, rgba(30, 41, 59, 0.8), rgba(51, 65, 85, 0.8));
+            padding: 0.75rem 1rem;
             border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         #player-play-btn {
             background: var(--gradiente-principal);
@@ -166,7 +235,6 @@
             appearance: none;
             width: 100%;
             height: 6px;
-            background: var(--cor-cinza-claro);
             outline: none;
             border-radius: 10px;
             cursor: pointer;
@@ -182,11 +250,7 @@
             border-radius: 50%;
             cursor: pointer;
             border: 3px solid var(--cor-secundaria);
-            transition: background-color 0.2s;
         }
-        #player-seek-bar::-moz-range-thumb { width: 15px; height: 15px; background: var(--cor-branco-puro); border-radius: 50%; cursor: pointer; border: 3px solid var(--cor-secundaria); }
-        #player-seek-bar:hover::-webkit-slider-thumb { background: #f0f0f0; }
-
         .player-time { font-size: 0.9rem; font-weight: 600; color: var(--cor-branco-suave); min-width: 45px; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
         audio#audio-playback-element { display: none; }
 
@@ -201,6 +265,7 @@
             min-height: 142px;
             background-color: rgba(0,0,0,0.1);
         }
+        #photo-error-message { margin-top: 1rem; }
         .image-preview-item { position: relative; width: 100%; padding-top: 100%; border-radius: 8px; overflow: hidden; background-color: var(--cor-fundo); }
         .image-preview-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
         .remove-image-btn { position: absolute; top: 5px; right: 5px; width: 25px; height: 25px; background-color: rgba(0, 0, 0, 0.7); color: white; border: none; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 14px; line-height: 1; transition: background-color 0.2s, transform 0.2s; z-index: 2; }
@@ -212,7 +277,7 @@
     <div id="form-container">
         <div class="form-header">
             <h1>Portal de Criação</h1>
-            <p>Vamos dar vida à sua história! Siga os passos abaixo com carinho para construirmos uma memória inesquecível.</p>
+            <p>Siga os passos com carinho para construirmos uma memória inesquecível.</p>
         </div>
 
         <div id="form-content">
@@ -223,38 +288,34 @@
                 <!-- Etapa 1: Boas-vindas e Pacote -->
                 <div class="form-step active" data-step-name="Início">
                     <div class="form-group">
-                        <div class="welcome-message">
-                            <strong>Você está a um passo de eternizar a história de amor de vocês!</strong> Estamos honrados em transformar seus sentimentos em uma obra de arte.
-                        </div>
                         <label for="nome">Seu primeiro nome</label>
-                        <input type="text" id="nome" name="nome_do_cliente" required placeholder="Ex: Igor">
-                    </div>
-                     <div class="form-group">
-                        <label for="email">Seu melhor e-mail</label>
-                        <input type="email" id="email" name="email" required placeholder="Ex: seuemail@dominio.com">
+                        <input type="text" id="nome" name="nome_do_cliente" placeholder="Ex: Igor">
                     </div>
                     <div class="form-group">
                         <label>Qual pacote você deseja adquirir?</label>
                         <div class="package-selection">
                             <div class="package-option">
-                                <input type="radio" id="laco" name="pacote_escolhido" value="Laço de Amor" required>
+                                <input type="radio" id="laco" name="pacote_escolhido" value="Laço de Amor">
                                 <label for="laco" class="package-label" id="laco-label">
                                     <i class="fa-solid fa-ribbon"></i>
                                     <span class="package-name">Laço de Amor</span>
+                                    <span class="package-price">R$47</span>
                                 </label>
                             </div>
                             <div class="package-option">
-                                <input type="radio" id="sinfonia" name="pacote_escolhido" value="Nossa Sinfonia" required>
+                                <input type="radio" id="sinfonia" name="pacote_escolhido" value="Nossa Sinfonia">
                                 <label for="sinfonia" class="package-label" id="sinfonia-label">
                                     <i class="fa-solid fa-music"></i>
                                     <span class="package-name">Nossa Sinfonia</span>
+                                     <span class="package-price">R$67</span>
                                 </label>
                             </div>
                             <div class="package-option">
-                                <input type="radio" id="universo" name="pacote_escolhido" value="Universo Particular" required>
+                                <input type="radio" id="universo" name="pacote_escolhido" value="Universo Particular">
                                 <label for="universo" class="package-label" id="universo-label">
                                     <i class="fa-solid fa-meteor"></i>
                                     <span class="package-name">Universo Particular</span>
+                                    <span class="package-price">R$97</span>
                                 </label>
                             </div>
                         </div>
@@ -264,88 +325,106 @@
                 <!-- Etapa 2: A História -->
                 <div class="form-step" data-step-name="História" data-packages="laco,sinfonia,universo">
                     <div class="form-group">
-                        <label for="historia">A História de Vocês</label>
-                        <small>Conte-me um pouco sobre vocês. Como se conheceram? Qual a memória mais engraçada ou emocionante? Detalhes, apelidos, piadas internas... tudo isso me ajuda a criar algo verdadeiramente único.</small>
-                        <textarea id="historia" name="historia_do_casal" required></textarea>
+                        <label for="historia">A História de Vocês (Opcional)</label>
+                        <small>Como se conheceram? Qual a memória mais marcante? Detalhes e apelidos são bem-vindos!</small>
+                        <textarea id="historia" name="historia_do_casal"></textarea>
                     </div>
                 </div>
 
                 <!-- Etapa 3: Paleta de Cores -->
                 <div class="form-step" data-step-name="Cores" data-packages="laco,sinfonia,universo">
+                    <div class="upsell-note-step hidden" id="upsell-laco-cores">Quer mais impacto? O plano <strong class="sinfonia-text">Nossa Sinfonia</strong> libera o <strong>dobro de fotos</strong> e a emoção da <strong>sua voz</strong> se declarando!</div>
+                    <div class="upsell-note-step hidden" id="upsell-sinfonia-cores">Busca uma experiência inesquecível? O plano <strong class="universo-text">Universo Particular</strong> adiciona uma <strong>mensagem secreta com senha</strong> e o <strong>mapa astral</strong> do casal!</div>
                     <div class="form-group">
                         <label for="paleta">Universo Visual e Cores</label>
-                        <small>Descreva o estilo visual que você imagina. É algo mais romântico com tons de rosa? Sofisticado com dourado e preto? Vibrante e colorido? Sinta-se à vontade para descrever.</small>
-                        <textarea id="paleta" name="paleta_de_cores" required placeholder="Ex: Gosto de um visual mais clean e elegante, com tons de azul marinho, branco e detalhes em dourado..."></textarea>
+                        <small>Descreva o estilo que você imagina. Romântico, sofisticado, vibrante? Quais cores?</small>
+                        <textarea id="paleta" name="paleta_de_cores" placeholder="Ex: Tons de azul marinho, branco e detalhes em dourado..."></textarea>
                     </div>
                 </div>
 
                 <!-- Etapa 4: Essência -->
                 <div class="form-step" data-step-name="Essência" data-packages="laco,sinfonia,universo">
+                    <div class="upsell-note-step hidden" id="upsell-laco-essencia">Lembre-se: no plano <strong class="sinfonia-text">Nossa Sinfonia</strong> você pode enviar um <strong>áudio</strong> com sua voz e adicionar <strong>mensagens interativas</strong>!</div>
+                    <div class="upsell-note-step hidden" id="upsell-sinfonia-essencia">Para a declaração definitiva, o plano <strong class="universo-text">Universo Particular</strong> inclui um <strong>contrato de amor eterno</strong> e outros segredos.</div>
                     <div class="form-group">
-                        <label for="carta">Sua Declaração (A Carta)</label>
+                        <label for="carta">Sua Declaração</label>
                         <small>Escreva ou cole aqui o texto que será o coração do presente.</small>
                         <textarea id="carta" name="carta_de_declaracao"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="data-inicio">Data de Início do Relacionamento</label>
-                        <small>Para o contador de tempo. Pode escrever como preferir (ex: 25/12/2020).</small>
+                        <small>Para o contador de tempo (ex: 25/12/2020).</small>
                         <input type="text" id="data-inicio" name="data_de_inicio" placeholder="DD/MM/AAAA">
                     </div>
                 </div>
 
-                <!-- Etapa 5: Memórias (Uploads) -->
+                <!-- Etapa 5: Música -->
+                 <div class="form-step" data-step-name="Música" data-packages="laco,sinfonia,universo">
+                     <div class="upsell-note-step hidden" id="upsell-laco-musica">Uma música é ótimo! No plano <strong class="sinfonia-text">Nossa Sinfonia</strong>, você também pode adicionar <strong>sua voz</strong> e um <strong>jogo interativo</strong>.</div>
+                     <div class="upsell-note-step hidden" id="upsell-sinfonia-musica">Além da playlist, que tal um <strong>mapa astral</strong> e uma <strong>mensagem secreta com senha</strong>? Tudo isso no plano <strong class="universo-text">Universo Particular</strong>.</div>
+                    <div class="form-group" id="laco-sinfonia-music-group">
+                        <label>Música do Casal</label>
+                        <small>Cole aqui o link de uma música do Spotify.</small>
+                        <input type="text" id="musica-unica" name="link_musica_spotify" placeholder="https://open.spotify.com/track/...">
+                    </div>
+                     <div class="form-group" id="universo-music-group">
+                        <label>Sua Playlist (até 5 músicas)</label>
+                        <small>Cole aqui os links das músicas do Spotify, um por linha.</small>
+                        <textarea id="musica-playlist" name="playlist_links_spotify" rows="5" placeholder="https://open.spotify.com/track/...\nhttps://open.spotify.com/track/..."></textarea>
+                    </div>
+                </div>
+
+
+                <!-- Etapa 6: Memórias (Uploads) -->
                 <div class="form-step" data-step-name="Memórias" data-packages="laco,sinfonia,universo">
+                    <div class="upsell-note-step hidden" id="upsell-laco-memorias">Gostando de escolher as fotos? O plano <strong class="sinfonia-text">Nossa Sinfonia</strong> permite enviar o <strong>dobro (10 fotos)</strong> e ainda incluir um <strong>áudio com sua voz</strong>!</div>
+                    <div class="upsell-note-step hidden" id="upsell-sinfonia-memorias">Para uma surpresa ainda mais profunda, o plano <strong class="universo-text">Universo Particular</strong> adiciona interações exclusivas como o <strong>mapa astral</strong>.</div>
                     <div class="form-group">
                         <label>Galeria de Momentos</label>
-                        <small>Adicione as fotos que marcaram a história de vocês. Máximo de 5 para 'Laço de Amor' e 10 para os demais.</small>
+                        <small>Adicione as fotos que marcaram a história de vocês.</small>
                         <div id="image-preview-container"></div>
+                        <div id="photo-error-message" class="error-message hidden"></div>
                         <button type="button" id="add-photo-btn" class="btn btn-secondary" style="margin-top: 1rem;"><i class="fas fa-plus"></i> Adicionar Fotos</button>
                         <input type="file" id="fotos-input" accept="image/*" class="hidden" multiple>
                     </div>
                 </div>
                 
-                <!-- Etapa 6: Itens da Sinfonia -->
+                <!-- Etapa 7: Áudio -->
                 <div class="form-step" data-step-name="Sinfonia" data-packages="sinfonia,universo">
+                     <div class="upsell-note-step hidden" id="upsell-sinfonia-audio">Para a experiência definitiva, o plano <strong class="universo-text">Universo Particular</strong> transforma tudo com uma <strong>mensagem secreta com senha</strong> e um <strong>contrato de amor</strong>.</div>
                     <div class="form-group">
-                        <label>Sua Voz Declarando Seu Amor</label>
-                        <small>Escolha uma das opções: grave um áudio na hora ou envie um arquivo de áudio pronto.</small>
-                        <div class="audio-recorder">
-                            <div id="record-status" class="hidden"></div>
-                            <div class="audio-recorder-buttons">
-                                <button type="button" class="btn btn-secondary" id="record-btn"><i class="fas fa-microphone-alt"></i> Gravar</button>
-                                <button type="button" class="btn btn-primary hidden" id="stop-record-btn"><i class="fas fa-stop-circle"></i> Parar</button>
+                        <label>Envie Sua Declaração em Áudio</label>
+                        <small>Grave um áudio com sua voz no seu celular ou computador e envie o arquivo aqui. Aceitamos todos os formatos (MP3, M4A, WAV, etc.).</small>
+                        
+                        <div class="file-upload-wrapper" style="margin-top: 1.5rem;">
+                            <div class="file-upload-btn">
+                                <i class="fas fa-upload"></i>
+                                <div>Clique para enviar um arquivo de áudio</div>
                             </div>
+                            <input type="file" id="audio-input" accept="audio/*">
+                        </div>
+
+                        <div id="audio-preview-section" class="hidden" style="margin-top: 1.5rem;">
+                            <div class="file-upload-status" id="audio-upload-status" style="margin-bottom: 1rem;"></div>
                             <audio id="audio-playback-element"></audio>
-                            <div id="custom-audio-player" class="hidden">
+                            <div id="custom-audio-player">
                                 <button type="button" id="player-play-btn" class="btn"><i class="fas fa-play"></i></button>
                                 <span id="player-current-time" class="player-time">0:00</span>
                                 <input type="range" id="player-seek-bar" value="0" step="1">
                                 <span id="player-duration" class="player-time">0:00</span>
                             </div>
-                            <div class="file-upload-status" id="audio-upload-status"></div>
                         </div>
-                        <div class="file-upload-wrapper" style="margin-top: 1rem;">
-                            <div class="file-upload-btn">
-                                <i class="fas fa-upload"></i>
-                                <div>Ou clique para enviar um arquivo de áudio</div>
-                            </div>
-                            <input type="file" id="audio-input" accept="audio/*">
-                        </div>
+
                     </div>
                     <div class="form-group">
-                        <label>10 Mensagens Secretas para os Corações</label>
-                        <small>Escreva frases curtas e carinhosas.</small>
+                        <label>Corações com Mensagens</label>
+                        <small>Escreva até 10 frases curtas e carinhosas (uma por linha).</small>
                         <textarea name="mensagens_secretas_para_coracoes" rows="5" placeholder="Escreva uma mensagem por linha..."></textarea>
                     </div>
                 </div>
                 
-                <!-- Etapa 7: Itens do Universo -->
+                <!-- Etapa 8: Extras do Universo -->
                 <div class="form-step" data-step-name="Universo" data-packages="universo">
-                    <div class="form-group">
-                        <label>Playlist (Até 5 músicas)</label>
-                        <small>Cole o link do Spotify ou YouTube de cada música, um por linha.</small>
-                         <textarea name="playlist_links" rows="5" placeholder="Link da Música 1&#10;Link da Música 2..."></textarea>
-                    </div>
                     <div class="form-group">
                         <label>Mensagem Secreta com Senha</label>
                         <input type="text" name="senha_da_mensagem_secreta" placeholder="Crie uma senha (Ex: apelido, data especial)"><textarea name="texto_da_mensagem_secreta" placeholder="Escreva aqui a mensagem super secreta" style="margin-top: 0.5rem;"></textarea>
@@ -426,13 +505,12 @@
         const addPhotoBtn = document.getElementById('add-photo-btn');
         const fotosInput = document.getElementById('fotos-input');
         const imagePreviewContainer = document.getElementById('image-preview-container');
+        const photoErrorMessage = document.getElementById('photo-error-message');
         let selectedImageFiles = [];
 
         // Elementos de áudio
-        const recordBtn = document.getElementById('record-btn');
-        const stopRecordBtn = document.getElementById('stop-record-btn');
-        const recordStatus = document.getElementById('record-status');
         const audioInput = document.getElementById('audio-input');
+        const audioPreviewSection = document.getElementById('audio-preview-section');
         const audioUploadStatus = document.getElementById('audio-upload-status');
         const audioPlaybackElement = document.getElementById('audio-playback-element');
         const customAudioPlayer = document.getElementById('custom-audio-player');
@@ -440,10 +518,14 @@
         const playerSeekBar = document.getElementById('player-seek-bar');
         const playerCurrentTime = document.getElementById('player-current-time');
         const playerDuration = document.getElementById('player-duration');
-        let mediaRecorder;
-        let audioChunks = [];
         let audioFileToSubmit = null;
         
+        // Elementos de música e upsell
+        const lacoSinfoniaMusicGroup = document.getElementById('laco-sinfonia-music-group');
+        const universoMusicGroup = document.getElementById('universo-music-group');
+        const upsellLaco = document.querySelectorAll('[id^="upsell-laco-"]');
+        const upsellSinfonia = document.querySelectorAll('[id^="upsell-sinfonia-"]');
+
         let currentStepIndex = 0;
         let visibleSteps = [];
 
@@ -451,6 +533,7 @@
             const selectedPackageRadio = document.querySelector('input[name="pacote_escolhido"]:checked');
             if (!selectedPackageRadio) {
                 visibleSteps = [formSteps[0]];
+                 updateMusicFieldsVisibility(null);
                 return;
             }
             const selectedPackageValue = selectedPackageRadio.id; 
@@ -465,7 +548,19 @@
             });
             visibleSteps.push(formSteps.find(step => step.dataset.stepName === 'Enviar'));
             updateProgressBar();
+            updateMusicFieldsVisibility(selectedPackageValue);
         }
+        
+        function updateMusicFieldsVisibility(selectedPackage) {
+            if (selectedPackage === 'universo') {
+                lacoSinfoniaMusicGroup.classList.add('hidden');
+                universoMusicGroup.classList.remove('hidden');
+            } else {
+                lacoSinfoniaMusicGroup.classList.remove('hidden');
+                universoMusicGroup.classList.add('hidden');
+            }
+        }
+
 
         function updateProgressBar() {
             progressBar.innerHTML = '';
@@ -499,8 +594,26 @@
         
         function showStep(stepIndex) {
             formSteps.forEach(step => step.classList.remove('active'));
-            if(visibleSteps[stepIndex]) {
-                 visibleSteps[stepIndex].classList.add('active');
+            
+            // Oculta todas as mensagens de upsell
+            upsellLaco.forEach(el => el.classList.add('hidden'));
+            upsellSinfonia.forEach(el => el.classList.add('hidden'));
+
+            const currentStep = visibleSteps[stepIndex];
+            if(currentStep) {
+                 currentStep.classList.add('active');
+                 
+                 // Lógica para mostrar o upsell sutil
+                 const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.id;
+                 if (currentStep.dataset.stepName !== 'História' && currentStep.dataset.stepName !== 'Início' && currentStep.dataset.stepName !== 'Enviar') {
+                    if (selectedPackage === 'laco') {
+                       const upsellToShow = currentStep.querySelector('[id^="upsell-laco-"]');
+                       if (upsellToShow) upsellToShow.classList.remove('hidden');
+                    } else if (selectedPackage === 'sinfonia') {
+                       const upsellToShow = currentStep.querySelector('[id^="upsell-sinfonia-"]');
+                       if (upsellToShow) upsellToShow.classList.remove('hidden');
+                    }
+                 }
             }
             updateButtonVisibility();
             updateProgressClasses();
@@ -512,47 +625,8 @@
             submitBtn.classList.toggle('hidden', currentStepIndex !== visibleSteps.length - 1);
         }
 
+        // REMOVIDA A OBRIGATORIEDADE
         function validateCurrentStep() {
-            const currentStep = visibleSteps[currentStepIndex];
-            if (!currentStep) return false;
-            
-            // Validação de fotos
-            if (currentStep.dataset.stepName === 'Memórias' && selectedImageFiles.length === 0) {
-                 showAlert('Fotos Obrigatórias', 'Por favor, adicione pelo menos uma foto para continuar.');
-                 return false;
-            }
-            
-            // Validação de áudio (APENAS para pacotes que exigem)
-            const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.value;
-            const audioIsRequiredForPackage = selectedPackage === 'Nossa Sinfonia' || selectedPackage === 'Universo Particular';
-            if (currentStep.dataset.stepName === 'Sinfonia' && audioIsRequiredForPackage && !audioFileToSubmit) {
-                showAlert('Áudio Obrigatório', 'Para este pacote, você precisa gravar ou enviar um arquivo de áudio.');
-                return false;
-            }
-
-            // Validação genérica de campos 'required'
-            const inputs = currentStep.querySelectorAll('[required]');
-            for (const input of inputs) {
-                const isRadio = input.type === 'radio';
-                let isRadioGroupValid = true;
-                if (isRadio) {
-                    const radioGroup = document.querySelectorAll(`input[name="${input.name}"]`);
-                    isRadioGroupValid = Array.from(radioGroup).some(radio => radio.checked);
-                }
-
-                 if ((!isRadio && !input.value.trim()) || (isRadio && !isRadioGroupValid)) {
-                     const group = input.closest('.form-group');
-                     const label = group ? group.querySelector('label') : null;
-                     const labelText = label ? `"${label.textContent}"` : 'um campo obrigatório';
-                     if(label) label.style.color = '#FF4D4D';
-                     showAlert('Campo Obrigatório', `Por favor, preencha o campo ${labelText}.`);
-                     return false;
-                 } else {
-                     const group = input.closest('.form-group');
-                     const label = group ? group.querySelector('label') : null;
-                     if(label) label.style.color = '';
-                 }
-            }
             return true;
         }
 
@@ -583,19 +657,21 @@
             const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.value;
             const maxFiles = selectedPackage === 'Laço de Amor' ? 5 : 10;
             const currentCount = selectedImageFiles.length;
-            const availableSlots = maxFiles - currentCount;
-
-            if (files.length > availableSlots) {
-                showAlert('Limite Excedido', `Você pode adicionar mais ${availableSlots} foto(s). Você tentou adicionar ${files.length}. Somente as primeiras ${availableSlots} foram adicionadas.`);
+            
+            if (currentCount + files.length > maxFiles) {
+                photoErrorMessage.textContent = `Limite de ${maxFiles} fotos excedido! Remova algumas antes de adicionar novas.`;
+                photoErrorMessage.classList.remove('hidden');
+                return;
             }
             
-            const filesToAdd = Array.from(files).slice(0, availableSlots);
+            photoErrorMessage.classList.add('hidden');
+            const filesToAdd = Array.from(files);
             selectedImageFiles.push(...filesToAdd);
             
             renderImagePreviews();
             fotosInput.value = '';
         });
-
+        
         function renderImagePreviews() {
             imagePreviewContainer.innerHTML = '';
             selectedImageFiles.forEach((file, index) => {
@@ -609,6 +685,7 @@
                 removeBtn.innerHTML = '&times;';
                 removeBtn.addEventListener('click', () => {
                     selectedImageFiles.splice(index, 1);
+                    photoErrorMessage.classList.add('hidden');
                     renderImagePreviews();
                 });
                 previewItem.appendChild(img);
@@ -617,73 +694,24 @@
             });
         }
         
-        function setAudioSource(file, sourceName) {
+        function setAudioSource(file) {
             if (!file) {
                 audioFileToSubmit = null;
                 audioPlaybackElement.removeAttribute('src');
-                customAudioPlayer.classList.add('hidden');
-                audioUploadStatus.textContent = '';
+                audioPreviewSection.classList.add('hidden');
                 return;
             }
             audioFileToSubmit = file;
             const audioUrl = URL.createObjectURL(file);
             audioPlaybackElement.src = audioUrl;
-            audioUploadStatus.textContent = `Áudio selecionado: ${sourceName}`;
-            audioUploadStatus.style.color = 'var(--cor-dourado-premium)';
-            customAudioPlayer.classList.remove('hidden');
+            audioUploadStatus.textContent = `Áudio selecionado: ${file.name}`;
+            audioPreviewSection.classList.remove('hidden');
         }
-
-        recordBtn.addEventListener('click', async () => {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-                
-                mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
-                
-                mediaRecorder.onstart = () => {
-                    audioChunks = [];
-                    setAudioSource(null); 
-                    recordStatus.innerHTML = '<span class="recording-dot"></span>Gravando...';
-                    recordStatus.classList.remove('hidden');
-                    recordBtn.classList.add('hidden');
-                    stopRecordBtn.classList.remove('hidden');
-                };
-
-                mediaRecorder.onstop = () => {
-                    recordStatus.textContent = 'Processando gravação...';
-                    stopRecordBtn.classList.add('hidden');
-                    recordBtn.classList.remove('hidden');
-
-                    if (audioChunks.length === 0) {
-                        showAlert('Erro de Gravação', 'Nenhum áudio foi capturado. Tente gravar por mais tempo.');
-                        recordStatus.classList.add('hidden');
-                        return;
-                    }
-                    
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                    const recordedFile = new File([audioBlob], `gravacao_${Date.now()}.webm`, { type: 'audio/webm' });
-                    setAudioSource(recordedFile, recordedFile.name);
-                    recordStatus.textContent = 'Gravação pronta para envio!';
-                };
-                
-                mediaRecorder.start();
-            } catch (err) {
-                console.error("Erro ao acessar o microfone:", err);
-                showAlert("Erro de Microfone", "Não foi possível acessar seu microfone. Verifique as permissões do navegador para este site.");
-            }
-        });
-
-        stopRecordBtn.addEventListener('click', () => {
-            if (mediaRecorder && mediaRecorder.state === "recording") {
-                mediaRecorder.stop();
-            }
-        });
 
         audioInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
-                setAudioSource(file, file.name);
-                recordStatus.classList.add('hidden');
+                setAudioSource(file);
             }
         });
         
@@ -727,7 +755,7 @@
             audioPlaybackElement.currentTime = playerSeekBar.value;
         });
 
-        // --- FUNÇÃO DE ENVIO DO FORMULÁRIO (RECONSTRUÍDA E UNIFICADA) ---
+        // --- FUNÇÃO DE ENVIO DO FORMULÁRIO ---
         async function handleFormSubmit() {
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Enviando... <i class="fas fa-spinner fa-spin"></i>';
@@ -735,27 +763,16 @@
 
             const filesToProcess = [];
 
-            // 1. Adicionar arquivos de imagem à fila de processamento
             selectedImageFiles.forEach(file => {
                 filesToProcess.push({ file: file, type: 'image' });
             });
 
-            // 2. Adicionar arquivo de áudio à fila se for necessário
             const selectedPackage = document.querySelector('input[name="pacote_escolhido"]:checked')?.value;
-            const audioIsRequired = (selectedPackage === 'Nossa Sinfonia' || selectedPackage === 'Universo Particular') && audioFileToSubmit;
-            if (audioIsRequired) {
+            const isAudioPackage = (selectedPackage === 'Nossa Sinfonia' || selectedPackage === 'Universo Particular') && audioFileToSubmit;
+            if (isAudioPackage) {
                 filesToProcess.push({ file: audioFileToSubmit, type: 'audio' });
             }
-            
-            if (selectedImageFiles.length === 0) {
-                 showAlert('Nenhum arquivo', 'Você precisa enviar pelo menos uma foto.');
-                 submitBtn.disabled = false;
-                 submitBtn.innerHTML = 'Enviar Pedido';
-                 uploadProgressInfo.classList.add('hidden');
-                 return;
-            }
 
-            // 3. Função unificada para fazer upload de um arquivo
             const uploadFile = (item) => {
                 const formData = new FormData();
                 let url = '';
@@ -765,7 +782,7 @@
                     formData.append('key', IMGBB_API_KEY);
                     formData.append('image', item.file);
                     url = 'https://api.imgbb.com/1/upload';
-                } else { // audio
+                } else {
                     formData.append('file', item.file);
                     formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
                     url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
@@ -785,7 +802,6 @@
                     });
             };
 
-            // 4. Rastrear progresso e executar todos os uploads
             const totalTasks = filesToProcess.length;
             let tasksCompleted = 0;
             uploadProgressText.textContent = `Processando... (0/${totalTasks})`;
@@ -794,15 +810,16 @@
             const uploadPromises = filesToProcess.map(item => 
                 uploadFile(item).then(result => {
                     tasksCompleted++;
-                    const progress = Math.round((tasksCompleted / totalTasks) * 100);
-                    uploadProgressBar.style.width = `${progress}%`;
-                    uploadProgressText.textContent = `Processando... (${tasksCompleted}/${totalTasks})`;
+                    if(totalTasks > 0) {
+                        const progress = Math.round((tasksCompleted / totalTasks) * 100);
+                        uploadProgressBar.style.width = `${progress}%`;
+                        uploadProgressText.textContent = `Processando... (${tasksCompleted}/${totalTasks})`;
+                    }
                     return result;
                 })
             );
 
             try {
-                // 5. Aguardar todos os uploads e processar os resultados
                 const allResults = await Promise.all(uploadPromises);
 
                 const successfulImageUrls = allResults.filter(r => r.type === 'image' && r.status === 'fulfilled').map(r => r.value);
@@ -811,13 +828,10 @@
                 const failedUploads = allResults.filter(r => r.status === 'rejected');
                 const errorMessages = failedUploads.map(f => `[${f.type}] ${f.reason}`);
 
-                // 6. Montar o objeto de dados e enviar para o Formspree
                 const formData = new FormData(form);
                 const formDataObject = Object.fromEntries(formData.entries());
-
-                // Adicionar campos especiais para o Formspree
-                formDataObject['_replyto'] = formDataObject.email;
-                formDataObject['_subject'] = `Novo Pedido do Portal: ${formDataObject.nome_do_cliente}`;
+                
+                formDataObject['_subject'] = `Novo Pedido do Portal: ${formDataObject.nome_do_cliente || 'Cliente anônimo'}`;
                 
                 formDataObject['links_das_fotos'] = successfulImageUrls.join('\n') || 'Nenhuma foto enviada.';
                 formDataObject['link_do_audio'] = audioLink || 'Nenhum áudio enviado.';
@@ -853,22 +867,30 @@
                 const linkWhatsapp = `https://api.whatsapp.com/send?phone=${numeroWhatsapp}&text=${textoWhatsapp}`;
 
                 let message = `
-                    <i class="fas fa-rocket success"></i>
-                    <h2>Excelente! Tudo pronto para decolar.</h2>
-                    <p>Já recebemos suas informações com sucesso! Para darmos início à criação do seu presente eterno, o próximo passo é a confirmação do pagamento.</p>
-                    <p style="margin-top: 1rem;">Clique no botão abaixo para falar conosco no WhatsApp e finalizar.</p>
-                    <a href="${linkWhatsapp}" target="_blank" class="btn btn-primary" style="margin-top: 1.5rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
-                        <i class="fab fa-whatsapp"></i>
-                        <span>Ir para o Pagamento</span>
-                    </a>
+                    <div class="whatsapp-card">
+                        <i class="fas fa-rocket success-icon"></i>
+                        <h2>Excelente! Tudo pronto para decolar.</h2>
+                        <p>Já recebemos suas informações! Para darmos início à criação do seu presente, o próximo passo é a confirmação do pagamento.</p>
+                        <a href="${linkWhatsapp}" target="_blank" class="whatsapp-link">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>Ir para o Pagamento</span>
+                        </a>
+                    </div>
                 `;
 
                 if (hadUploadErrors) {
-                    message += `<p style="color: var(--cor-dourado-premium); margin-top: 1.5rem; font-weight: 500; font-size: 0.9rem;"><strong>Atenção:</strong> Um ou mais arquivos não puderam ser enviados. Por favor, envie-os manually pelo WhatsApp para garantir que seu presente fique perfeito.</p>`;
+                    message += `<p style="color: var(--cor-dourado-premium); margin-top: 1.5rem; font-weight: 500; font-size: 0.9rem;"><strong>Atenção:</strong> Um ou mais arquivos não puderam ser enviados. Por favor, envie-os manualmente pelo WhatsApp.</p>`;
                 }
                 finalMessageContainer.innerHTML = message;
             } else {
-                finalMessageContainer.innerHTML = `<i class="fas fa-times-circle error"></i><h2>Ocorreu um Erro</h2><p>Não foi possível enviar suas informações. Detalhe: ${errorMsg}</p><p>Por favor, tente novamente ou entre em contato diretamente pelo WhatsApp se o erro persistir.</p>`;
+                 finalMessageContainer.innerHTML = `
+                    <div class="whatsapp-card">
+                        <i class="fas fa-times-circle error-icon"></i>
+                        <h2>Ocorreu um Erro</h2>
+                        <p>Não foi possível enviar suas informações. Detalhe: ${errorMsg}</p>
+                        <p style="margin-top:1rem;">Por favor, tente novamente ou entre em contato diretamente pelo WhatsApp se o erro persistir.</p>
+                    </div>
+                `;
             }
         }
         
