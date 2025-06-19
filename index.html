@@ -344,7 +344,7 @@
 
                 <!-- Etapa 4: Essência -->
                 <div class="form-step" data-step-name="Essência" data-packages="laco,sinfonia,universo">
-                    <div class="upsell-note-step hidden" id="upsell-laco-essencia">Quer um presente ainda mais emocionante? Com o plano <strong class="sinfonia-text">Nossa Sinfonia</strong>, você pode incluir um áudio com sua voz e ter uma galeria com o dobro de fotos, tornando cada momento inesquecível.</div>
+                     <div class="upsell-note-step hidden" id="upsell-laco-essencia">Quer um presente ainda mais emocionante? Com o plano <strong class="sinfonia-text">Nossa Sinfonia</strong>, você pode incluir um áudio com sua voz e ter uma galeria com o dobro de fotos, tornando cada momento inesquecível.</div>
                     <div class="upsell-note-step hidden" id="upsell-sinfonia-essencia">Que tal transformar este presente em uma experiência mágica? O plano <strong class="universo-text">Universo Particular</strong> revela uma mensagem secreta com senha e o mapa astral do casal, criando uma conexão ainda mais profunda.</div>
                     <div class="form-group">
                         <label for="carta">Sua Declaração</label>
@@ -377,7 +377,7 @@
 
                 <!-- Etapa 6: Memórias (Uploads) -->
                 <div class="form-step" data-step-name="Memórias" data-packages="laco,sinfonia,universo">
-                    <div class="upsell-note-step hidden" id="upsell-laco-memorias">Quer um presente ainda mais emocionante? Com o plano <strong class="sinfonia-text">Nossa Sinfonia</strong>, você pode incluir um áudio com sua voz e ter uma galeria com o dobro de fotos, tornando cada momento inesquecível.</div>
+                     <div class="upsell-note-step hidden" id="upsell-laco-memorias">Quer um presente ainda mais emocionante? Com o plano <strong class="sinfonia-text">Nossa Sinfonia</strong>, você pode incluir um áudio com sua voz e ter uma galeria com o dobro de fotos, tornando cada momento inesquecível.</div>
                     <div class="upsell-note-step hidden" id="upsell-sinfonia-memorias">Que tal transformar este presente em uma experiência mágica? O plano <strong class="universo-text">Universo Particular</strong> revela uma mensagem secreta com senha e o mapa astral do casal, criando uma conexão ainda mais profunda.</div>
                     <div class="form-group">
                         <label>Galeria de Momentos</label>
@@ -463,7 +463,7 @@
                 <div class="btn-group">
                     <button type="button" class="btn btn-secondary" id="prev-btn">Voltar</button>
                     <button type="button" class="btn btn-primary" id="next-btn">Avançar</button>
-                    <button type="button" class="btn btn-primary hidden" id="submit-btn">Enviar Pedido</button>
+                    <button type="submit" class="btn btn-primary hidden" id="submit-btn">Enviar Pedido</button>
                 </div>
             </form>
         </div>
@@ -772,7 +772,8 @@
         });
 
         // --- FUNÇÃO DE ENVIO DO FORMULÁRIO ---
-        async function handleFormSubmit() {
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Enviando... <i class="fas fa-spinner fa-spin"></i>';
             uploadProgressInfo.classList.remove('hidden');
@@ -870,9 +871,8 @@
                 console.error("Erro final no processo de envio:", error);
                 showFinalMessage(false, true, error.message);
             }
-        }
+        });
 
-        submitBtn.addEventListener("click", handleFormSubmit);
 
         function showFinalMessage(success, hadUploadErrors = false, errorMsg = '') {
             formContent.classList.add('hidden');
