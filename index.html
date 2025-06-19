@@ -333,7 +333,7 @@
 
                 <!-- Etapa 3: Paleta de Cores -->
                 <div class="form-step" data-step-name="Cores" data-packages="laco,sinfonia,universo">
-                    <div class="upsell-note-step hidden" id="upsell-laco-cores">Quer mais impacto? O plano <strong class="sinfonia-text">Nossa Sinfonia</strong> libera o <strong>dobro de fotos</strong> e a emoção da <strong>sua voz</strong> se declarando!</div>
+                    <div class="upsell-note-step hidden" id="upsell-laco-cores">Quer mais impacto? O plano <strong class="sinfonia-text">Nossa Sinfonia</strong> libera o <strong>dobro de fotos</strong> (10) e a emoção da <strong>sua voz</strong> se declarando!</div>
                     <div class="upsell-note-step hidden" id="upsell-sinfonia-cores">Busca uma experiência inesquecível? O plano <strong class="universo-text">Universo Particular</strong> adiciona uma <strong>mensagem secreta com senha</strong> e o <strong>mapa astral</strong> do casal!</div>
                     <div class="form-group">
                         <label for="paleta">Universo Visual e Cores</label>
@@ -438,6 +438,11 @@
                         <label for="pedido">Este presente é um pedido especial?</label>
                         <select id="pedido" name="e_um_pedido_especial"><option value="nao">Não</option><option value="sim">Sim, é um pedido de namoro/casamento!</option></select>
                     </div>
+                     <div class="form-group hidden" id="pedido-detalhes-group">
+                        <label for="pedido-detalhes">Descreva os Detalhes do Pedido</label>
+                        <small>Como você imagina esse momento? Quais palavras usar? O que deve acontecer se a resposta for "Sim"? Conte tudo!</small>
+                        <textarea id="pedido-detalhes" name="detalhes_do_pedido" rows="5" placeholder="Ex: Após toda declaração, quero que a pergunta 'Quer casar comigo?' apareça. Se a resposta for sim, uma chuva de corações ou fogos de artifício"></textarea>
+                    </div>
                 </div>
 
                 <!-- Etapa Final: Confirmação -->
@@ -520,11 +525,14 @@
         const playerDuration = document.getElementById('player-duration');
         let audioFileToSubmit = null;
         
-        // Elementos de música e upsell
+        // Elementos de música, pedido e upsell
         const lacoSinfoniaMusicGroup = document.getElementById('laco-sinfonia-music-group');
         const universoMusicGroup = document.getElementById('universo-music-group');
         const upsellLaco = document.querySelectorAll('[id^="upsell-laco-"]');
         const upsellSinfonia = document.querySelectorAll('[id^="upsell-sinfonia-"]');
+        const pedidoSelect = document.getElementById('pedido');
+        const pedidoDetalhesGroup = document.getElementById('pedido-detalhes-group');
+
 
         let currentStepIndex = 0;
         let visibleSteps = [];
@@ -753,6 +761,14 @@
 
         playerSeekBar.addEventListener('input', () => {
             audioPlaybackElement.currentTime = playerSeekBar.value;
+        });
+        
+        pedidoSelect.addEventListener('change', () => {
+            if (pedidoSelect.value === 'sim') {
+                pedidoDetalhesGroup.classList.remove('hidden');
+            } else {
+                pedidoDetalhesGroup.classList.add('hidden');
+            }
         });
 
         // --- FUNÇÃO DE ENVIO DO FORMULÁRIO ---
